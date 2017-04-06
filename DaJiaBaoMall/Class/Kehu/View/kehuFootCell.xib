@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="kehuFootCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ktW-gw-ZUt">
+                        <rect key="frame" x="0.0" y="0.0" width="160" height="44.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <state key="normal" title="未支付订单：1单">
+                            <color key="titleColor" red="0.23122459649999999" green="0.2306745946" blue="0.26796981689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="br9-bt-PIi">
+                        <rect key="frame" x="160" y="0.0" width="160" height="44"/>
+                        <state key="normal" title="已支付订单：8单">
+                            <color key="titleColor" red="0.23122459649999999" green="0.2306745946" blue="0.26796981689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jCX-MU-hKK">
+                        <rect key="frame" x="160" y="0.0" width="1" height="44"/>
+                        <color key="backgroundColor" red="0.90588235289999997" green="0.90588235289999997" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="0.5" id="YN1-3t-O2f"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="br9-bt-PIi" firstAttribute="width" secondItem="ktW-gw-ZUt" secondAttribute="width" id="10Z-4D-w6B"/>
+                    <constraint firstItem="ktW-gw-ZUt" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="76z-bn-MnX"/>
+                    <constraint firstAttribute="bottom" secondItem="br9-bt-PIi" secondAttribute="bottom" id="9Tt-Cc-Aje"/>
+                    <constraint firstAttribute="bottom" secondItem="jCX-MU-hKK" secondAttribute="bottom" id="Oav-4g-GPc"/>
+                    <constraint firstItem="br9-bt-PIi" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Qkj-3K-iAW"/>
+                    <constraint firstItem="jCX-MU-hKK" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="RJd-fl-EO1"/>
+                    <constraint firstItem="ktW-gw-ZUt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="d4y-PJ-Zau"/>
+                    <constraint firstItem="br9-bt-PIi" firstAttribute="leading" secondItem="ktW-gw-ZUt" secondAttribute="trailing" id="jdB-0e-uoe"/>
+                    <constraint firstAttribute="trailing" secondItem="br9-bt-PIi" secondAttribute="trailing" id="kyO-pE-ddc"/>
+                    <constraint firstAttribute="bottom" secondItem="ktW-gw-ZUt" secondAttribute="bottom" id="oYX-nz-OiW"/>
+                    <constraint firstItem="jCX-MU-hKK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="wze-9H-NCe"/>
+                </constraints>
+            </tableViewCellContentView>
+            <point key="canvasLocation" x="25" y="51.5"/>
+        </tableViewCell>
+    </objects>
+</document>

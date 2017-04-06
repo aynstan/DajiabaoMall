@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ToastErweiMaView">
+            <rect key="frame" x="0.0" y="0.0" width="300" height="400"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="会员头像" translatesAutoresizingMaskIntoConstraints="NO" id="lnv-Is-gKB">
+                    <rect key="frame" x="30" y="30" width="240" height="240"/>
+                    <color key="backgroundColor" red="0.0" green="0.59607843140000005" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="lnv-Is-gKB" secondAttribute="height" multiplier="1:1" id="frB-LY-yhC"/>
+                    </constraints>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S4S-HF-wup">
+                    <rect key="frame" x="270" y="0.0" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="GpU-9y-vJX"/>
+                        <constraint firstAttribute="height" constant="30" id="Ljq-5G-XK4"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="31"/>
+                    <state key="normal" title="x"/>
+                    <connections>
+                        <action selector="cancel:" destination="iN0-l3-epB" eventType="touchUpInside" id="COp-3e-ZeO"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EGG-Co-QYP">
+                    <rect key="frame" x="30" y="285" width="240" height="40"/>
+                    <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="ef1-Ix-gfD"/>
+                    </constraints>
+                    <state key="normal" title="保存到系统相册">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="saveImage:" destination="iN0-l3-epB" eventType="touchUpInside" id="h5A-pZ-a3l"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="保存到系统相册后打开微信扫一扫，然后从系统相册选择二维码即可加群，也可以添加群主号进群" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="orM-LP-7GR">
+                    <rect key="frame" x="30" y="335" width="240" height="50.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="S4S-HF-wup" secondAttribute="trailing" id="1A7-qS-nbw"/>
+                <constraint firstItem="EGG-Co-QYP" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="30" id="6MB-S0-iza"/>
+                <constraint firstAttribute="trailing" secondItem="lnv-Is-gKB" secondAttribute="trailing" constant="30" id="B2E-7X-LqO"/>
+                <constraint firstItem="EGG-Co-QYP" firstAttribute="top" secondItem="lnv-Is-gKB" secondAttribute="bottom" constant="15" id="Osu-ly-Hzl"/>
+                <constraint firstAttribute="trailing" secondItem="EGG-Co-QYP" secondAttribute="trailing" constant="30" id="WL9-9f-14L"/>
+                <constraint firstItem="lnv-Is-gKB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="30" id="ZeV-Xu-OZz"/>
+                <constraint firstItem="orM-LP-7GR" firstAttribute="top" secondItem="EGG-Co-QYP" secondAttribute="bottom" constant="10" id="b1D-IO-lH5"/>
+                <constraint firstAttribute="trailing" secondItem="orM-LP-7GR" secondAttribute="trailing" constant="30" id="hiX-ck-I9g"/>
+                <constraint firstItem="orM-LP-7GR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="30" id="iid-WZ-L1S"/>
+                <constraint firstItem="S4S-HF-wup" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xfv-m3-JSh"/>
+                <constraint firstItem="lnv-Is-gKB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="30" id="z2f-Ef-OgQ"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="erweimaImageView" destination="lnv-Is-gKB" id="bFj-Sz-8B7"/>
+                <outlet property="tishi" destination="orM-LP-7GR" id="xdp-AX-90X"/>
+            </connections>
+        </view>
+    </objects>
+    <resources>
+        <image name="会员头像" width="80" height="80"/>
+    </resources>
+</document>
