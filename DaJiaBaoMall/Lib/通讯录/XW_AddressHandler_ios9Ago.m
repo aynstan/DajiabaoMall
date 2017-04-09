@@ -149,9 +149,9 @@
     addCount=0;
     for (XWPersonModel *model in modelArray) {
         //首先更新，根据更新是否成功来判断是否要添加的原来就存在
-        BOOL success = [self updateAddressBookWithFirstName:(0==model.name.length?@"":model.name) phoneNumber:(0==model.phone.length?@"":model.phone)];
+        BOOL success = [self updateAddressBookWithModel:model];
         if (!success) {
-            [self addAddressBookWithFirstName:(0==model.name.length?@"":model.name) phoneNumber:(0==model.phone.length?@"":model.phone)];
+            [self addAddressBookWithModel:model];
         }
     }
     success?success():nil;
@@ -165,19 +165,24 @@
     removeCount=0;
     for (XWPersonModel *model in modelArray) {
         //遍历删除
-        [self removeAddressBookWithFirstName:(0==model.name.length?@"":model.name) phoneNumber:(0==model.phone.length?@"":model.phone)];
+        [self removeAddressBookWithFirstName:(0==model.name.length?@"":model.name) phoneNumber:(0==model.mobilephone.length?@"":model.mobilephone)];
     }
+    [[JQFMDB shareDatabase] jq_inDatabase:^{
+       [[JQFMDB shareDatabase] jq_deleteAllDataFromTable:@"contact"];
+    }];
     success?success():nil;
 }
 
 //改
-- (BOOL)updateAddressBookWithFirstName:(NSString *)firstName phoneNumber:(NSString *)phoneNumber{
+- (BOOL)updateAddressBookWithModel:(XWPersonModel *)model{
+    NSString *firstName=model.name;
+    NSString *phoneNumber=model.mobilephone;
     if (firstName.length == 0 && phoneNumber.length == 0) {
         return NO;
     }
     ABAddressBookRef addressBookRef = [self getAddressBookRef];
     if (addressBookRef == nil) {
-        return nil;
+        return NO;
     }
     //获取所有本地的通讯录
     NSArray * records = (__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBookRef);
@@ -203,6 +208,9 @@
             BOOL update=ABRecordSetValue(recordRef, kABPersonPhoneProperty, newPhone, nil);
             if (update) {
                 updateCount++;
+                [[JQFMDB shareDatabase] jq_inDatabase:^{
+                    [[JQFMDB shareDatabase] jq_updateTable:@"contact" dicOrModel:model whereFormat:nil];
+                }];
             }
             isHave = YES;
         }
@@ -214,7 +222,9 @@
 }
 
 ///增
-- (BOOL)addAddressBookWithFirstName:(NSString *)firstName phoneNumber:(NSString *)phoneNumber{
+- (BOOL)addAddressBookWithModel:(XWPersonModel *)model{
+    NSString *firstName=model.name;
+    NSString *phoneNumber=model.mobilephone;
     if (firstName.length == 0 && phoneNumber.length == 0) {
         return NO;
     }
@@ -238,6 +248,10 @@
     isSuccess = ABAddressBookSave(addressBookRef, nil);
     if (isSuccess) {
         addCount++;
+        [[JQFMDB shareDatabase] jq_inDatabase:^{
+            [[JQFMDB shareDatabase] jq_insertTable:@"contact" dicOrModel:model];
+        }];
+        
     }
     if (recordRef) {
         CFRelease(recordRef);

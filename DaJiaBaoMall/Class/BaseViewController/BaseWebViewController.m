@@ -8,6 +8,7 @@
 
 #import "BaseWebViewController.h"
 #import <WebKit/WebKit.h>
+#import "WXApi.h"
 #define changeTotalTime 2.0
 #define changeTotalCount 8.0
 
@@ -241,6 +242,71 @@
     [self.myWebView removeObserver:self forKeyPath:@"canGoBack"];
     [self.myWebView removeObserver:self forKeyPath:@"loading"];
 }
+
+
+#pragma mark 分享到朋友圈
+- (void)shareImageUrl:(NSString *)shareImageUrl  shareUrl:(NSString *)shareUrl  title:(NSString *)shareTile subTitle:(NSString *)subTitle shareType:(NSInteger )type{
+    if ([WXApi isWXAppInstalled]) {
+        WeakSelf;
+        [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+            if (type==0) {
+               //分享网页
+               [weakSelf shareWebPageToPlatformType:platformType ImageUrl:shareImageUrl shareUrl:shareUrl title:shareTile subTitle:subTitle] ;
+            }else if(type==1){
+                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl];
+            }
+            
+        }];
+    }else{
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"提醒" message:@"您尚未安装微信客户端，暂无法使用微信分享功能" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:cancelAction];
+        [KeyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+//分享网页
+- (void)shareWebPageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl  shareUrl:(NSString *)shareUrl  title:(NSString *)shareTile subTitle:(NSString *)subTitle{
+    //创建分享消息对象
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    //创建网页内容对象
+    NSString* thumbURL=(0==shareImageUrl.length?@"":shareImageUrl);
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:(0==shareTile.length?@"":shareTile) descr:(0==subTitle.length?@"":subTitle) thumImage:[NSData dataWithContentsOfURL:[NSURL URLWithString:thumbURL]]];
+    //设置网页地址
+    shareObject.webpageUrl = (0==shareUrl.length?@"":shareUrl);
+    //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    //调用分享接口
+    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
+        if (error) {
+            [MBProgressHUD ToastInformation:@"分享失败"];
+        }else{
+            [MBProgressHUD ToastInformation:@"分享成功"];
+        }
+    }];
+}
+
+//分享图片
+- (void)shareImageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl{
+    //创建分享消息对象
+    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+    //创建图片内容对象
+    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+    //分享的图片
+    NSData  *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:(0==shareImageUrl.length?@"":shareImageUrl)]];
+    [shareObject setShareImage:imageData];
+    //分享消息对象设置分享内容对象
+    messageObject.shareObject = shareObject;
+    //调用分享接口
+    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
+        if (error) {
+            [MBProgressHUD ToastInformation:@"分享失败"];
+        }else{
+            [MBProgressHUD ToastInformation:@"分享成功"];
+        }
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

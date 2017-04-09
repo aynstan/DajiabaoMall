@@ -195,6 +195,9 @@
             }
         }
     }
+    [[JQFMDB shareDatabase] jq_inDatabase:^{
+        [[JQFMDB shareDatabase] jq_deleteAllDataFromTable:@"contact"];
+    }];
     success?success():nil;
 }
 
@@ -206,8 +209,8 @@
         NSString *name= 0<model.name.length?model.name:@"";
         CNMutableContact * contact = [[CNMutableContact alloc]init];
         contact.familyName = name;
-        if (0<model.phone.length) {
-            CNLabeledValue *mobilePhone = [[CNLabeledValue alloc] initWithLabel:CNLabelPhoneNumberMobile value:[[CNPhoneNumber alloc] initWithStringValue:model.phone]];
+        if (0<model.mobilephone.length) {
+            CNLabeledValue *mobilePhone = [[CNLabeledValue alloc] initWithLabel:CNLabelPhoneNumberMobile value:[[CNPhoneNumber alloc] initWithStringValue:model.mobilephone]];
             contact.phoneNumbers = @[mobilePhone];
         }
         //初始化方法
@@ -219,6 +222,9 @@
         [store executeSaveRequest:saveRequest error:&error];
         if (error==nil) {
             addCount++;
+            [[JQFMDB shareDatabase] jq_inDatabase:^{
+                [[JQFMDB shareDatabase] jq_insertTable:@"contact" dicOrModel:model];
+            }];
         }
     } @catch (NSException *exception) {
         
@@ -259,8 +265,8 @@
         NSString *name= 0<model.name.length?model.name:@"";
         updateContact.familyName=name;
         //电话
-        if (0<model.phone.length) {
-            CNPhoneNumber *mobileNumber = [[CNPhoneNumber alloc] initWithStringValue:model.phone];
+        if (0<model.mobilephone.length) {
+            CNPhoneNumber *mobileNumber = [[CNPhoneNumber alloc] initWithStringValue:model.mobilephone];
             CNLabeledValue *mobilePhone = [[CNLabeledValue alloc] initWithLabel:CNLabelPhoneNumberMobile value:mobileNumber];
             updateContact.phoneNumbers = @[mobilePhone];
         }
@@ -272,6 +278,9 @@
         [store executeSaveRequest:saveRequest error:&error];
         if (error==nil) {
             updateCount++;
+            [[JQFMDB shareDatabase] jq_inDatabase:^{
+                [[JQFMDB shareDatabase] jq_updateTable:@"contact" dicOrModel:model whereFormat:nil];
+            }];
         }
     }
 }
@@ -293,7 +302,7 @@
                 CNPhoneNumber *phoneNumer = labeledValue.value;
                 NSString *phoneValue = phoneNumer.stringValue;
                 //判断电话号码和姓名
-                if ([phoneValue isEqualToString:model.phone]&&[model.name isEqualToString:mutabeContact.familyName]) {
+                if ([phoneValue isEqualToString:model.mobilephone]&&[model.name isEqualToString:mutabeContact.familyName]) {
                     [backContacts addObject:mutabeContact];
                 }
             }

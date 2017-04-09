@@ -14,13 +14,18 @@
 #import "MessageListController.h"
 #import "AllProductViewController.h"
 #import "BaseWebViewController.h"
+#import "UMessage.h"
+#import <RongIMKit/RongIMKit.h>
+#import "TSMessage.h"
+#import "ConnectServiceViewController.h"
+#import "BaseNavigationController.h"
 #define SDHEIGHT             SCREEN_WIDTH/2.0
 #define COLLECTIONVIEWHEIGHT 80
 #define ADVERTISEHEIGHT      40
 #define SPACE_ITEM           10
 
 
-@interface MainController ()<UITableViewDelegate,UITableViewDataSource,ShouyeHeadViewCell_Delegate>{
+@interface MainController ()<UITableViewDelegate,UITableViewDataSource,ShouyeHeadViewCell_Delegate,RCIMUserInfoDataSource,RCIMReceiveMessageDelegate>{
     UIView *headView;
     UILabel *titleLabel;
     UIButton *headImageButton;
@@ -51,7 +56,8 @@ static NSString *const tableviewContentCell=@"ContentCell";
     self.bgView.hidden=YES;
     [self.myTableView.mj_header beginRefreshing];
     [self addHeadView];
-    
+    //设置推送别名
+    [self setPushAlias];
 }
 
 #pragma mark 自定义导航栏
@@ -318,12 +324,196 @@ static NSString *const tableviewContentCell=@"ContentCell";
     return  self.showBlackStatus==NO?UIStatusBarStyleDefault:UIStatusBarStyleLightContent;
 }
 
+//设置推送别名
+- (void)setPushAlias{
+    [UMessage setAlias:[UserDefaults objectForKey:TOKENID] type:@"com.dajiabao.mall" response:^(id responseObject, NSError *error) {
+    }];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
 }
 
+- (void)alertWithMessage:(NSString *)toastMessage{
+    UIAlertController *phoneAlert=[UIAlertController alertControllerWithTitle:@"提醒" message:toastMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [phoneAlert addAction:cancel];
+    [KeyWindow.rootViewController presentViewController:phoneAlert animated:YES completion:nil];
+}
 
+
+//初始化
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    //添加刷新用户信息监听
+    [NotiCenter addObserver:self selector:@selector(refreshUserInfo) name:@"changeUserInfor" object:nil];
+    RCConnectionStatus status=[[RCIM sharedRCIM] getConnectionStatus];
+    if (status==ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT||status==ConnectionStatus_Unconnected||status==ConnectionStatus_SignUp||status==ConnectionStatus_TOKEN_INCORRECT) {
+            [self connectRongyun];
+    }
+}
+
+/**
+ *  连接融云
+ */
+- (void)connectRongyun{
+    //连接融云
+    [[RCIM sharedRCIM] connectWithToken:RongCloudToken success:^(NSString *userId){
+        
+    } error:^(RCConnectErrorCode status) {
+        if (status==RC_INVALID_ARGUMENT) {
+            [self getUserToken];
+        }
+    } tokenIncorrect:^{
+        [self getUserToken];
+    }];
+    [RCIM sharedRCIM].userInfoDataSource = self;
+    [RCIM sharedRCIM].receiveMessageDelegate=self;
+    [RCIM sharedRCIM].globalNavigationBarTintColor=[UIColor darkGrayColor];
+    [RCIM sharedRCIM].globalMessageAvatarStyle=RC_USER_AVATAR_CYCLE;
+}
+
+/**
+ *  token错误重新获取
+ *
+ */
+- (void)getUserToken{
+//    NSString *urlStr=[NSString stringWithFormat:@"%@%@",dogUrl,@"/v1/member/gettoken"];
+//    [HttpManager postWithUrl:urlStr parameters:nil progressHUD:nil Message:nil sessionId:YES success:^(id responseObject){
+//        NSDictionary *dic=responseObject;
+//        int code=[[dic objectForKey:@"code"] intValue];
+//        if (code==1) {
+//            NSDictionary *dataDic=[dic objectForKey:@"data"];
+//            NSString     *userToken=[dataDic  objectForKey:@"rytoken"];
+//            [UserDefaults setObject:userToken forKey:USER_TOKEN];
+//            [UserDefaults synchronize];
+//            [self connectRongyun];
+//        }
+//    } failuer:^(NSError *error) {
+//
+//    }];
+}
+
+
+//收到消息
+-(BOOL)onRCIMCustomAlertSound:(RCMessage*)message{
+    UIViewController *presentController=[self getTopViewController:KeyWindow.rootViewController];
+    if (![presentController isMemberOfClass:[ConnectServiceViewController class]]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            NSString *toastMessage;
+            RCMessageContent *content = message.content;
+            if ([content isKindOfClass:[RCInformationNotificationMessage class]]) {        
+                //通知消息
+//                RCInformationNotificationMessage *notiMessage=(RCInformationNotificationMessage *)content;
+//                NSString *str=notiMessage.message;
+            }else{
+                //聊天消息
+                if([content isKindOfClass:[RCTextMessage class]]) {
+                    RCTextMessage *txtMsg = (RCTextMessage*)content;
+                    toastMessage=txtMsg.content;
+                }else{
+                    toastMessage=@"[图片]";
+                }
+                [TSMessage showNotificationInViewController:[UIApplication sharedApplication].delegate.window.rootViewController
+                                                      title:NSLocalizedString(@"智能客服", nil)
+                                                   subtitle:NSLocalizedString(toastMessage, nil)
+                                                      image:[UIImage imageNamed:@"通知"]
+                                                       type:TSMessageNotificationTypeMessage
+                                                   duration:2
+                                                   callback:^(){
+                                                       ConnectServiceViewController *conversationVC = [[ConnectServiceViewController alloc] init];
+                                                       conversationVC.conversationType = ConversationType_CUSTOMERSERVICE;
+                                                       conversationVC.targetId =RongCloudServiceID;
+                                                       conversationVC.title =@"智能客服";
+                                                       conversationVC.hidesBottomBarWhenPushed=YES;
+                                                       [presentController.navigationController pushViewController:conversationVC animated:YES];
+                                                   }
+                                                buttonTitle:nil
+                                             buttonCallback:nil
+                                                 atPosition:TSMessageNotificationPositionTop
+                                       canBeDismissedByUser:YES];
+            }
+        });
+    }
+    return NO;
+}
+
+
+
+//获取当前的uiviewController
+- (UIViewController *)getTopViewController:(UIViewController *)viewController {
+    if ([UserDefaults boolForKey:@"firstLanch"]==NO) {
+        //在启动页面
+        return  nil;
+    }else if([UserDefaults objectForKey:TOKENID]==nil){
+        //在登录界面
+        return  nil;
+    }else{
+        if ([viewController isKindOfClass:[UITabBarController class]]) {
+            return [self getTopViewController:[(UITabBarController *)viewController selectedViewController]];
+        } else if ([viewController isKindOfClass:[UINavigationController class]]) {
+            return [self getTopViewController:[(UINavigationController *)viewController topViewController]];
+        } else if (viewController.presentedViewController) {
+            return [self getTopViewController:viewController.presentedViewController];
+        } else {
+            return viewController;
+        }
+    }
+}
+
+
+
+/**
+ *  刷新用户信息
+ */
+- (void)refreshUserInfo{
+//    RCUserInfo *user = [[RCUserInfo alloc]init];
+//    user.userId =[[NSUserDefaults standardUserDefaults]objectForKey:@"myRongyunId"];
+//    user.name=[UserDefaults objectForKey:USER_NAME];
+//    user.portraitUri =[UserDefaults objectForKey:USER_IMAGE];
+//    [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:[[NSUserDefaults standardUserDefaults]objectForKey:@"myRongyunId"]];
+}
+
+
+/**
+ *  信息提供者
+ *
+ */
+- (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *userInfo))completion{
+//    NSString *myRongyunId= [[NSUserDefaults standardUserDefaults]objectForKey:@"myRongyunId"];
+//    if ([myRongyunId isEqual:userId]) {
+//        RCUserInfo *user = [[RCUserInfo alloc]init];
+//        user.userId = myRongyunId;
+//        user.name=[UserDefaults objectForKey:USER_NAME];
+//        user.portraitUri =[UserDefaults objectForKey:USER_IMAGE];
+//        return completion(user);
+//    }
+    return completion(nil);
+};
+
+/**
+ *  融云未读消息
+ *
+ */
+- (void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left{
+    int unread=[[RCIMClient sharedRCIMClient]getUnreadCount:@[@(ConversationType_CUSTOMERSERVICE)]];
+    if (unread>0) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [UserDefaults setBool:YES forKey:@"haveUnredMsg"];
+            [UserDefaults synchronize];
+            [NotiCenter postNotificationName:@"havaUnredMsg" object:nil];
+        });
+    }else{
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [UserDefaults setBool:NO forKey:@"haveUnredMsg"];
+            [UserDefaults synchronize];
+            [NotiCenter postNotificationName:@"noMessage" object:nil];
+        });
+    }
+}
 
 @end

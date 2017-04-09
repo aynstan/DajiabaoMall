@@ -13,5 +13,8 @@ pod 'WMPageController'
 pod 'JCAlertView'
 pod 'UITableView+FDTemplateLayoutCell’
 pod 'SDCycleScrollView'
+pod 'TSMessages'
+pod 'RongCloudIMKit'
+pod 'FMDB'
 
 end

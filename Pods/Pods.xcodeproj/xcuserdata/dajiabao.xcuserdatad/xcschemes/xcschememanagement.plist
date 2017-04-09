@@ -9,6 +9,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>FMDB.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>HexColors.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>IQKeyboardManager.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -59,6 +69,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>TSMessages.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>UITableView+FDTemplateLayoutCell.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -72,17 +87,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>04DE429574D5EC1B048666FD4D4D12EB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4613396A6CC55321CC4E50AE6E454973</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>53480ED0BE09FF49E34B1702D485CAAB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>646FE88A0ADC3293681F518A9498A741</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>6AC81BE93A01066BD2BA5861C1A6E2A2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -92,7 +107,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7A5041EBDEF73263967B67211DE3E24D</key>
+		<key>7B7EF7C7CD09147E4520F08DF4D3530B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>852FA059B0C21A77D7294568858C351A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8E0791024E07C3A846CBE9E9ED457633</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -107,17 +132,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9B99BFA336DAB5CEA6BD9ECD82420460</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>9EAB3E42EF957541E6C3C76D35FD008E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B4A61F383BBB812A02FA7500C9C04C7D</key>
+		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C08D7788AF5338F8CBD51CE2D409AE28</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -132,7 +157,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E87BD1968568135AD1382FDF4325E054</key>
+		<key>E15D0B0A0258EDF03EC2A8391426BCE9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E9EF397B95762DDB254C71DDCB4B1381</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -7,6 +7,7 @@
 //
 
 #import "SetController.h"
+#import "UMessage.h"
 
 @interface SetController ()
 
@@ -114,7 +115,8 @@
 
 //退出登录
 - (void)exit:(UIButton *)sender{
-    
+    [UMessage removeAlias:[UserDefaults objectForKey:TOKENID] type:@"com.dajiabao.mall" response:^(id responseObject, NSError *error) {
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

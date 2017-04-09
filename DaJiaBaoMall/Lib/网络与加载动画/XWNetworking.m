@@ -255,7 +255,7 @@ static NSMutableArray *tasks;
                 NSInteger statusCode=[responseObject integerForKey:@"code"];
                 
                 if (statusCode==100) {
-                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,logout]]) {
+                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,userLogout]]) {
                         //会话过期，需要重连
                         [self connectToLogin];
                     }
@@ -315,7 +315,7 @@ static NSMutableArray *tasks;
                 NSInteger statusCode=[responseObject integerForKey:@"code"];
                 
                 if (statusCode==100) {
-                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,logout]]) {
+                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,userLogout]]) {
                         //会话过期，需要重连
                         [self connectToLogin];
                     }

@@ -8,6 +8,8 @@
 
 #import "MessageListController.h"
 #import "MessageListCell.h"
+#import "ConnectServiceViewController.h"
+
 
 @interface MessageListController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -29,6 +31,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [self addLeftButton];
     [self.myTableView.mj_header beginRefreshing];
 }
+
 
 #pragma mark uitableview delegate;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -62,7 +65,14 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    if (indexPath.row==0) {
+        ConnectServiceViewController *conversationVC = [[ConnectServiceViewController alloc] init];
+        conversationVC.conversationType = ConversationType_CUSTOMERSERVICE;
+        conversationVC.targetId =RongCloudServiceID;
+        conversationVC.title =@"智能客服";
+        conversationVC.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:conversationVC animated:YES];
+    }
 }
 
 
