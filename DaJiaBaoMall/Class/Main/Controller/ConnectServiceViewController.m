@@ -38,6 +38,9 @@
     [timeView addSubview:closeButton];
     
     [self.view addSubview:timeView];
+    
+    [UserDefaults setBool:NO forKey:@"haveUnredMsg"];
+    [UserDefaults synchronize];
 }
 
 - (void)closeTimeView{

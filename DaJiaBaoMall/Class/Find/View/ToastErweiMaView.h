@@ -14,7 +14,7 @@
 
 - (void)clickView:(ToastErweiMaView *)view clickToastCancel:(UIButton *)sender;
 
-- (void)clickView:(ToastErweiMaView *)view clickSave:(UIButton *)sender;
+- (void)clickView:(ToastErweiMaView *)view clickSave:(UIButton *)sender andIndex:(NSInteger)index;
 
 @end
 
@@ -24,6 +24,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *erweimaImageView;
 
 @property (weak, nonatomic) IBOutlet UILabel *tishi;
+
+//位置
+@property (nonatomic,assign) NSInteger index;
 
 - (IBAction)cancel:(id)sender;
 

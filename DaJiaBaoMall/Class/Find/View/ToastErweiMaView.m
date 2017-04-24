@@ -18,8 +18,8 @@
 }
 
 - (IBAction)saveImage:(id)sender {
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickView:clickSave:)]) {
-        [self.delegate clickView:self clickSave:sender];
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickView:clickSave:andIndex:)]) {
+        [self.delegate clickView:self clickSave:sender andIndex:self.index];
     }
 }
 @end

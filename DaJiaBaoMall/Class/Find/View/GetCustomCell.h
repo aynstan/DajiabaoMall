@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+@class Huoke;
 
 @interface GetCustomCell : UITableViewCell
+//图片
+@property (weak, nonatomic) IBOutlet UIImageView *headImage;
+//标题
+@property (weak, nonatomic) IBOutlet UILabel *contentTitle;
+//副标题
+@property (weak, nonatomic) IBOutlet UILabel *contentSubTitle;
+//model
+@property (nonatomic,strong) Huoke *model;
 
 @end

@@ -12,12 +12,8 @@
 @implementation ClassRoomCell
 
 - (void)setModel:(ClassContentModel *)model{
-    
-    self.contentTitle.text=0<model.contentTitle.length?model.contentTitle:@"";
-
-    self.contentSubTitle.text=0<model.subTitle.length?model.subTitle:@"";
-
-    [self.contentImageUrl sd_setImageWithURL:[NSURL URLWithString:model.contentImageUrl] placeholderImage:[UIImage imageNamed:@"空白图"]];
+    self.contentTitle.text=0<model.title.length?model.title:@"";
+    [self.contentImageUrl sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"空白图"]];
 }
 
 - (void)awakeFromNib {

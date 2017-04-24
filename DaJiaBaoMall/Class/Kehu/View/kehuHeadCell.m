@@ -8,6 +8,7 @@
 
 #import "kehuHeadCell.h"
 
+
 @implementation kehuHeadCell
 
 - (void)awakeFromNib {
@@ -18,4 +19,30 @@
     [super setSelected:selected animated:animated];
 }
 
+
+
+- (IBAction)today:(id)sender {
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickInHeadCell:withTodayButtom:)]) {
+        [self.delegate clickInHeadCell:self withTodayButtom:sender];
+    }
+}
+
+- (IBAction)all:(id)sender {
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickInHeadCell:withAllButtom:)]) {
+        [self.delegate clickInHeadCell:self withAllButtom:sender];
+    }
+}
+
+- (IBAction)clickTodayButtom:(id)sender {
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickInHeadCell:withTodayButtom:)]) {
+        [self.delegate clickInHeadCell:self withTodayButtom:sender];
+    }
+}
+
+- (IBAction)clickAllButtom:(id)sender {
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickInHeadCell:withAllButtom:)]) {
+        [self.delegate clickInHeadCell:self withAllButtom:sender];
+    }
+
+}
 @end

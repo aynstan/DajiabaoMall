@@ -9,5 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface KehuContentCell : UITableViewCell
+//图片
+@property (weak, nonatomic) IBOutlet UIImageView *imageViewHead;
+//标题
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+//副标题
+@property (weak, nonatomic) IBOutlet UILabel *subTitleLabel;
+
 
 @end

@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>圈圈保</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -22,11 +22,9 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>weixin</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>wx2c74c71b775936b6</string>
-			</array>
+			<array/>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
@@ -69,7 +67,7 @@
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeContact</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>精选朋友圈"</string>
+			<string>江湖动态</string>
 			<key>UIApplicationShortcutItemType</key>
 			<string>com.dajiabao.frend</string>
 		</dict>

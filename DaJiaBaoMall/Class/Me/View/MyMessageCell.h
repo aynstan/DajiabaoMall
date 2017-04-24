@@ -15,4 +15,11 @@
 @property (weak, nonatomic) IBOutlet UIImageView *jiaV;
 
 @property (weak, nonatomic) IBOutlet UILabel *subTitle;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthContens;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightContents;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *rightContents;
+
 @end

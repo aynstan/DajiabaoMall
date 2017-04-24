@@ -10,17 +10,17 @@
 @class ClassContentModel;
 
 @interface ClassModel : NSObject
-
-@property (nonatomic,copy) NSString *imageViewUrl;
-
-@property (nonatomic,copy) NSString *titleStr;
-
-@property (nonatomic,assign) BOOL hasMore;
-
+//头部图片
+@property (nonatomic,copy) NSString *image;
+//头部分类标题
+@property (nonatomic,copy) NSString *title;
+//是否有更多
+@property (nonatomic,assign) BOOL more;
+//类型
 @property (nonatomic,assign) NSInteger type;
-
-@property (nonatomic,copy) NSString *moreUrl;
-
-@property (nonatomic,strong) NSMutableArray<ClassContentModel *> *contentArray;
+//更多的url
+@property (nonatomic,copy) NSString *url;
+//内容
+@property (nonatomic,strong) NSMutableArray<ClassContentModel *> *data;
 
 @end

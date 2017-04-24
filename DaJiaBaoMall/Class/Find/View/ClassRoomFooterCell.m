@@ -89,7 +89,7 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
 };
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake((SCREEN_WIDTH-30)/2, 150);
+    return CGSizeMake((SCREEN_WIDTH-30)/2, (SCREEN_WIDTH-30)/2*199/165.0);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
@@ -121,10 +121,10 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     //创建分享消息对象
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     //创建网页内容对象
-    NSString* thumbURL =  shareModel.contentImageUrl;
-    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:shareModel.contentTitle descr:shareModel.subTitle thumImage:[NSData dataWithContentsOfURL:[NSURL URLWithString:thumbURL]]];
+    NSString* thumbURL =  shareModel.image;
+    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:shareModel.title descr:shareModel.context thumImage:[NSData dataWithContentsOfURL:[NSURL URLWithString:thumbURL]]];
     //设置网页地址
-    shareObject.webpageUrl = shareModel.shareUrl;
+    shareObject.webpageUrl = shareModel.url;
     //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     //调用分享接口

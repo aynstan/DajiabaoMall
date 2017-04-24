@@ -15,6 +15,7 @@
 @interface UserGuideViewController ()<UIScrollViewDelegate>{
     UIScrollView *scrollView;
     NSArray *arr;
+    UIButton *goButton;
 }
 
 
@@ -32,13 +33,11 @@
 
 // 设置uiScrollView
 - (void)setupScrollView{
-    
     if (SCREEN_HEIGHT==480) {
         arr=@[@"01_small.gif",@"02_small.gif",@"03_small.gif"];
     }else{
         arr=@[@"01.gif",@"02.gif",@"03.gif"];
     }
-
     scrollView = [[UIScrollView alloc]initWithFrame:self.view.frame];
     scrollView.delegate =self;
     //关闭水平方向上的滚动条
@@ -49,7 +48,6 @@
     scrollView.tag =200;
     scrollView.contentSize =CGSizeMake([[UIScreen mainScreen] bounds].size.width *arr.count, [UIScreen mainScreen].bounds.size.height);
     [self.view addSubview:scrollView];
-    
     for (int i = 0; i < arr.count; i++) {
         YLImageView* imageView = [[YLImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH* i,0,SCREEN_WIDTH, SCREEN_HEIGHT)];
         [scrollView addSubview:imageView];
@@ -59,16 +57,15 @@
 
 //进入主页按钮
 -(void)addButton{
-    UIButton *goButton;
     if (SCREEN_HEIGHT==480) {
-        goButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH * 2+(SCREEN_WIDTH/2.0-(GetHeight(36)*130/36.0)/2.0),SCREEN_HEIGHT-GetHeight(28)-GetHeight(50) ,GetHeight(36)*130/36.0, GetHeight(36))];
+        goButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH * 2+(SCREEN_WIDTH/2.0-168/2.0),SCREEN_HEIGHT-80 ,168, 40)];
     }else{
-        goButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH * 2+(SCREEN_WIDTH/2.0-(GetHeight(36)*130/36.0)/2.0),SCREEN_HEIGHT-GetHeight(36)-GetHeight(50) ,GetHeight(36)*130/36.0, GetHeight(36))];
+        goButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH * 2+(SCREEN_WIDTH/2.0-168/2.0),SCREEN_HEIGHT-90 ,168, 40)];
     }
     [goButton addTarget:self action:@selector(goMain) forControlEvents:UIControlEventTouchUpInside];
     [goButton setBackgroundImage:[UIImage imageNamed:@"立即体验"] forState:0];
     [goButton setBackgroundImage:[UIImage imageNamed:@"立即体验"] forState:UIControlStateHighlighted];
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:1 animations:^{
         goButton.alpha=1;
     }];
     [scrollView addSubview:goButton];
@@ -89,9 +86,9 @@
     //设置选中的页数
     pageControl.currentPage =0;
     //设置未选中点的颜色
-    pageControl.pageIndicatorTintColor = [UIColor colorWithHexString:@"#ebf1ff"];
+    pageControl.pageIndicatorTintColor = [[UIColor blackColor] colorWithAlphaComponent:0.1];
     //设置选中点的颜色
-    pageControl.currentPageIndicatorTintColor = [UIColor colorWithHexString:@"#96b4ff"];
+    pageControl.currentPageIndicatorTintColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
     //启用触摸响应
     [pageControl addTarget:self action:@selector(handlePageControl:)forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:pageControl];

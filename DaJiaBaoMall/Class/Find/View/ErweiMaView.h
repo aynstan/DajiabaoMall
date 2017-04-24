@@ -13,7 +13,7 @@
 
 - (void)clickView:(ErweiMaView *)view clickCancel:(UIButton *)sender;
 
-- (void)clickView:(ErweiMaView *)view clickPost:(UIButton *)sender;
+- (void)clickView:(ErweiMaView *)view clickPost:(UIButton *)sender postImage:(UIImage *)postImage wechatName:(NSString *)name;
 
 @end
 

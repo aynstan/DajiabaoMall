@@ -16,6 +16,8 @@
 
 @property (nonatomic,copy) NSString *subTitleStr;
 
+@property (nonatomic,copy) NSString *fieldText;
+
 @property (nonatomic,copy) void (^BackBlock) (NSString *str);
 
 @end

@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+@class BankModel;
 
 @interface BankListCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UIImageView *logo;
+
+@property (weak, nonatomic) IBOutlet UILabel *bankName;
+
+@property (weak, nonatomic) IBOutlet UILabel *maxPay;
+
+@property (nonatomic, strong) BankModel *model;
 
 @end

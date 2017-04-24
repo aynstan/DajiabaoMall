@@ -241,6 +241,7 @@ static JQFMDB *jqdb = nil;
         }
         
         id value = [model valueForKey:name];
+        
         if (value) {
             [mDic setObject:value forKey:name];
         }

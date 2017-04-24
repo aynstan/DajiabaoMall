@@ -9,6 +9,9 @@
 #import "LoginController.h"
 #import "CodeView.h"
 #import "BaseTabBarController.h"
+#import "MeModel.h"
+#import "WXApi.h"
+#import "CheckPhoneController.h"
 
 @interface LoginController ()<UITextFieldDelegate>{
     UITextField *userNameFiled;
@@ -17,6 +20,7 @@
     UIButton *getCodeButton;
     UIView *userLine;
     UIView *wordLine;
+    BOOL hiddenStatusBar;
 }
 
 @property (nonatomic, copy)   NSString *guid;
@@ -31,17 +35,13 @@
     [super viewDidLoad];
     self.bgView.hidden=YES;
     [self initUI];
-    [self addLeftBarButton:@"关闭"];
 }
 
-- (void)leftClick:(UIButton *)btn{
-    [self dismissXWModalView];
-}
 
 //界面布局
 - (void)initUI{
-    self.view.layer.contents=(id)[UIImage imageNamed:@"bg-blue"].CGImage;
     
+    self.view.layer.contents=(id)[UIImage imageNamed:@"bg－武侠"].CGImage;
     
     UIScrollView *myScrollerView=[[UIScrollView alloc]init];
     myScrollerView.backgroundColor=[UIColor clearColor];
@@ -50,7 +50,6 @@
         make.edges.mas_equalTo(self.view);
         make.width.mas_equalTo(SCREEN_WIDTH);
     }];
-    
     
     UIView *contentView=[[UIView alloc]init];
     contentView.backgroundColor=[UIColor clearColor];
@@ -61,22 +60,23 @@
     }];
     
     UIImageView *logo=[[UIImageView alloc]init];
-    logo.image=[UIImage imageNamed:@"login-logo"];
+    logo.image=[UIImage imageNamed:@"logo"];
     [contentView addSubview:logo];
     [logo mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(contentView.mas_centerX);
-        make.top.mas_equalTo(contentView.mas_top).offset(GetHeight(90));;
-        make.width.height.mas_equalTo(GetWidth(110));
+        make.top.mas_equalTo(contentView.mas_top).offset(SCREEN_WIDTH/375.0*60);;
+        make.width.height.mas_equalTo(SCREEN_WIDTH/375.0*100);
     }];
     
     UIImageView *userNameImageView=[[UIImageView alloc]init];
-    userNameImageView.image=[UIImage imageNamed:@"用户"];
+    userNameImageView.image=[UIImage imageNamed:@"phone"];
     userNameImageView.contentMode=UIViewContentModeScaleAspectFit;
     [contentView addSubview:userNameImageView];
     [userNameImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(contentView.mas_left).offset(GetWidth(20));
         make.top.mas_equalTo(logo.mas_bottom).offset(GetHeight(15));
         make.height.mas_equalTo(GetHeight(50));
+        make.width.mas_equalTo(15);
     }];
     
     userNameFiled=[[UITextField alloc]init];
@@ -85,8 +85,8 @@
     userNameFiled.textColor=[UIColor whiteColor];
     userNameFiled.delegate=self;
     NSMutableDictionary *attr = [NSMutableDictionary dictionary];
-    attr[NSForegroundColorAttributeName] = colord3f2fe;
-    NSMutableAttributedString *holder = [[NSMutableAttributedString alloc]initWithString:@"请输入手机号" attributes:attr];
+    attr[NSForegroundColorAttributeName] = [UIColor colorWithHexString:@"#f9e8e5"];
+    NSMutableAttributedString *holder = [[NSMutableAttributedString alloc]initWithString:@"手机号" attributes:attr];
     userNameFiled.attributedPlaceholder = holder;
     userNameFiled.keyboardType=UIKeyboardTypeNumberPad;
     userNameFiled.clearButtonMode=UITextFieldViewModeWhileEditing;
@@ -100,7 +100,7 @@
     }];
     
     userLine=[[UIView alloc]init];
-    userLine.backgroundColor=colorca2e5ff;
+    userLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     [contentView addSubview:userLine];
     [userLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(userNameFiled.mas_bottom);
@@ -110,24 +110,31 @@
     }];
     
     UIImageView *passwordImageView=[[UIImageView alloc]init];
-    passwordImageView.image=[UIImage imageNamed:@"验证码"];
+    passwordImageView.image=[UIImage imageNamed:@"key"];
     passwordImageView.contentMode=UIViewContentModeScaleAspectFit;
     [contentView addSubview:passwordImageView];
     [passwordImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(contentView.mas_left).offset(GetWidth(20));
         make.top.mas_equalTo(userLine.mas_bottom);
         make.height.mas_equalTo(GetHeight(50));
+        make.width.mas_equalTo(15);
     }];
     
-    getCodeButton=[UIButton buttonWithTitle:@"获取验证码" titleColor:colorffff00 font:font15 target:self action:@selector(getCode:)];
+    getCodeButton=[[UIButton alloc]init];
     getCodeButton.tag=100;
-    [getCodeButton setTitleColor:colord3f2fe forState:UIControlStateDisabled];
+    [getCodeButton setTitle:@"获取验证码" forState:0];
+    [getCodeButton setTitleColor:[UIColor whiteColor] forState:0];
+    [getCodeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateDisabled];
+    [getCodeButton.titleLabel setFont:font15];
+    [getCodeButton setBackgroundImage:[UIImage imageNamed:@"发送验证码"] forState:0];
+    [getCodeButton setBackgroundImage:[UIImage imageNamed:@"60s"] forState:UIControlStateDisabled];
+    [getCodeButton addTarget:self action:@selector(getCode:) forControlEvents:UIControlEventTouchUpInside];
     [contentView addSubview:getCodeButton];
     [getCodeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.width.mas_equalTo(130);
         make.right.mas_equalTo(userLine.mas_right);
-        make.height.mas_equalTo(userNameFiled);
-        make.top.mas_equalTo(passwordImageView.mas_top);
-        make.width.mas_equalTo(GetWidth(125));
+        make.top.mas_equalTo(userLine.mas_bottom).offset(10);
+        make.height.mas_equalTo(30);
     }];
     
     UIView *codeLine=[[UIView alloc]init];
@@ -136,7 +143,7 @@
     [codeLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(getCodeButton.mas_left);
         make.centerY.mas_equalTo(getCodeButton.mas_centerY);
-        make.width.mas_equalTo(0.5);
+        make.width.mas_equalTo(0);
         make.height.mas_equalTo(GetHeight(30));
     }];
     
@@ -148,8 +155,8 @@
     passwordFiled.clearButtonMode=UITextFieldViewModeWhileEditing;
     passwordFiled.delegate=self;
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
-    attrs[NSForegroundColorAttributeName] = colord3f2fe;
-    NSMutableAttributedString *placeHolder = [[NSMutableAttributedString alloc]initWithString:@"请输入动态验证码" attributes:attrs];
+    attrs[NSForegroundColorAttributeName] = [UIColor colorWithHexString:@"#f9e8e5"];
+    NSMutableAttributedString *placeHolder = [[NSMutableAttributedString alloc]initWithString:@"验证码" attributes:attrs];
     passwordFiled.attributedPlaceholder = placeHolder;
     passwordFiled.tintColor=[UIColor whiteColor];
     passwordFiled.textColor=[UIColor whiteColor];
@@ -158,12 +165,12 @@
     [passwordFiled mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(passwordImageView.mas_right).offset(GetWidth(12));
         make.top.mas_equalTo(passwordImageView.mas_top);
-        make.right.mas_equalTo(codeLine.mas_left).offset(-GetWidth(10));
+        make.right.mas_equalTo(codeLine.mas_left).offset(-GetWidth(15));
         make.height.mas_equalTo(userNameFiled);
     }];
     
     wordLine=[[UIView alloc]init];
-    wordLine.backgroundColor=colorca2e5ff;
+    wordLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     [contentView addSubview:wordLine];
     [wordLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(passwordFiled.mas_bottom);
@@ -173,15 +180,15 @@
     }];
     
     
-    loginButton=[UIButton buttonWithTitle:@"" titleColor:[UIColor orangeColor] font:font17 target:self action:@selector(login:)];
+    loginButton=[UIButton buttonWithTitle:@"" titleColor:[UIColor clearColor] font:font17 target:self action:@selector(login:)];
     loginButton.tag=101;
-    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-normal"] forState:0];
-    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-forbidden"] forState:UIControlStateDisabled];
-    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-click"] forState:UIControlStateHighlighted];
+    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-normal_login"] forState:0];
+    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-disappeared_login"] forState:UIControlStateDisabled];
+    [loginButton setBackgroundImage:[UIImage imageNamed:@"bt-click_login"] forState:UIControlStateHighlighted];
     loginButton.enabled=NO;
     [contentView addSubview:loginButton];
     [loginButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(wordLine.mas_bottom).offset(GetHeight(65));
+        make.top.mas_equalTo(wordLine.mas_bottom).offset(SCREEN_WIDTH/375.0*65);
         make.left.mas_equalTo(contentView.mas_left).offset(GetWidth(50));
         make.right.mas_equalTo(contentView.mas_right).offset(-GetWidth(50));
         make.height.mas_equalTo(GetHeight(40));
@@ -194,28 +201,15 @@
     
     [self setIQKeyBorderManager];
     
-    UIButton *callPhone=[UIButton buttonWithTitle:@"客服电话 400 1114 567" titleColor:colorc9e8ff font:font13 target:self action:@selector(callPhone:)];
-    [callPhone setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [self.view addSubview:callPhone];
-    [callPhone mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.right.mas_equalTo(self.view);
+    UIButton *wechtLogin=[UIButton buttonWithTitle:@"" titleColor:colorc9e8ff font:font13 target:self action:@selector(bangdingWechat)];
+    [wechtLogin setImage:[UIImage imageNamed:@"微信登录"] forState:0];
+    [self.view addSubview:wechtLogin];
+    [wechtLogin mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(0);
         make.bottom.mas_equalTo(-GetHeight(30));
         make.height.mas_equalTo(44);
+        make.width.mas_equalTo(300);
     }];
-}
-
-- (void)callPhone:(UIButton *)sender{
-    UIAlertController *phoneAlert=[UIAlertController alertControllerWithTitle:@"确定拨打400-1114-567?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    UIAlertAction *queding=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSURL *url =[NSURL URLWithString:@"tel:4001114567"];
-        [[UIApplication sharedApplication] openURL:url];
-    }];
-    [phoneAlert addAction:cancel];
-    [phoneAlert addAction:queding];
-    [self presentViewController:phoneAlert animated:YES completion:nil];
 }
 
 //获取短信验证码
@@ -258,23 +252,22 @@
     dispatch_resume(_timer);
 }
 
-
+//开始登录
 - (void)login:(UIButton *)sender{
-//    [self.view endEditing:YES];
-//    if (![numberBOOL checkTelNumber:userNameFiled.text]) {
-//        [MBProgressHUD ToastInformation:@"请输入正确的手机号"];
-//        return;
-//    }
-//    if (0==passwordFiled.text.length) {
-//        [MBProgressHUD ToastInformation:@"请输入正确的验证码"];
-//        return;
-//    }
-//    if (0==self.guid.length){
-//        [self getSid:sender];
-//    }else{
-//        [self checkPhoneCode:self.guid];
-//    }
-    [self beginLogin:@""];
+    [self.view endEditing:YES];
+    if (![numberBOOL checkTelNumber:userNameFiled.text]) {
+        [MBProgressHUD ToastInformation:@"请输入正确的手机号"];
+        return;
+    }
+    if (0==passwordFiled.text.length) {
+        [MBProgressHUD ToastInformation:@"请输入正确的验证码"];
+        return;
+    }
+    if (0==self.guid.length){
+        [self getSid:sender];
+    }else{
+        [self checkPhoneCode:self.guid];
+    }
 }
 
 
@@ -296,8 +289,7 @@
             }
         }
     } fail:^(NSError *error) {
-        NSLog(@"获取sid失败");
-        [MBProgressHUD showError:@"服务器繁忙"];
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
     } showHud:YES];
 }
 
@@ -305,7 +297,7 @@
 #pragma mark 有sid * 获取短信验证码 *
 - (void)getSnsCode:(NSString *)sid{
     NSString *urlStr=[NSString stringWithFormat:@"%@/verify/sms",codeUrl];
-    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:userNameFiled.text],@"smsCode":@"FXXT_API_LOGIN",@"sid":sid};
+    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:userNameFiled.text],@"smsCode":@"TYHJ_CODE",@"sid":sid};
     [XWNetworking postJsonWithUrl:urlStr params:dic success:^(id response) {
         NSDictionary *dic=response;
         NSInteger code=[dic integerForKey:@"code"];
@@ -321,11 +313,11 @@
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString *errorMsg=[dic objectForKey:@"message"];
-                [MBProgressHUD showError:errorMsg];
+                [MBProgressHUD ToastInformation:errorMsg];
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD showError:@"服务器繁忙"];
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
     } showHud:YES];
 }
 
@@ -351,7 +343,6 @@
     }];
     self.alertView=[[JCAlertView alloc]initWithCustomView:codeView dismissWhenTouchedBackground:NO];
     [self.alertView show];
-    
 }
 
 /**
@@ -368,21 +359,87 @@
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString  *errMessage=[dic objectForKey:@"message"];
-                [MBProgressHUD showError:errMessage];
+                [MBProgressHUD ToastInformation:errMessage];
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD showError:@"系统繁忙"];
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
     } showHud:YES];
 }
 
 //短信验证码验证成功开始登录
 - (void)beginLogin:(NSString *)sid{
-    [UserDefaults setObject:@"1111" forKey:TOKENID];
-    [UserDefaults synchronize];
-    BaseTabBarController *rootVC=[[BaseTabBarController alloc]init];
-    KeyWindow.rootViewController=rootVC;
+    NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,LOGINURL];
+    NSDictionary *dic=@{@"verifySid":self.guid,@"mobilephone":[self clearSpace:userNameFiled.text],@"source":@"40"};
+    [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
+        [self saveData:response];
+    } fail:^(NSError *error) {
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+    } showHud:YES];
 }
+
+//登录成功保存个人数据数据
+- (void)saveData:(id)response{
+    NSLog(@"登录成功了======%@",response);
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"message"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else{
+            NSString *tokenID=response[@"data"][@"sid"];
+            MeModel *me=[MeModel mj_objectWithKeyValues:response[@"data"][@"memberInfo"]];
+            [UserDefaults setObject:tokenID forKey:TOKENID ];
+            [self saveMeModelMessage:me];
+            BaseTabBarController *rootVC=[[BaseTabBarController alloc]init];
+            KeyWindow.rootViewController=rootVC;
+        }
+    }
+}
+
+
+//绑定微信
+- (void)bangdingWechat{
+    if ([WXApi isWXAppInstalled]) {
+        [[UMSocialManager defaultManager] getUserInfoWithPlatform:UMSocialPlatformType_WechatSession currentViewController:nil completion:^(id result, NSError *error) {
+            if (error) {
+            } else {
+                UMSocialUserInfoResponse *resp = result;
+                NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,checkWechatAndPhone];
+                NSDictionary *dic=@{@"wxToken":resp.uid};
+                [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
+                    if (response) {
+                        NSInteger statusCode=[response integerForKey:@"code"];
+                        if (statusCode==0) {
+                            NSString *errorMsg=[response stringForKey:@"message"];
+                            [MBProgressHUD ToastInformation:errorMsg];
+                        }else{
+                            if (statusCode==1) {
+                                [self saveData:response];
+                            }else{
+                                CheckPhoneController *checkPhone=[[CheckPhoneController alloc]init];
+                                checkPhone.wechatId=resp.uid;
+                                checkPhone.wxName=resp.name;
+                                checkPhone.wximage=resp.iconurl;
+                                checkPhone.hidesBottomBarWhenPushed=YES;
+                                [self.navigationController pushViewController:checkPhone animated:YES];
+                            }
+                        }
+                    }
+                } fail:^(NSError *error) {
+                    [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                } showHud:YES];
+            }
+        }];
+    }else{
+        UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"提醒" message:@"您尚未安装微信客户端，暂无法绑定微信" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+
 
 #pragma mark - 输入框改变事件
 /** 输入框内容发生改变 */
@@ -411,20 +468,20 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField{
     if (textField==userNameFiled) {
-        userLine.backgroundColor=colorca2e5ff;
+        userLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     }
     if (textField==passwordFiled) {
-        wordLine.backgroundColor=colorca2e5ff;
+        wordLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     }
 }
 
 #ifdef __IPHONE_10_0
 - (void)textFieldDidEndEditing:(UITextField *)textField reason:(UITextFieldDidEndEditingReason)reason{
     if (textField==userNameFiled) {
-        userLine.backgroundColor=colorca2e5ff;
+        userLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     }
     if (textField==passwordFiled) {
-        wordLine.backgroundColor=colorca2e5ff;
+        wordLine.backgroundColor=[UIColor colorWithHexString:@"#f9e8e5"];
     }
 }
 #endif
@@ -434,7 +491,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden{
-    return YES;
+    return !hiddenStatusBar;
 }
 
 
@@ -445,6 +502,22 @@
     }
 }
 
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"登录"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"登录"];
+}
 
 
 @end

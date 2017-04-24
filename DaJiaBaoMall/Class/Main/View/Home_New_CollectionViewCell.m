@@ -17,7 +17,7 @@
 
 - (void)setImageString:(NSString *)imageString{
     _imageString=imageString;
-    self.ContentImageView.image=[UIImage imageNamed:imageString];
+    [self.ContentImageView sd_setImageWithURL:[NSURL URLWithString:imageString] placeholderImage:[UIImage imageNamed:@"空白图"]];
 }
 
 @end

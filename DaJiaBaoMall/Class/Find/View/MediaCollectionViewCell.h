@@ -17,10 +17,13 @@
 @end
 
 @interface MediaCollectionViewCell : UICollectionViewCell
+
 //标题
-@property (weak, nonatomic) IBOutlet UILabel *title;
+@property (weak, nonatomic) IBOutlet UIButton *title;
 //副标题
 @property (weak, nonatomic) IBOutlet UILabel *subtitle;
+//背景
+@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 
 @property (nonatomic,strong)ClassContentModel *model;
 

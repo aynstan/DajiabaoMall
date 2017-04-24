@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class MeHeadCell;
+@class MeModel;
 
 @protocol MeHeadCell_Delegate <NSObject>
 
@@ -32,5 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *myMoneyButtom;
 
 @property (nonatomic,assign) id<MeHeadCell_Delegate> delegate;
+
+@property (nonatomic,strong) MeModel *model;
 
 @end

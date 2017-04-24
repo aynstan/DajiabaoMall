@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class MainHeadModel;
 @class ShouyeHeadViewCell;
 
 @protocol ShouyeHeadViewCell_Delegate <NSObject>
@@ -16,14 +16,12 @@
 
 - (void)clickCell:(ShouyeHeadViewCell *)cell onTheCollectionViewIndex:(NSInteger )index;
 
-- (void)clickCell:(ShouyeHeadViewCell *)cell onTheAdvertiserIndex:(NSInteger )index;
-
 @end
 
-@interface ShouyeHeadViewCell : UITableViewCell
+@interface ShouyeHeadViewCell : UIView
 
 @property (nonatomic,assign) id<ShouyeHeadViewCell_Delegate> delegate;
 
-- (void)setMode;
+@property (nonatomic,strong) MainHeadModel *model;
 
 @end

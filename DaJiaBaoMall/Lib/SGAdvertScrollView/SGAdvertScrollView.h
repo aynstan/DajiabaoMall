@@ -18,6 +18,7 @@
 
 /** delegate */
 @protocol SGAdvertScrollViewDelegate <NSObject>
+
 - (void)advertScrollView:(SGAdvertScrollView *)advertScrollView didSelectedItemAtIndex:(NSInteger)index;
 
 @end
@@ -35,7 +36,6 @@
 @property (nonatomic, strong) UIColor *titleColor;
 /** titleArray 是否包含 NSMutableAttributedString 默认为NO，如果包含必须设置为 YES */
 @property (nonatomic, assign) BOOL isHaveMutableAttributedString;
-
 /** delegate_SG */
 @property (nonatomic, weak) id<SGAdvertScrollViewDelegate> advertScrollViewDelegate;
 

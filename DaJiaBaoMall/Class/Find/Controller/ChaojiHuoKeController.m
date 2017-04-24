@@ -9,8 +9,11 @@
 #import "ChaojiHuoKeController.h"
 #import "GetPeopleController.h"
 #import "GetGroupController.h"
+#import "myMoneyShow.h"
 
 @interface ChaojiHuoKeController ()
+
+@property (nonatomic,strong) JCAlertView *alertView;
 
 @end
 
@@ -19,19 +22,20 @@
 //初始化
 - (instancetype)init{
     if (self=[super init]) {
-        self = [[ChaojiHuoKeController alloc] initWithViewControllerClasses:[self ViewControllerClasses] andTheirTitles:@[@"加粉",@"加群"]];
+        self = [[ChaojiHuoKeController alloc] initWithViewControllerClasses:[self ViewControllerClasses] andTheirTitles:@[@"客源",@"加群"]];
         self.menuViewStyle=WMMenuViewStyleLine;
         self.menuBGColor=[UIColor clearColor];
         self.menuHeight=GetHeight(44);
         self.progressHeight=GetHeight(4);
         self.titleSizeNormal=GetWidth(16);
-        self.titleSizeSelected=GetWidth(18);
-        self.progressViewCornerRadius=GetHeight(2);
+        self.titleSizeSelected=GetWidth(16);
+        self.progressViewCornerRadius=GetHeight(0);
         self.progressViewIsNaughty=YES;
-        self.titleColorSelected=color0196FF;
+        self.titleColorSelected=[UIColor colorWithHexString:@"#282828"];
+        self.titleColorNormal=[UIColor colorWithHexString:@"#282828"];
         self.itemsWidths=@[@(SCREEN_WIDTH/2.0),@(SCREEN_WIDTH/2.0)];
-        //self.automaticallyCalculatesItemWidths=YES;
-        self.progressViewWidths=@[@(GetWidth(30)),@(GetWidth(30))];
+        self.progressColor=[UIColor colorWithHexString:@"#ff693a"];
+        self.progressViewWidths=@[@(GetWidth(70)),@(GetWidth(70))];
         self.viewFrame=CGRectMake(0,64, SCREEN_WIDTH, SCREEN_HEIGHT-64);
     }
     return self;
@@ -47,7 +51,7 @@
     [super viewDidLoad];
     [self addTitle:@"超级获客"];
     [self addLeftButton];
-    [self addRightButtonWithImageName:@"会员头像"];
+    [self addRightButtonWithImageName:@"question"];
 }
 
 //添加标题
@@ -88,7 +92,15 @@
 }
 
 - (void)forward:(UIButton *)sender{
-    
+    WeakSelf;
+    myMoneyShow *showView=[[[NSBundle mainBundle]loadNibNamed:@"myMoneyShow" owner:nil options:nil]lastObject];;
+    showView.frame=CGRectMake(0, 0, 280, 280*408/310.0);
+    showView.imageView.image=[UIImage imageNamed:@"超级获客-弹窗"];
+    showView.closeBlock=^(){
+        [weakSelf.alertView dismissWithCompletion:nil];
+    };
+    self.alertView=[[JCAlertView alloc]initWithCustomView:showView dismissWhenTouchedBackground:NO];
+    [self.alertView show];
 }
 
 - (void)didReceiveMemoryWarning {

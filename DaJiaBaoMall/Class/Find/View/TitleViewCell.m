@@ -15,11 +15,11 @@
 
 - (void)setModel:(ClassModel *)model{
     
-    [self.imageUrl sd_setImageWithURL:[NSURL URLWithString:model.imageViewUrl] placeholderImage:[UIImage imageNamed:@"空白图"]];
+    [self.imageUrl sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"空白图"]];
     
-    self.titleStr.text=0<model.titleStr?model.titleStr:@"";
+    self.titleStr.text=0<model.title?model.title:@"";
     
-    self.moreButtom.hidden=!(model.hasMore);
+    self.moreButtom.hidden=!(model.more);
 
 }
 

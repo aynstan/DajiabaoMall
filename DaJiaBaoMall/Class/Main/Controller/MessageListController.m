@@ -8,16 +8,21 @@
 
 #import "MessageListController.h"
 #import "MessageListCell.h"
+#import "BaseWebViewController.h"
 #import "ConnectServiceViewController.h"
+#import "MessageModel.h"
 
 
-@interface MessageListController ()<UITableViewDelegate,UITableViewDataSource>
+@interface MessageListController ()<UITableViewDelegate,UITableViewDataSource>{
+    NSInteger zichanCount;
+    NSInteger inviteCount;
+    NSInteger kehuCount;
+    NSInteger systemCount;
+}
 
 @property (nonatomic,strong)UITableView *myTableView;
 
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
-
-@property (nonatomic,assign) NSInteger maxSize;
 
 @end
 
@@ -29,7 +34,16 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [super viewDidLoad];
     [self addTitle:@"消息中心"];
     [self addLeftButton];
-    [self.myTableView.mj_header beginRefreshing];
+    [NotiCenter addObserver:self selector:@selector(haveMessage) name:@"haveMessage" object:nil];
+}
+
+//接收新消息通知
+- (void)haveMessage{
+    [self getMessage];
+}
+
+- (void)dealloc{
+    [NotiCenter removeObserver:self];
 }
 
 
@@ -41,16 +55,22 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     cell.title.text=arr[1];
     cell.subTitle.text=arr[2];
     if (indexPath.row==0) {
-        cell.redImageView.hidden=NO;
-    }else{
-        cell.redImageView.hidden=YES;
+        cell.redImageView.hidden=![UserDefaults boolForKey:@"haveUnredMsg"];
+    }else if (indexPath.row==1) {
+        cell.redImageView.hidden=zichanCount<=0;
+    }else if (indexPath.row==2) {
+        cell.redImageView.hidden=inviteCount<=0;
+    }else if (indexPath.row==3) {
+        cell.redImageView.hidden=kehuCount<=0;
+    }else if (indexPath.row==4) {
+        cell.redImageView.hidden=systemCount<=0;
     }
     return cell;
 }
 
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 70;
+    return 80;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -72,35 +92,25 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         conversationVC.title =@"智能客服";
         conversationVC.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:conversationVC animated:YES];
-    }
-}
-
-
-#pragma mark 增加addMJ_Head
-- (void)addMJheader{
-    MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_header=mjHeader;
-}
-
-#pragma mark 增加addMJ_Footer
-- (void)addMJ_Footer{
-    MJFooter *mjFooter=[MJFooter footerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_footer=mjFooter;
-}
-
-#pragma mark 关闭mjrefreshing
-- (void)endFreshAndLoadMore{
-    [_myTableView.mj_header endRefreshing];
-    if (self.dataSourceArray.count>=self.maxSize) {
-        [_myTableView.mj_footer endRefreshingWithNoMoreData];
     }else{
-        [_myTableView.mj_footer endRefreshing];
+        NSString *urlStr;
+        if(indexPath.row==1){
+            urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,zichanUrl];
+        }else if(indexPath.row==2){
+            urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,inviteUrl];
+        }else if(indexPath.row==3){
+            urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,kehuUrl];
+        }else if(indexPath.row==4){
+            urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,systemUrl];
+        }
+        BaseWebViewController *webView=[[BaseWebViewController alloc]init];
+        webView.urlStr=urlStr;
+        webView.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:webView animated:YES];
     }
 }
+
+
 
 #pragma mark 懒加载
 - (UITableView *)myTableView{
@@ -110,24 +120,21 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         _myTableView.delegate=self;
         _myTableView.dataSource=self;
         _myTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
-        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
-        _myTableView.sectionHeaderHeight=10;
+        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 15)];
+        _myTableView.sectionHeaderHeight=15;
         _myTableView.sectionFooterHeight=0.001;
-        _myTableView.separatorInset=UIEdgeInsetsMake(0, 0, 0, 0);
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([MessageListCell class]) bundle:nil] forCellReuseIdentifier:tableviewCellIndentifer];
         [self.view addSubview:_myTableView];
-        
         _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,64).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,0);
-        [self addMJheader];
     }
     return _myTableView;
 }
 
 - (NSMutableArray *)dataSourceArray{
     if (!_dataSourceArray) {
-        _dataSourceArray=[[NSMutableArray alloc]initWithObjects:@[@"会员头像",@"在线客服",@"点击查看您与客服的会话记录"],@[@"会员头像",@"我的资产",@"一笔热腾腾的推广费到账啦！再接再厉！"],@[@"会员头像",@"邀请通知",@"您又有一位好友成功注册了"],@[@"会员头像",@"客户消息",@"您收到了新的访问"], nil];
+        _dataSourceArray=[[NSMutableArray alloc]initWithObjects:@[@"在线客服",@"在线客服",@"有问题？直接找在线客服"],@[@"我的资产",@"我的资产",@"一笔热腾腾的推广费到账啦！再接再厉！"],@[@"邀请通知",@"邀请通知",@"您又有一位好友成功注册了"],@[@"客户动态",@"客户动态",@"您收到了新的访问"],@[@"系统消息",@"系统消息",@"您好，欢迎使用圈圈保"], nil];
         
     }
     return _dataSourceArray;
@@ -138,6 +145,43 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     
 }
 
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"消息列表"];
+    [self getMessage];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"消息列表"];
+}
+
+//获取消息
+- (void)getMessage{
+    NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,getAllMessage];
+    [XWNetworking getJsonWithUrl:url params:nil success:^(id response) {
+        if (response) {
+            NSInteger statusCode=[response integerForKey:@"code"];
+            if (statusCode==0) {
+                
+            }else{
+                zichanCount=[(response[@"data"][@"messagesKhdt"][@"size"]) integerValue];
+                inviteCount=[(response[@"data"][@"messagesXtxx"][@"size"]) integerValue];
+                kehuCount=[(response[@"data"][@"messagesYqtz"][@"size"]) integerValue];
+                systemCount=[(response[@"data"][@"messagesZc"][@"size"]) integerValue];
+                [self.myTableView reloadData];
+            }
+        }
+    } fail:^(NSError *error) {
+    } showHud:NO];
+}
 
 
 @end

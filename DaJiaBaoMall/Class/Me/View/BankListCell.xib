@@ -18,28 +18,28 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="59.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="会员头像" translatesAutoresizingMaskIntoConstraints="NO" id="95S-LC-qJI">
-                        <rect key="frame" x="12" y="10" width="40" height="40"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="95S-LC-qJI">
+                        <rect key="frame" x="15" y="12" width="36" height="36"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="40" id="Tj9-uM-aqC"/>
-                            <constraint firstAttribute="width" constant="40" id="amt-eI-AoX"/>
+                            <constraint firstAttribute="height" constant="36" id="Tj9-uM-aqC"/>
+                            <constraint firstAttribute="width" constant="36" id="amt-eI-AoX"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="招商银行" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qpq-lg-xOu">
-                        <rect key="frame" x="64" y="9.5" width="69.5" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qpq-lg-xOu">
+                        <rect key="frame" x="66" y="22" width="0.0" height="0.0"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="每笔每月最大5万限额10万" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZEr-UU-oqc">
-                        <rect key="frame" x="64" y="36.5" width="166.5" height="17"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZEr-UU-oqc">
+                        <rect key="frame" x="66" y="42" width="0.0" height="0.0"/>
+                        <fontDescription key="fontDescription" name="PingFangTC-Regular" family="PingFang TC" pointSize="12"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hzu-ZG-8cT">
-                        <rect key="frame" x="12" y="58.5" width="308" height="0.5"/>
-                        <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <rect key="frame" x="15" y="58.5" width="305" height="0.5"/>
+                        <color key="backgroundColor" red="0.86274509803921573" green="0.86274509803921573" blue="0.86274509803921573" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="0.5" id="COp-U9-MCG"/>
                         </constraints>
@@ -51,18 +51,20 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="hzu-ZG-8cT" secondAttribute="trailing" id="5aY-yc-4Tm"/>
                     <constraint firstItem="95S-LC-qJI" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="63R-Fn-rs6"/>
-                    <constraint firstItem="Qpq-lg-xOu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-9" id="EhK-mq-Nrl"/>
-                    <constraint firstItem="ZEr-UU-oqc" firstAttribute="leading" secondItem="95S-LC-qJI" secondAttribute="trailing" constant="12" id="Ein-Da-LPD"/>
-                    <constraint firstItem="95S-LC-qJI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="aQ6-vL-SUw"/>
-                    <constraint firstItem="hzu-ZG-8cT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="ae4-Gk-6h7"/>
-                    <constraint firstItem="ZEr-UU-oqc" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="15" id="gGP-M2-YZR"/>
-                    <constraint firstItem="Qpq-lg-xOu" firstAttribute="leading" secondItem="95S-LC-qJI" secondAttribute="trailing" constant="12" id="piW-5b-vbC"/>
+                    <constraint firstItem="Qpq-lg-xOu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-8" id="EhK-mq-Nrl"/>
+                    <constraint firstItem="ZEr-UU-oqc" firstAttribute="leading" secondItem="95S-LC-qJI" secondAttribute="trailing" constant="15" id="Ein-Da-LPD"/>
+                    <constraint firstItem="95S-LC-qJI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="aQ6-vL-SUw"/>
+                    <constraint firstItem="hzu-ZG-8cT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="ae4-Gk-6h7"/>
+                    <constraint firstItem="ZEr-UU-oqc" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="12" id="gGP-M2-YZR"/>
+                    <constraint firstItem="Qpq-lg-xOu" firstAttribute="leading" secondItem="95S-LC-qJI" secondAttribute="trailing" constant="15" id="piW-5b-vbC"/>
                     <constraint firstAttribute="bottom" secondItem="hzu-ZG-8cT" secondAttribute="bottom" id="t4i-hw-GuH"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="bankName" destination="Qpq-lg-xOu" id="WhN-h6-sok"/>
+                <outlet property="logo" destination="95S-LC-qJI" id="aSf-ez-VU3"/>
+                <outlet property="maxPay" destination="ZEr-UU-oqc" id="dmM-0K-Zk2"/>
+            </connections>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="会员头像" width="80" height="80"/>
-    </resources>
 </document>

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class UsedProduct;
 
 @interface SendUnUsedCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIView *bgView;
@@ -14,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *peopleName;
 @property (weak, nonatomic) IBOutlet UILabel *peoplePhone;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (nonatomic,strong) UsedProduct *model;
 
 @end

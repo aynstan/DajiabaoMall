@@ -96,7 +96,7 @@ static NSMutableDictionary *_notificationDesign;
 - (CGFloat)padding
 {
     // Adds 10 padding to to cover navigation bar
-    return self.messagePosition == TSMessageNotificationPositionNavBarOverlay ? TSMessageViewMinimumPadding + 10.0f : TSMessageViewMinimumPadding;
+    return self.messagePosition == TSMessageNotificationPositionNavBarOverlay ? TSMessageViewMinimumPadding : TSMessageViewMinimumPadding;
 }
 
 - (id)initWithTitle:(NSString *)title
@@ -109,13 +109,9 @@ static NSMutableDictionary *_notificationDesign;
         buttonTitle:(NSString *)buttonTitle
      buttonCallback:(void (^)())buttonCallback
          atPosition:(TSMessageNotificationPosition)position
-canBeDismissedByUser:(BOOL)dismissingEnabled
-{
+canBeDismissedByUser:(BOOL)dismissingEnabled{
     NSDictionary *notificationDesign = [TSMessageView notificationDesign];
-    
-    if ((self = [self init]))
-    {
-        
+    if ((self = [self init])){
         _title = title;
         _subtitle = subtitle;
         _buttonTitle = buttonTitle;
@@ -130,8 +126,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         
         NSDictionary *current;
         NSString *currentString;
-        switch (notificationType)
-        {
+        switch (notificationType){
             case TSMessageNotificationTypeMessage:
             {
                 currentString = @"message";
@@ -158,104 +153,38 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         }
         
         current = [notificationDesign valueForKey:currentString];
-        
-        self.backgroundColor=[UIColor colorWithHexString:[current valueForKey:@"backgroundColor"]
-                                                   alpha:1.0];
-        
-        
-        if (!image && [[current valueForKey:@"imageName"] length])
-        {
-            image = [UIImage imageNamed:[current valueForKey:@"imageName"]];
-        }
-        
-//        if (![TSMessage iOS7StyleEnabled])
-//        {
-//            self.alpha = 0.0;
-//            
-//            // add background image here
-//            UIImage *backgroundImage = [UIImage imageNamed:[current valueForKey:@"backgroundImageName"]];
-//            backgroundImage = [backgroundImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:0.0];
-//            
-//            _backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
-//            self.backgroundImageView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-//            [self addSubview:self.backgroundImageView];
-//        }
-//        else
-//        {
-//            // On iOS 7 and above use a blur layer instead (not yet finished)
-//            _backgroundBlurView = [[TSBlurView alloc] init];
-//            self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-//            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
-//            [self addSubview:self.backgroundBlurView];
-//        }
-        
-        UIColor *fontColor = [UIColor colorWithHexString:[current valueForKey:@"textColor"]
-                                                   alpha:1.0];
-        
-        
+        self.backgroundColor=[[UIColor blackColor] colorWithAlphaComponent:0.6];
         self.textSpaceLeft = padding;
-        if (image) self.textSpaceLeft += image.size.width + padding;
+        if (image) self.textSpaceLeft += image.size.width + 10;
         
         // Set up title label
         _titleLabel = [[UILabel alloc] init];
         [self.titleLabel setText:title];
-        [self.titleLabel setTextColor:fontColor];
+        [self.titleLabel setTextColor:[UIColor whiteColor]];
         [self.titleLabel setBackgroundColor:[UIColor clearColor]];
-        CGFloat fontSize = [[current valueForKey:@"titleFontSize"] floatValue];
-        NSString *fontName = [current valueForKey:@"titleFontName"];
-        if (fontName != nil) {
-            [self.titleLabel setFont:[UIFont fontWithName:fontName size:fontSize]];
-        } else {
-            [self.titleLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
-        }
-        [self.titleLabel setShadowColor:[UIColor colorWithHexString:[current valueForKey:@"shadowColor"] alpha:1.0]];
-        [self.titleLabel setShadowOffset:CGSizeMake([[current valueForKey:@"shadowOffsetX"] floatValue],
-                                                    [[current valueForKey:@"shadowOffsetY"] floatValue])];
+        [self.titleLabel setFont:[UIFont systemFontOfSize:12]];
         self.titleLabel.numberOfLines = 1;
-        self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:self.titleLabel];
         
         // Set up content label (if set)
-        if ([subtitle length])
-        {
+        if ([subtitle length]) {
             _contentLabel = [[UILabel alloc] init];
             [self.contentLabel setText:subtitle];
-            
-            UIColor *contentTextColor = [UIColor colorWithHexString:[current valueForKey:@"contentTextColor"] alpha:1.0];
-            if (!contentTextColor)
-            {
-                contentTextColor = fontColor;
-            }
-            [self.contentLabel setTextColor:contentTextColor];
+            [self.contentLabel setTextColor:[UIColor whiteColor]];
             [self.contentLabel setBackgroundColor:[UIColor clearColor]];
-            CGFloat fontSize = [[current valueForKey:@"contentFontSize"] floatValue];
-            NSString *fontName = [current valueForKey:@"contentFontName"];
-            if (fontName != nil) {
-                [self.contentLabel setFont:[UIFont fontWithName:fontName size:fontSize]];
-            } else {
-                [self.contentLabel setFont:[UIFont systemFontOfSize:fontSize]];
-            }
-            [self.contentLabel setShadowColor:self.titleLabel.shadowColor];
-            [self.contentLabel setShadowOffset:self.titleLabel.shadowOffset];
-            self.contentLabel.lineBreakMode = self.titleLabel.lineBreakMode;
-            self.contentLabel.numberOfLines = 2;
-            
+            [self.contentLabel setFont:[UIFont systemFontOfSize:12]];
+            self.contentLabel.numberOfLines = 1;
             [self addSubview:self.contentLabel];
         }
         
-        if (image)
-        {
+        if (image){
             _iconImageView = [[UIImageView alloc] initWithImage:image];
-            self.iconImageView.frame = CGRectMake(padding,
-                                                  padding,
-                                                  image.size.width,
-                                                  image.size.height);
+            self.iconImageView.frame = CGRectMake(padding,padding,image.size.width,image.size.height);
             [self addSubview:self.iconImageView];
         }
         
         // Set up button (if set)
-        if ([buttonTitle length])
-        {
+        if ([buttonTitle length]){
             _button = [UIButton buttonWithType:UIButtonTypeCustom];
             
             
@@ -283,7 +212,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             UIColor *buttonTitleTextColor = [UIColor colorWithHexString:[current valueForKey:@"buttonTitleTextColor"] alpha:1.0];
             if (!buttonTitleTextColor)
             {
-                buttonTitleTextColor = fontColor;
+                buttonTitleTextColor = [UIColor whiteColor];
             }
             
             [self.button setTitleColor:buttonTitleTextColor forState:UIControlStateNormal];
@@ -369,104 +298,25 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     CGFloat screenWidth = self.viewController.view.bounds.size.width;
     CGFloat padding = [self padding];
     
-    self.titleLabel.frame = CGRectMake(self.textSpaceLeft,
-                                       padding,
-                                       screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
-                                       0.0);
-    [self.titleLabel sizeToFit];
+    self.titleLabel.frame = CGRectMake(self.textSpaceLeft,padding+15,screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,12);
     
-    if ([self.subtitle length])
-    {
-        self.contentLabel.frame = CGRectMake(self.textSpaceLeft,
-                                             self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 5.0,
-                                             screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,
-                                             0.0);
-        [self.contentLabel sizeToFit];
-        
-        currentHeight = self.contentLabel.frame.origin.y + self.contentLabel.frame.size.height;
-    }
-    else
-    {
-        // only the title was set
+    if ([self.subtitle length]){
+        self.contentLabel.frame = CGRectMake(self.textSpaceLeft,self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + 10.0,screenWidth - padding - self.textSpaceLeft - self.textSpaceRight,12);
+      currentHeight = self.contentLabel.frame.origin.y + self.contentLabel.frame.size.height;
+    }else{
         currentHeight = self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height;
     }
-    
     currentHeight += padding;
     
-    if (self.iconImageView)
-    {
-        // Check if that makes the popup larger (height)
-        if (self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding > currentHeight)
-        {
+    if (self.iconImageView){
+        if (self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding > currentHeight){
+            currentHeight = self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding;
+            self.iconImageView.frame=CGRectMake(padding, self.titleLabel.frame.origin.y+1, self.iconImageView.frame.size.width, self.iconImageView.frame.size.height);
+        }else{
+            self.iconImageView.frame=CGRectMake(padding, self.titleLabel.frame.origin.y+1, self.iconImageView.frame.size.width, self.iconImageView.frame.size.height);
             currentHeight = self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + padding;
         }
-        else
-        {
-            // z-align
-            self.iconImageView.center = CGPointMake([self.iconImageView center].x,
-                                                    round(currentHeight / 2.0));
-        }
     }
-    
-    // z-align button
-    self.button.center = CGPointMake([self.button center].x,
-                                     round(currentHeight / 2.0));
-    
-    if (self.messagePosition == TSMessageNotificationPositionTop)
-    {
-        // Correct the border position
-        CGRect borderFrame = self.borderView.frame;
-        borderFrame.origin.y = currentHeight;
-        self.borderView.frame = borderFrame;
-    }
-    
-    currentHeight += self.borderView.frame.size.height;
-    
-    self.frame = CGRectMake(0.0, self.frame.origin.y, self.frame.size.width, currentHeight);
-    
-    
-    if (self.button)
-    {
-        self.button.frame = CGRectMake(self.frame.size.width - self.textSpaceRight,
-                                       round((self.frame.size.height / 2.0) - self.button.frame.size.height / 2.0),
-                                       self.button.frame.size.width,
-                                       self.button.frame.size.height);
-    }
-    
-    
-    CGRect backgroundFrame = CGRectMake(self.backgroundImageView.frame.origin.x,
-                                        self.backgroundImageView.frame.origin.y,
-                                        screenWidth,
-                                        currentHeight);
-    
-    // increase frame of background view because of the spring animation
-    if ([TSMessage iOS7StyleEnabled])
-    {
-        if (self.messagePosition == TSMessageNotificationPositionTop)
-        {
-            float topOffset = 0.f;
-            
-            UINavigationController *navigationController = self.viewController.navigationController;
-            if (!navigationController && [self.viewController isKindOfClass:[UINavigationController class]]) {
-                navigationController = (UINavigationController *)self.viewController;
-            }
-            BOOL isNavBarIsHidden = !navigationController || [TSMessage isNavigationBarInNavigationControllerHidden:navigationController];
-            BOOL isNavBarIsOpaque = !navigationController.navigationBar.isTranslucent && navigationController.navigationBar.alpha == 1;
-            
-            if (isNavBarIsHidden || isNavBarIsOpaque) {
-                topOffset = -30.f;
-            }
-            backgroundFrame = UIEdgeInsetsInsetRect(backgroundFrame, UIEdgeInsetsMake(topOffset, 0.f, 0.f, 0.f));
-        }
-        else if (self.messagePosition == TSMessageNotificationPositionBottom)
-        {
-            backgroundFrame = UIEdgeInsetsInsetRect(backgroundFrame, UIEdgeInsetsMake(0.f, 0.f, -30.f, 0.f));
-        }
-    }
-    
-    self.backgroundImageView.frame = backgroundFrame;
-    //self.backgroundBlurView.frame = backgroundFrame;
-    
     return currentHeight;
 }
 

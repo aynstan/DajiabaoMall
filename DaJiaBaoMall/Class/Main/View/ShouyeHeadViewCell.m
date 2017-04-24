@@ -10,23 +10,27 @@
 #import "Home_New_CollectionViewCell.h"
 #import "SDCycleScrollView.h"
 #import "SGAdvertScrollView.h"
+#import "MainHeadModel.h"
 #define INTERVAL 5
-#define SDHEIGHT SCREEN_WIDTH/2.0
-#define COLLECTIONVIEWHEIGHT 80
+#define SDHEIGHT SCREEN_WIDTH*243/375.0
+#define COLLECTIONVIEWHEIGHT 97
 #define ADVERTISEHEIGHT 40
 #define SPACE_ITEM 10
 
 @interface ShouyeHeadViewCell ()<SGAdvertScrollViewDelegate,SDCycleScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
-
+//广告栏
 @property (nonatomic,strong) SDCycleScrollView *cycleScrollView;
-
+//通知栏
 @property (nonatomic,strong) SGAdvertScrollView *advertScrollView;
-
+//功能栏
 @property (nonatomic,strong)UICollectionView *myCollectionView;
-
+//分割线
 @property (nonatomic,strong)UIView *lineView;
-
+//功能栏数组
 @property (nonatomic,strong) NSMutableArray *CollectionArray;
+//广告栏数组
+@property (nonatomic,strong) NSMutableArray *bannarImageArray;
+
 
 @end
 
@@ -34,11 +38,26 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
 
 @implementation ShouyeHeadViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
-    if (self=[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+
+- (instancetype)initWithFrame:(CGRect)frame{
+    self=[super initWithFrame:frame];
+    if (self) {
         [self initUI];
+        [NotiCenter addObserver:self selector:@selector(banner) name:@"baner" object:nil];
     }
     return self;
+}
+
+/** 解决viewWillAppear时出现时轮播图卡在一半的问题，在控制器viewWillAppear时调用此方法 */
+- (void)banner{
+    if (self.cycleScrollView) {
+        [self.cycleScrollView adjustWhenControllerViewWillAppera];
+    }
+}
+
+//释放通知
+- (void)dealloc{
+    [NotiCenter removeObserver:self];
 }
 
 - (void)initUI{
@@ -52,7 +71,9 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     self.cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
     self.cycleScrollView.autoScrollTimeInterval = INTERVAL;
     self.cycleScrollView.pageControlStyle=SDCycleScrollViewPageContolStyleClassic;
-    [self.contentView addSubview:self.cycleScrollView];
+    self.cycleScrollView.pageDotColor=[UIColor colorWithWhite:1 alpha:0.5];
+    self.cycleScrollView.frame=CGRectMake(0, 0, SCREEN_WIDTH, SDHEIGHT);
+    [self addSubview:self.cycleScrollView];
     
     //添加collectionview
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc]init];
@@ -64,59 +85,54 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     self.myCollectionView.delegate=self;
     self.myCollectionView.dataSource=self;
     self.myCollectionView.backgroundColor=[UIColor whiteColor];
-    [self.contentView addSubview:self.myCollectionView];
+    self.myCollectionView.frame=CGRectMake(self.cycleScrollView.x, self.cycleScrollView.height, SCREEN_WIDTH, COLLECTIONVIEWHEIGHT);
+    [self addSubview:self.myCollectionView];
 
     //添加循环滚动的东西
-    self.advertScrollView = [[SGAdvertScrollView alloc] init];
-    self.advertScrollView.frame =CGRectZero;
-    self.advertScrollView.titleColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
-    self.advertScrollView.image = [UIImage imageNamed:@"horn_icon"];
+    self.advertScrollView = [[SGAdvertScrollView alloc] initWithFrame:CGRectMake(0, self.myCollectionView.y+self.myCollectionView.height, SCREEN_WIDTH, ADVERTISEHEIGHT)];
+    self.advertScrollView.titleColor = [UIColor colorWithHexString:@"#595959"];
+    self.advertScrollView.image = [UIImage imageNamed:@"公告"];
     self.advertScrollView.backgroundColor=[UIColor whiteColor];
-    self.advertScrollView.titleFont = [UIFont systemFontOfSize:12];
+    self.advertScrollView.titleFont = SystemFont(12);
     self.advertScrollView.timeInterval=5;
     self.advertScrollView.advertScrollViewDelegate = self;
-    [self.contentView addSubview:self.advertScrollView];
+    [self addSubview:self.advertScrollView];
     
     //添加分割线
     self.lineView=[[UIView alloc]initWithFrame:CGRectZero];
-    self.lineView.backgroundColor=[UIColor lightGrayColor];
-    [self.contentView addSubview:self.lineView];
-}
-
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    
-    self.cycleScrollView.frame=CGRectMake(0, 0, SCREEN_WIDTH, SDHEIGHT);
-    
-    self.myCollectionView.frame=CGRectMake(self.cycleScrollView.x, self.cycleScrollView.height+10, SCREEN_WIDTH, COLLECTIONVIEWHEIGHT);
-    
-    self.lineView.frame=CGRectMake(12, self.myCollectionView.y+self.myCollectionView.height, SCREEN_WIDTH-12, 0.5);
-    
-    self.advertScrollView.frame=CGRectMake(0, self.myCollectionView.y+self.myCollectionView.height, SCREEN_WIDTH, ADVERTISEHEIGHT);
+    self.lineView.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
+    self.lineView.frame=CGRectMake(0, self.myCollectionView.y+self.myCollectionView.height, SCREEN_WIDTH, 0.5);
+    [self addSubview:self.lineView];
     
 }
 
-- (void)setMode{
+
+- (void)setModel:(MainHeadModel *)model{
     //banner滚动视图
-    self. cycleScrollView.imageURLStringsGroup = @[@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490691687490&di=f3327add036a106708bfe9e6002986f7&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fforum%2Fpic%2Fitem%2Fd4628535e5dde7117fbeec54a7efce1b9d166120.jpg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490691687490&di=670d2ffa166660de120f9da5651c7f8c&imgtype=0&src=http%3A%2F%2Fc.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F7a899e510fb30f24d89e9f18cf95d143ad4b03a0.jpg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490691687489&di=e1889ef9a29f4b016279c7ea325246e7&imgtype=0&src=http%3A%2F%2Fb.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2F5fdf8db1cb1349546045f2dc5e4e9258d1094a2a.jpg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490691687489&di=5dc258ea3bf7f3acdf741818ee59e25f&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fd058ccbf6c81800a5e0fe16eb63533fa838b47e3.jpg",@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490691687487&di=9943adc77691de32670decad94cfd4e9&imgtype=0&src=http%3A%2F%2Fc.hiphotos.baidu.com%2Fzhidao%2Fwh%253D450%252C600%2Fsign%3D05e4cdbf71c6a7efb973a022c8ca8367%2F0b46f21fbe096b6314d136300b338744eaf8ac82.jpg"];
+    [self.bannarImageArray removeAllObjects];
+    NSArray<ADModel *> *adArr=model.ads;
+    for (ADModel *ad in adArr) {
+        [self.bannarImageArray addObject:ad.image];
+    }
+    self. cycleScrollView.imageURLStringsGroup = self.bannarImageArray;
     
     //广告通知视图
-    self.advertScrollView.titleArray = @[@"上海用户165****3455成功出单，获得推广费40元", @"北京用户165****3455成功出单，获得推广费320元", @"深圳用户165****3455成功出单，获得推广费120元"];
+    self.advertScrollView.titleArray = model.rollmsg;
     
     //collectionview视图
     [self.CollectionArray removeAllObjects];
-    [self.CollectionArray addObject:@"车辆抵押"];
-    [self.CollectionArray addObject:@"新车分期"];
-    [self.CollectionArray addObject:@"信用认证"];
+    NSArray<SubIconModel *> *subArr=model.subIcon;
+    for (SubIconModel *sub in subArr) {
+        [self.CollectionArray addObject:sub.image];
+    }
     [self.myCollectionView reloadData];
-};
+}
+
 
 #pragma mark 通知滚动视图代理方法
 - (void)advertScrollView:(SGAdvertScrollView *)advertScrollView didSelectedItemAtIndex:(NSInteger)index {
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickCell:onTheAdvertiserIndex:)]) {
-        [self.delegate clickCell:self onTheAdvertiserIndex:index];
-    }
 }
+
 
 #pragma mark - SDCycleScrollViewDelegate
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
@@ -152,15 +168,14 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
 };
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(SCREEN_WIDTH/self.CollectionArray.count, COLLECTIONVIEWHEIGHT-2*SPACE_ITEM);
+    return CGSizeMake(SCREEN_WIDTH/self.CollectionArray.count, COLLECTIONVIEWHEIGHT-2*15);
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
         return 0;
 }
 
-
-
+#pragma mark 懒加载
 - (NSMutableArray *)CollectionArray{
     if (_CollectionArray==nil) {
         _CollectionArray=[NSMutableArray array];
@@ -168,13 +183,12 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     return _CollectionArray;
 }
 
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
+- (NSMutableArray *)bannarImageArray{
+    if (!_bannarImageArray) {
+        _bannarImageArray=[NSMutableArray array];
+    }
+    return _bannarImageArray;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-}
 
 @end

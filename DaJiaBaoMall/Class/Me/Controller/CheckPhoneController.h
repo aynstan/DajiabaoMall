@@ -10,6 +10,10 @@
 
 @interface CheckPhoneController : BaseViewController
 
-@property (nonatomic,copy) void (^BackBlock) (NSString *str);
+@property (nonatomic,copy) NSString *wechatId;
+
+@property (nonatomic,copy) NSString *wxName;
+
+@property (nonatomic,copy) NSString *wximage;
 
 @end

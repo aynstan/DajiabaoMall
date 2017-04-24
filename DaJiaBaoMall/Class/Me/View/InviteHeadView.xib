@@ -15,40 +15,43 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="我的邀请－bg" translatesAutoresizingMaskIntoConstraints="NO" id="azf-ac-Emz">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="推广费用" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S7V-aM-1s9">
-                    <rect key="frame" x="250" y="10" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <nil key="textColor"/>
+                    <rect key="frame" x="250" y="12" width="125" height="21"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="90.0元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2M-aB-Hee">
-                    <rect key="frame" x="250" y="42.5" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2M-aB-Hee">
+                    <rect key="frame" x="250" y="58" width="125" height="0.0"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="成交件数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t0p-6Y-4QN">
-                    <rect key="frame" x="125" y="10" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <nil key="textColor"/>
+                    <rect key="frame" x="125" y="12" width="125" height="21"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3人" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFb-lL-6nt">
-                    <rect key="frame" x="0.0" y="42.5" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFb-lL-6nt">
+                    <rect key="frame" x="0.0" y="58" width="125" height="0.0"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="邀请人" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r4R-RM-veI">
-                    <rect key="frame" x="0.0" y="10" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <nil key="textColor"/>
+                    <rect key="frame" x="0.0" y="12" width="125" height="21"/>
+                    <fontDescription key="fontDescription" name="PingFangTC-Regular" family="PingFang TC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2件" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eol-go-Jds">
-                    <rect key="frame" x="125" y="42.5" width="125" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eol-go-Jds">
+                    <rect key="frame" x="125" y="58" width="125" height="0.0"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
@@ -57,8 +60,8 @@
                 <constraint firstItem="S7V-aM-1s9" firstAttribute="height" secondItem="r4R-RM-veI" secondAttribute="height" id="1wd-oz-o68"/>
                 <constraint firstItem="eol-go-Jds" firstAttribute="leading" secondItem="zFb-lL-6nt" secondAttribute="trailing" id="2Bp-cj-vSU"/>
                 <constraint firstItem="r4R-RM-veI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="3kZ-aV-9qN"/>
-                <constraint firstAttribute="bottom" secondItem="zFb-lL-6nt" secondAttribute="bottom" constant="10" id="4a3-97-Oj8"/>
-                <constraint firstItem="S7V-aM-1s9" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="50w-J6-m9s"/>
+                <constraint firstAttribute="bottom" secondItem="zFb-lL-6nt" secondAttribute="bottom" constant="12" id="4a3-97-Oj8"/>
+                <constraint firstItem="S7V-aM-1s9" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="50w-J6-m9s"/>
                 <constraint firstItem="t0p-6Y-4QN" firstAttribute="leading" secondItem="r4R-RM-veI" secondAttribute="trailing" id="7b6-4k-fDs"/>
                 <constraint firstItem="S7V-aM-1s9" firstAttribute="leading" secondItem="t0p-6Y-4QN" secondAttribute="trailing" id="Dsf-CI-Yeb"/>
                 <constraint firstItem="f2M-aB-Hee" firstAttribute="width" secondItem="zFb-lL-6nt" secondAttribute="width" id="IAf-Id-Ewf"/>
@@ -66,19 +69,32 @@
                 <constraint firstItem="eol-go-Jds" firstAttribute="height" secondItem="zFb-lL-6nt" secondAttribute="height" id="Lne-yx-1av"/>
                 <constraint firstItem="zFb-lL-6nt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="M5c-it-KQt"/>
                 <constraint firstItem="t0p-6Y-4QN" firstAttribute="width" secondItem="r4R-RM-veI" secondAttribute="width" id="N8w-e8-dfj"/>
-                <constraint firstItem="t0p-6Y-4QN" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="Rh2-ki-25r"/>
+                <constraint firstAttribute="trailing" secondItem="azf-ac-Emz" secondAttribute="trailing" id="Ps5-nm-kTb"/>
+                <constraint firstItem="t0p-6Y-4QN" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="Rh2-ki-25r"/>
                 <constraint firstItem="eol-go-Jds" firstAttribute="width" secondItem="zFb-lL-6nt" secondAttribute="width" id="SaG-B2-b77"/>
-                <constraint firstAttribute="bottom" secondItem="eol-go-Jds" secondAttribute="bottom" constant="10" id="UEO-0j-LE5"/>
+                <constraint firstAttribute="bottom" secondItem="eol-go-Jds" secondAttribute="bottom" constant="12" id="UEO-0j-LE5"/>
                 <constraint firstItem="t0p-6Y-4QN" firstAttribute="leading" secondItem="r4R-RM-veI" secondAttribute="trailing" id="Xb0-jY-wRP"/>
                 <constraint firstAttribute="trailing" secondItem="S7V-aM-1s9" secondAttribute="trailing" id="ZHU-V1-xmu"/>
+                <constraint firstAttribute="bottom" secondItem="azf-ac-Emz" secondAttribute="bottom" id="eXX-vL-4vQ"/>
                 <constraint firstAttribute="trailing" secondItem="f2M-aB-Hee" secondAttribute="trailing" id="hXc-3T-LBO"/>
-                <constraint firstAttribute="bottom" secondItem="f2M-aB-Hee" secondAttribute="bottom" constant="10" id="ks4-m1-gEC"/>
+                <constraint firstItem="azf-ac-Emz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ifi-kG-5oD"/>
+                <constraint firstAttribute="bottom" secondItem="f2M-aB-Hee" secondAttribute="bottom" constant="12" id="ks4-m1-gEC"/>
                 <constraint firstItem="f2M-aB-Hee" firstAttribute="height" secondItem="zFb-lL-6nt" secondAttribute="height" id="mPI-09-q7w"/>
                 <constraint firstItem="S7V-aM-1s9" firstAttribute="width" secondItem="r4R-RM-veI" secondAttribute="width" id="nPC-n5-vaj"/>
-                <constraint firstItem="r4R-RM-veI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="ouP-t5-IeR"/>
+                <constraint firstItem="r4R-RM-veI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="ouP-t5-IeR"/>
+                <constraint firstItem="azf-ac-Emz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="qwT-Py-oSI"/>
                 <constraint firstItem="t0p-6Y-4QN" firstAttribute="height" secondItem="r4R-RM-veI" secondAttribute="height" id="wEI-FH-Bs8"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="jianshuCountLabel" destination="eol-go-Jds" id="z2c-dJ-ORi"/>
+                <outlet property="moneyCountLabel" destination="f2M-aB-Hee" id="YWv-QS-y0k"/>
+                <outlet property="peopleCountLabel" destination="zFb-lL-6nt" id="tWM-wU-B3Q"/>
+            </connections>
+            <point key="canvasLocation" x="42.5" y="130"/>
         </view>
     </objects>
+    <resources>
+        <image name="我的邀请－bg" width="375" height="66"/>
+    </resources>
 </document>

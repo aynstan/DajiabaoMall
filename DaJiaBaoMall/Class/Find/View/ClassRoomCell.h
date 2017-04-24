@@ -12,8 +12,6 @@
 @interface ClassRoomCell : UITableViewCell
 //标题
 @property (weak, nonatomic) IBOutlet UILabel *contentTitle;
-//副标题
-@property (weak, nonatomic) IBOutlet UILabel *contentSubTitle;
 //图片地址
 @property (weak, nonatomic) IBOutlet UIImageView *contentImageUrl;
 //model

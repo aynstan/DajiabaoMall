@@ -12,6 +12,8 @@
 #import "GetPeopleCell.h"
 #import "XW_AddressManager.h"
 #import "XWPersonModel.h"
+#import "ContactFooter.h"
+#import "ContactHeader.h"
 
 @interface GetPeopleController ()<JSDropDownMenuDataSource,JSDropDownMenuDelegate,UITableViewDelegate,UITableViewDataSource,GetPeopleCell_Delegate>{
     //下拉框数据源
@@ -31,10 +33,18 @@
     UIButton *daoruButton;
     //清除
     UIButton *clearButton;
+    //选中的省
+    NSString *province;
     //选中的城市
     NSString *city;
     //选中的性别
     NSString *sex;
+    //今日剩余获客名额
+    NSInteger LastCount;
+    //获客剩余人数
+    UILabel *show;
+    //上拉更换下一组
+    ContactFooter *mjFooter;
 }
 
 @property (nonatomic,strong)UITableView *myTableView;
@@ -44,6 +54,8 @@
 @property (nonatomic,strong)NSMutableArray *selectedArray;
 
 @property (nonatomic,assign) NSInteger maxSize;
+
+@property (nonatomic,strong) NomessageView *noMessageView;
 
 @end
 
@@ -55,23 +67,66 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [super viewDidLoad];
     self.bgView.hidden=YES;
     [self initUI];
-    city= [[_data1[_currentData1Index] objectForKey:@"data"] objectAtIndex:_currentData1SelectedIndex];
-    sex= _data2[_currentData2Index];
-    NSLog(@"选中的城市=%@,选中的性别=%@",city,sex);
+    province=@"";
+    city= @"";
+    sex= @"";
     [self.myTableView.mj_header beginRefreshing];
 }
+
+//保存数据
+- (void)saveData:(id)response{
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"message"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else if (statusCode==1){
+            [self.selectedArray removeAllObjects];
+            allSlected.selected=NO;
+            [daoruButton setTitle:@"立即获客（0人）" forState:0];
+            [self.dataSourceArray removeAllObjects];
+            
+            NSArray *sourceArray=[XWPersonModel mj_objectArrayWithKeyValuesArray:[[response objectForKey:@"data"] objectForKey:@"contacts"]];
+            LastCount=[[response objectForKey:@"data"] integerForKey:@"count"];
+            
+            if (LastCount<=0) {
+                show.text=@"今日获客名额已用完，明日再来吧！";
+            }else{
+                show.text=[NSString stringWithFormat:@"您今日获客剩余名额为：%ld人,尚未使用",(long)LastCount];
+            }
+            
+            for (XWPersonModel *saveModel in sourceArray) {
+                saveModel.name=[NSString stringWithFormat:@"圈圈保-%@",saveModel.name];
+                [self.dataSourceArray addObject:saveModel];
+            }
+            
+            if (self.dataSourceArray.count>0) {
+                [self addMJ_Footer];
+            }
+            
+            if (self.dataSourceArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myTableView addSubview:self.noMessageView];
+            }
+            
+            [self.myTableView reloadData];
+        }
+    }
+}
+
 
 //界面初始化
 - (void)initUI{
     //头部
     UIView *headView=[[UIView alloc]initWithFrame:CGRectMake(0, 10, SCREEN_WIDTH, 44)];
-    headView.backgroundColor=[UIColor whiteColor];
+    headView.backgroundColor=[UIColor colorWithHexString:@"#ffeed2"];
     [self.view addSubview:headView];
     //获客剩余人数
-    UILabel *show=[[UILabel alloc]initWithFrame:CGRectMake(12, 0, SCREEN_WIDTH, 44)];
-    show.text=@"您的获客剩余名额为：10人";
-    show.font=font13;
-    show.textColor=[UIColor darkGrayColor];
+    show=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH, 44)];
+    show.text=@"您今日获客剩余名额为：--人,尚未使用";
+    show.font=font14;
+    show.textColor=[UIColor colorWithHexString:@"#ff5c3a"];
     [headView addSubview:show];
     //分割线
     UILabel *line=[[UILabel alloc]initWithFrame:CGRectMake(0, headView.y+headView.height, SCREEN_WIDTH, 0.5)];
@@ -82,8 +137,8 @@ static NSString *const tableviewContentCell=@"ContentCell";
     //全选按钮
     allSlected=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-56, 0, 56, 44)];
     [allSlected addTarget:self action:@selector(selectAll:) forControlEvents:UIControlEventTouchUpInside];
-    [allSlected setImage:[UIImage imageNamed:@"unclick"] forState:0];
-    [allSlected setImage:[UIImage imageNamed:@"click"] forState:UIControlStateSelected];
+    [allSlected setImage:[UIImage imageNamed:@"未选中"] forState:0];
+    [allSlected setImage:[UIImage imageNamed:@"选中"] forState:UIControlStateSelected];
     [menu addSubview:allSlected];
     //tableview
     [self.myTableView setHidden:NO];
@@ -97,19 +152,20 @@ static NSString *const tableviewContentCell=@"ContentCell";
     bottomLine.backgroundColor=RGB(231, 231, 232);
     [bottomView addSubview:bottomLine];
     //清楚按钮
-    clearButton=[[UIButton alloc]initWithFrame:CGRectMake(0, 0.5, SCREEN_WIDTH*2/5.0, 49.5)];
+    clearButton=[[UIButton alloc]initWithFrame:CGRectMake(0, 0.5, SCREEN_WIDTH/2.0, 49.5)];
     [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
     [clearButton addTarget:self action:@selector(clearAll:) forControlEvents:UIControlEventTouchUpInside];
-    [clearButton setTitleColor:[UIColor darkGrayColor] forState:0];
-    [clearButton.titleLabel setFont:font14];
+    [clearButton setTitleColor:[UIColor colorWithHexString:@"#383838"] forState:0];
+    [clearButton.titleLabel setFont:font13];
+    [clearButton setBackgroundColor:[UIColor colorWithHexString:@"eae3e1"]];
     [bottomView addSubview:clearButton];
     //导入按钮
-    daoruButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH*2/5.0, 0.5, SCREEN_WIDTH*3/5.0, 49.5)];
+    daoruButton=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH/2.0, 0.5, SCREEN_WIDTH*3/5.0, 49.5)];
     [daoruButton setTitle:@"立即获客（0人）" forState:0];
     [daoruButton addTarget:self action:@selector(daoru:) forControlEvents:UIControlEventTouchUpInside];
-    [daoruButton setTitleColor:[UIColor darkGrayColor] forState:0];
-    [daoruButton.titleLabel setFont:font14];
-    [daoruButton setBackgroundColor:[UIColor orangeColor]];
+    [daoruButton setTitleColor:[UIColor whiteColor] forState:0];
+    [daoruButton.titleLabel setFont:font15];
+    [daoruButton setBackgroundColor:[UIColor colorWithHexString:@"#ff693a"]];
     [bottomView addSubview:daoruButton];
 }
 
@@ -119,7 +175,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     _currentData1Index = 0;
     _currentData1SelectedIndex = 0;
     //省市数据源
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"area" ofType:@"plist"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"city" ofType:@"plist"];
     NSArray  *_arrayRoot = [[NSArray alloc]initWithContentsOfFile:path];
     NSMutableArray *privice =[NSMutableArray array];
     NSMutableArray *shi=[NSMutableArray array];
@@ -158,7 +214,13 @@ static NSString *const tableviewContentCell=@"ContentCell";
         [MBProgressHUD ToastInformation:@"暂无要清除的号码"];
         return;
     }
-    [XW_AddressManager deletePersonArray:self.selectedArray SuccessBlock:^{
+    NSArray *deleteArray= [[JQFMDB shareDatabase] jq_lookupTable:@"contact" dicOrModel:[XWPersonModel class] whereFormat:nil];
+    NSMutableArray *deleteMutableArray=[NSMutableArray array];
+    [deleteMutableArray removeAllObjects];
+    for (XWPersonModel *pm in deleteArray) {
+        [deleteMutableArray addObject:pm];
+    }
+    [XW_AddressManager deletePersonArray:deleteMutableArray SuccessBlock:^{
         [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
         [[JQFMDB shareDatabase] close];
     } FaildBlcok:^{
@@ -171,17 +233,66 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 //导入
 - (void)daoru:(UIButton *)sender{
+    [MobClick event:@"get_my_guest"];
+    if (LastCount<=0) {
+        [MBProgressHUD ToastInformation:@"今日名额已用完！"];
+        return;
+    }
+    if (self.selectedArray.count>LastCount) {
+        [MBProgressHUD ToastInformation:@"所选人数大于今日剩余可获客人数"];
+        return;
+    }
     if (self.selectedArray.count==0) {
         [MBProgressHUD ToastInformation:@"请先选择要导入的号码"];
         return;
     }
+
     [XW_AddressManager addPersonArray:self.selectedArray SuccessBlock:^{
         [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
         [[JQFMDB shareDatabase] close];
+        [self postSaveContacts];
     } FaildBlcok:^{
         [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
         [[JQFMDB shareDatabase] close];
+        [self postSaveContacts];
      }];
+}
+
+//回传服务器
+- (void)postSaveContacts{
+    NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,addcontacts];
+    NSString *postStr;
+    int postCount=0;
+    for (XWPersonModel *personModel in self.selectedArray) {
+        postCount++;
+        if (0==postStr.length) {
+            postStr=[NSString stringWithFormat:@"%@",@(personModel.uId)];
+        }else{
+            postStr=[NSString stringWithFormat:@"%@,%@",postStr,@(personModel.uId)];
+        }
+    }
+    NSDictionary *dic=@{@"contactsid":postStr};
+    [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
+        if (response) {
+            NSInteger statusCode=[response integerForKey:@"code"];
+            if (statusCode==1){
+                LastCount=LastCount-postCount;
+                if (LastCount<=0) {
+                    show.text=@"今日获客名额已用完，明日再来吧！";
+                }else{
+                    show.text=[NSString stringWithFormat:@"您今日获客剩余名额为：%ld人,尚未使用",(long)LastCount];
+                }
+                //清除已导入的
+                [self.dataSourceArray removeObjectsInArray:self.selectedArray];
+                [self.selectedArray removeAllObjects];
+                allSlected.selected=NO;
+                [daoruButton setTitle:@"立即获客（0人）" forState:0];
+                [self.myTableView reloadData];
+            }
+        }
+    } fail:^(NSError *error) {
+        
+    } showHud:NO];
 }
 
 
@@ -265,28 +376,44 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
-    MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
+    ContactHeader *mjHeader=[ContactHeader headerWithRefreshingBlock:^{
+        NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,supercontacts];
+        NSDictionary *dic=@{@"province":province,@"city":city,@"sex":sex,@"district":@""};
+        [XWNetworking getJsonWithUrl:url params:dic success:^(id response) {
+            [self saveData:response];
+            [self endFreshAndLoadMore];
+        } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
 }
 
 #pragma mark 增加addMJ_Footer
 - (void)addMJ_Footer{
-    MJFooter *mjFooter=[MJFooter footerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_footer=mjFooter;
+    if (mjFooter==nil) {
+        mjFooter=[ContactFooter footerWithRefreshingBlock:^{
+            NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,supercontacts];
+            NSDictionary *dic=@{@"province":province,@"city":city,@"sex":sex,@"district":@""};
+            [XWNetworking getJsonWithUrl:url params:dic success:^(id response) {
+                [self saveData:response];
+                [self endFreshAndLoadMore];
+            } fail:^(NSError *error) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                [self endFreshAndLoadMore];
+            } showHud:NO];
+            [self.myTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        }];
+        _myTableView.mj_footer=mjFooter;
+        
+    }
 }
 
 #pragma mark 关闭mjrefreshing
 - (void)endFreshAndLoadMore{
     [_myTableView.mj_header endRefreshing];
-    if (self.dataSourceArray.count>=self.maxSize) {
-        [_myTableView.mj_footer endRefreshingWithNoMoreData];
-    }else{
-        [_myTableView.mj_footer endRefreshing];
-    }
+    [_myTableView.mj_footer endRefreshing];
 }
 
 #pragma mark 懒加载
@@ -305,35 +432,29 @@ static NSString *const tableviewContentCell=@"ContentCell";
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([GetPeopleCell class]) bundle:nil] forCellReuseIdentifier:tableviewContentCell];
         [self.view addSubview:_myTableView];
         
-        _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,menu.y+menu.height).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,50);
+        _myTableView.sd_layout.topSpaceToView(self.view,menu.y+menu.height).bottomSpaceToView(self.view,50).widthIs(SCREEN_WIDTH);
         [self addMJheader];
     }
     return _myTableView;
 }
 
+//缺省页
+- (NomessageView *)noMessageView{
+    if (!_noMessageView) {
+        _noMessageView=[[NomessageView alloc]init];
+        _noMessageView.frame=CGRectMake(0, SCREEN_WIDTH/375.0*90, SCREEN_WIDTH, 180);
+        _noMessageView.buttomTitle=@"暂无相关内容";
+        _noMessageView.clickBlock=^(){
+            
+        };
+    }
+    return _noMessageView;
+}
+
 - (NSMutableArray *)dataSourceArray{
     if (!_dataSourceArray) {
         _dataSourceArray=[NSMutableArray array];
-        
-        XWPersonModel *nanPeople=[[XWPersonModel alloc]init];
-        nanPeople.name=@"小魏";
-        nanPeople.mobilephone=@"18516766820";
-        nanPeople.sex=1;
-        nanPeople.checked=NO;
-        nanPeople.tokenId=[UserDefaults objectForKey:TOKENID];
-        [_dataSourceArray addObject:nanPeople];
-        
-        
-        XWPersonModel *nvPeople=[[XWPersonModel alloc]init];
-        nvPeople.name=@"小娟";
-        nvPeople.mobilephone=@"18516772134";
-        nvPeople.sex=0;
-        nvPeople.checked=NO;
-        nvPeople.tokenId=[UserDefaults objectForKey:TOKENID];
-        [_dataSourceArray addObject:nvPeople];
-        
-     }
-    
+    }
     return _dataSourceArray;
 }
 
@@ -447,9 +568,35 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 #pragma mark 下拉框变化
 - (void)menuDidChange{
-   city= [[_data1[_currentData1Index] objectForKey:@"data"] objectAtIndex:_currentData1SelectedIndex];
-   sex= _data2[_currentData2Index];
-    NSLog(@"选中的城市=%@,选中的性别=%@",city,sex);
+    @try {
+        //选中的省
+        if ([[_data1[_currentData1Index] objectForKey:@"title"] isEqualToString:@"不限"]) {
+           province=@"";
+        }else{
+            province=[_data1[_currentData1Index] objectForKey:@"title"];
+        }
+        //选中的市
+        if ([[[_data1[_currentData1Index] objectForKey:@"data"] objectAtIndex:_currentData1SelectedIndex] isEqualToString:@"全国"]) {
+            city=@"";
+        }else{
+            city= [[_data1[_currentData1Index] objectForKey:@"data"] objectAtIndex:_currentData1SelectedIndex];
+        }
+        //选中的性别
+        NSString *sexStr=_data2[_currentData2Index];
+        if ([sexStr isEqualToString:@"不限"]) {
+            sex=@"";
+        }else if ([sexStr isEqualToString:@"男"]) {
+            sex=@"1";
+        }else if ([sexStr isEqualToString:@"女"]) {
+            sex=@"0";
+        }
+        [self.myTableView.mj_header beginRefreshing];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    NSLog(@"选中的省=%@,选中的城市=%@,选中的性别=%@",province,city,sex);
 }
 
 
@@ -457,6 +604,22 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [super didReceiveMemoryWarning];
 }
 
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"客源"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"客源"];
+}
 
 
 

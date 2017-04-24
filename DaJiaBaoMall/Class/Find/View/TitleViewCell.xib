@@ -15,27 +15,22 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="eeee" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VhD-VE-158">
-                    <rect key="frame" x="54" y="13.5" width="33.5" height="18"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <nil key="textColor"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VhD-VE-158">
+                    <rect key="frame" x="40" y="23" width="0.0" height="0.0"/>
+                    <fontDescription key="fontDescription" name="PingFangSC-Semibold" family="PingFang SC" pointSize="12"/>
+                    <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="会员头像" translatesAutoresizingMaskIntoConstraints="NO" id="n2D-O5-JPz">
-                    <rect key="frame" x="12" y="7.5" width="30" height="30"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="n2D-O5-JPz">
+                    <rect key="frame" x="15" y="15" width="15" height="15"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="30" id="HyX-dr-TXQ"/>
-                        <constraint firstAttribute="width" constant="30" id="r21-O7-VkQ"/>
+                        <constraint firstAttribute="height" constant="15" id="HyX-dr-TXQ"/>
+                        <constraint firstAttribute="width" constant="15" id="r21-O7-VkQ"/>
                     </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="15"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YpA-se-Jt3">
-                    <rect key="frame" x="12" y="44.5" width="308" height="0.5"/>
-                    <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                    <rect key="frame" x="0.0" y="44.5" width="320" height="0.5"/>
+                    <color key="backgroundColor" red="0.86274509803921573" green="0.86274509803921573" blue="0.86274509803921573" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="0.5" id="bk6-Rz-rJv"/>
                     </constraints>
@@ -43,13 +38,15 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hlt-l4-nTh">
-                    <rect key="frame" x="259" y="12.5" width="49" height="20"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <inset key="titleEdgeInsets" minX="-43" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <inset key="imageEdgeInsets" minX="26" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="更多" image="forward">
-                        <color key="titleColor" red="0.23122459649999999" green="0.2306745946" blue="0.26796981689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hlt-l4-nTh">
+                    <rect key="frame" x="205" y="5" width="100" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="100" id="1F0-0O-T9G"/>
+                        <constraint firstAttribute="height" constant="35" id="SXh-I8-lKU"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+                    <state key="normal" title="更多  &gt;">
+                        <color key="titleColor" red="1" green="0.41176470590000003" blue="0.2274509804" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <state key="highlighted" image="forward">
                         <color key="titleColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
@@ -61,14 +58,14 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="Hlt-l4-nTh" secondAttribute="trailing" constant="12" id="30J-hY-cBg"/>
+                <constraint firstAttribute="trailing" secondItem="Hlt-l4-nTh" secondAttribute="trailing" constant="15" id="30J-hY-cBg"/>
                 <constraint firstItem="VhD-VE-158" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="HXH-MG-dBy"/>
                 <constraint firstAttribute="bottom" secondItem="YpA-se-Jt3" secondAttribute="bottom" id="Y5v-gd-l2z"/>
-                <constraint firstItem="n2D-O5-JPz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="Zdk-xf-gFE"/>
+                <constraint firstItem="n2D-O5-JPz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="Zdk-xf-gFE"/>
                 <constraint firstItem="n2D-O5-JPz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="gRu-tM-CqY"/>
                 <constraint firstItem="Hlt-l4-nTh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="mdH-Ae-FAi"/>
-                <constraint firstItem="YpA-se-Jt3" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="s1H-KB-3Ea"/>
-                <constraint firstItem="VhD-VE-158" firstAttribute="leading" secondItem="n2D-O5-JPz" secondAttribute="trailing" constant="12" id="xTc-vD-qV7"/>
+                <constraint firstItem="YpA-se-Jt3" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="s1H-KB-3Ea"/>
+                <constraint firstItem="VhD-VE-158" firstAttribute="leading" secondItem="n2D-O5-JPz" secondAttribute="trailing" constant="10" id="xTc-vD-qV7"/>
                 <constraint firstAttribute="trailing" secondItem="YpA-se-Jt3" secondAttribute="trailing" id="yxC-7O-81s"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -81,7 +78,6 @@
         </view>
     </objects>
     <resources>
-        <image name="forward" width="20" height="20"/>
-        <image name="会员头像" width="80" height="80"/>
+        <image name="forward" width="7" height="12"/>
     </resources>
 </document>

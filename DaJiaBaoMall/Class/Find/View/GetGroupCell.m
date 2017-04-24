@@ -7,11 +7,17 @@
 //
 
 #import "GetGroupCell.h"
+#import "WechatGrop.h"
 
 @implementation GetGroupCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+}
+
+- (void)setModel:(WechatGrop *)model{
+    [self.wechatGropImage sd_setImageWithURL:[NSURL URLWithString:model.images] placeholderImage:[UIImage imageNamed:@"空白图"]];
+    self.wechatName.text=(0==model.name.length?@"":[NSString stringWithFormat:@"群主：%@",model.name]);
 }
 
 @end

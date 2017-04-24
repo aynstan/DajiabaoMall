@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class MeModel;
 
 @interface BaseViewController : UIViewController
 
@@ -14,50 +15,60 @@
  *  自定义导航栏
  */
 @property (nonatomic, strong) UIView * bgView;
+
 /**
  *  统一导航栏初始化
  */
 - (void)initNavBar;
+
 /**
  *  添加返回按钮
  */
 - (void)addLeftButton;
+
 /**
  *  添加左边按钮
  *
  */
 - (void)addLeftBarButton:(NSString *)imageName;
+
 /**
  *  右边按钮（文字）
  *
  *  @param rightStr 按钮标题
  */
 - (void)addRightButton:(NSString *)rightStr;
+
 /**
  *  右边按钮（图片）
  */
 - (void)addRightButtonWithImageName:(NSString *)imageName;
+
 /**
  *  添加导航栏标题
  *
  *  @param title 标题
  */
 - (void)addTitle:(NSString *)title;
+
 /**
  *  右边按钮事件
  *
  *  @param button 右边按钮
  */
 - (void)forward:(UIButton *)button;
+
 /**
  *  返回按钮事件
  */
 - (void)back;
+
 /**
  *  leftBarButton点击事件 ,子类重写
  *
  */
 - (void)leftClick:(UIButton *)btn;
+
 /**
  *  去除字符串空格
  *
@@ -93,10 +104,13 @@
 //设置银行卡号样式
 - (NSString *)BankNum:(NSString *)bankID;
 
-//缺省页
-- (UIView *)noMessageView :(NSString *)str;
-
 //返回银行卡号
 - (NSString *)returnBankName:(NSString*) idCard;
+
+//获取本地保存的用户信息
+- (MeModel *)getMeModelMessage;
+
+//保存用户信息
+- (void)saveMeModelMessage:(id)userData;
 
 @end

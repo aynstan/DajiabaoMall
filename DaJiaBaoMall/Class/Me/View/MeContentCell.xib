@@ -12,24 +12,22 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="MeContentCell">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="44.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我的邀请" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wFd-rC-Hbo">
-                        <rect key="frame" x="12" y="12" width="70" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <rect key="frame" x="49" y="14.5" width="60" height="21"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                        <color key="textColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ngE-gR-hgE">
-                        <rect key="frame" x="94" y="13" width="40" height="19"/>
-                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <inset key="contentEdgeInsets" minX="7" minY="2" maxX="7" maxY="2"/>
-                        <state key="normal" title="HOT">
+                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ngE-gR-hgE">
+                        <rect key="frame" x="114" y="10" width="31" height="22"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <state key="normal" image="hot-">
                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                         <userDefinedRuntimeAttributes>
@@ -39,42 +37,67 @@
                         </userDefinedRuntimeAttributes>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hE9-95-DAd">
-                        <rect key="frame" x="12" y="44" width="308" height="0.0"/>
+                        <rect key="frame" x="49" y="49.5" width="271" height="0.0"/>
                         <color key="backgroundColor" red="0.90588235289999997" green="0.90588235289999997" blue="0.90980392160000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="0.5" id="PY0-ZU-PJh"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <color key="textColor" red="0.86274509803921573" green="0.86274509803921573" blue="0.86274509803921573" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="forward" translatesAutoresizingMaskIntoConstraints="NO" id="PUX-Ye-XLr">
-                        <rect key="frame" x="288" y="12" width="20" height="20"/>
+                        <rect key="frame" x="298" y="19" width="7" height="12"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="20" id="Qrv-7r-qOF"/>
-                            <constraint firstAttribute="width" constant="20" id="vf2-8n-maW"/>
+                            <constraint firstAttribute="height" constant="12" id="Qrv-7r-qOF"/>
+                            <constraint firstAttribute="width" constant="7" id="vf2-8n-maW"/>
                         </constraints>
                     </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hjs-OR-ZgO">
+                        <rect key="frame" x="15" y="13" width="24" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="24" id="EVS-pe-Vtf"/>
+                            <constraint firstAttribute="height" constant="24" id="f1E-xZ-Vm5"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bSW-3k-ZPi">
+                        <rect key="frame" x="283" y="25" width="0.0" height="0.0"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                        <color key="textColor" red="0.34901960780000002" green="0.34901960780000002" blue="0.34901960780000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="ngE-gR-hgE" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="7tY-3l-UNl"/>
-                    <constraint firstItem="wFd-rC-Hbo" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="EtO-AJ-0k6"/>
-                    <constraint firstItem="hE9-95-DAd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="JFX-mR-DrG"/>
+                    <constraint firstItem="ngE-gR-hgE" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-4" id="7tY-3l-UNl"/>
+                    <constraint firstItem="Hjs-OR-ZgO" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="HL1-Fc-XS4"/>
+                    <constraint firstItem="hE9-95-DAd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="49" id="JFX-mR-DrG"/>
+                    <constraint firstItem="bSW-3k-ZPi" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="MXU-GW-Vlq"/>
                     <constraint firstItem="PUX-Ye-XLr" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="POB-kY-AIX"/>
-                    <constraint firstItem="ngE-gR-hgE" firstAttribute="leading" secondItem="wFd-rC-Hbo" secondAttribute="trailing" constant="12" id="mHG-ES-SSI"/>
+                    <constraint firstItem="wFd-rC-Hbo" firstAttribute="leading" secondItem="Hjs-OR-ZgO" secondAttribute="trailing" constant="10" id="dEX-Ti-KiJ"/>
+                    <constraint firstItem="PUX-Ye-XLr" firstAttribute="leading" secondItem="bSW-3k-ZPi" secondAttribute="trailing" constant="15" id="dRv-Vm-TOv"/>
+                    <constraint firstItem="Hjs-OR-ZgO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="dVz-nd-kIc"/>
+                    <constraint firstItem="ngE-gR-hgE" firstAttribute="leading" secondItem="wFd-rC-Hbo" secondAttribute="trailing" constant="5" id="mHG-ES-SSI"/>
                     <constraint firstItem="wFd-rC-Hbo" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="q5Y-29-Y58"/>
                     <constraint firstAttribute="trailing" secondItem="hE9-95-DAd" secondAttribute="trailing" id="qz0-yD-d1c"/>
-                    <constraint firstAttribute="trailing" secondItem="PUX-Ye-XLr" secondAttribute="trailing" constant="12" id="uIB-DX-zak"/>
+                    <constraint firstAttribute="trailing" secondItem="PUX-Ye-XLr" secondAttribute="trailing" constant="15" id="uIB-DX-zak"/>
                     <constraint firstAttribute="bottom" secondItem="hE9-95-DAd" secondAttribute="bottom" id="wQx-0y-a23"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="contentTitle" destination="wFd-rC-Hbo" id="Tc3-w2-iqL"/>
+                <outlet property="forwarImage" destination="PUX-Ye-XLr" id="fCH-7f-VAP"/>
+                <outlet property="hadImage" destination="Hjs-OR-ZgO" id="iPi-8s-Tju"/>
+                <outlet property="heithConstens" destination="Qrv-7r-qOF" id="XIO-zd-OC8"/>
                 <outlet property="isHot" destination="ngE-gR-hgE" id="Bq6-Oc-tk2"/>
+                <outlet property="rightContents" destination="dRv-Vm-TOv" id="Lor-1A-wLO"/>
+                <outlet property="subTile" destination="bSW-3k-ZPi" id="fgb-K6-fBZ"/>
+                <outlet property="widthConstens" destination="vf2-8n-maW" id="Gcw-uZ-smK"/>
             </connections>
+            <point key="canvasLocation" x="65" y="112"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="forward" width="20" height="20"/>
+        <image name="forward" width="7" height="12"/>
+        <image name="hot-" width="31" height="14"/>
     </resources>
 </document>

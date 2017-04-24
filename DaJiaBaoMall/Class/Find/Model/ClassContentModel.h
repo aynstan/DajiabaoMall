@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 
 @interface ClassContentModel : NSObject
-
-@property (nonatomic,copy) NSString *contentTitle;
-
-@property (nonatomic,copy) NSString *subTitle;
-
-@property (nonatomic,copy) NSString *contentImageUrl;
-
-@property (nonatomic,copy) NSString *shareUrl;
+//内容标题
+@property (nonatomic,copy) NSString *title;
+//内容副标题
+@property (nonatomic,copy) NSString *context;
+//内容图片
+@property (nonatomic,copy) NSString *image;
+//内容地址
+@property (nonatomic,copy) NSString *url;
 
 
 

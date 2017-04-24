@@ -8,6 +8,8 @@
 
 #import "AlreadyPayController.h"
 #import "OrderCell.h"
+#import "OrderModel.h"
+#import "BaseWebViewController.h"
 
 @interface AlreadyPayController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -15,7 +17,7 @@
 
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
 
-@property (nonatomic,assign) NSInteger maxSize;
+@property (nonatomic,strong) NomessageView *noMessageView;
 
 @end
 
@@ -29,20 +31,46 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [self.myTableView.mj_header beginRefreshing];
 }
 
+#pragma mark 下拉刷新
+- (void)savelist:(id)response{
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"msg"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else{
+            [self.dataSourceArray removeAllObjects];
+            NSArray<OrderModel *> *orderArray=[OrderModel mj_objectArrayWithKeyValuesArray:response[@"data"]];
+            [self.dataSourceArray addObjectsFromArray:orderArray];
+            if (self.dataSourceArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myTableView addSubview:self.noMessageView];
+            }
+            [self.myTableView reloadData];
+        }
+    }
+}
+
+
+
 #pragma mark uitableview delegate;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     OrderCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    OrderModel *model=self.dataSourceArray[indexPath.section];
+    model.status=2;
+    [cell setModel:model];
     return cell;
 }
 
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 180;
+    return 175;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return self.dataSourceArray.count;
 }
 
 
@@ -53,34 +81,38 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    OrderModel *model=self.dataSourceArray[indexPath.section];
+    if (0<model.url.length) {
+        BaseWebViewController *webView=[[BaseWebViewController alloc]init];
+        webView.urlStr=model.url;
+        webView.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:webView animated:YES];
+    }
 }
 
 
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
+        NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,alreadyPay];
+        [XWNetworking getJsonWithUrl:url params:nil responseCache:^(id responseCache) {
+            if (responseCache) {
+                [self savelist:responseCache];
+            }
+        } success:^(id response) {
+            [self savelist:response];
+            [self endFreshAndLoadMore];
+        } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
-}
-
-#pragma mark 增加addMJ_Footer
-- (void)addMJ_Footer{
-    MJFooter *mjFooter=[MJFooter footerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_footer=mjFooter;
 }
 
 #pragma mark 关闭mjrefreshing
 - (void)endFreshAndLoadMore{
     [_myTableView.mj_header endRefreshing];
-    if (self.dataSourceArray.count>=self.maxSize) {
-        [_myTableView.mj_footer endRefreshingWithNoMoreData];
-    }else{
-        [_myTableView.mj_footer endRefreshing];
-    }
 }
 
 #pragma mark 懒加载
@@ -91,19 +123,31 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         _myTableView.delegate=self;
         _myTableView.dataSource=self;
         _myTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
-        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
-        _myTableView.sectionHeaderHeight=10;
+        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 15)];
+        _myTableView.sectionHeaderHeight=15;
         _myTableView.sectionFooterHeight=0.001;
-        _myTableView.separatorInset=UIEdgeInsetsMake(0, 0, 0, 0);
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([OrderCell class]) bundle:nil] forCellReuseIdentifier:tableviewCellIndentifer];
         [self.view addSubview:_myTableView];
         
-        _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,0).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,0);
+        _myTableView.sd_layout.topSpaceToView(self.view,0).bottomSpaceToView(self.view,0).widthIs(SCREEN_WIDTH);
         [self addMJheader];
     }
     return _myTableView;
+}
+
+//缺省页
+- (NomessageView *)noMessageView{
+    if (!_noMessageView) {
+        _noMessageView=[[NomessageView alloc]init];
+        _noMessageView.frame=CGRectMake(0, SCREEN_WIDTH/375.0*90, SCREEN_WIDTH, 180);
+        _noMessageView.buttomTitle=@"暂无相关内容";
+        _noMessageView.clickBlock=^(){
+            
+        };
+    }
+    return _noMessageView;
 }
 
 - (NSMutableArray *)dataSourceArray{
@@ -117,5 +161,24 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [super didReceiveMemoryWarning];
     
 }
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"我的订单-已支付"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"我的订单-已支付"];
+}
+
+
 
 @end

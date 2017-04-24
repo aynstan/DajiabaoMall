@@ -10,4 +10,8 @@
 
 @implementation ClassModel
 
++ (NSDictionary *)mj_objectClassInArray{
+    return @{@"data":@"ClassContentModel"};
+}
+
 @end

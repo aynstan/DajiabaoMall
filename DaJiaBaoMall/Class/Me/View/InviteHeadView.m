@@ -7,15 +7,14 @@
 //
 
 #import "InviteHeadView.h"
+#import "InviteModel.h"
 
 @implementation InviteHeadView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (void)setModel:(InviteModel *)model{
+    self.peopleCountLabel.text=[NSString stringWithFormat:@"%ld人",(long)model.inviteCount];
+    self.jianshuCountLabel.text=[NSString stringWithFormat:@"%ld件",(long)model.successCount];
+    self.moneyCountLabel.text=[NSString stringWithFormat:@"%.2f元",model.sumprofit];
 }
-*/
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BankListCell.h"
+#import "BankModel.h"
 
 @implementation BankListCell
 
@@ -18,6 +19,13 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
+}
+
+
+- (void)setModel:(BankModel *)model{
+    [self.logo sd_setImageWithURL:[NSURL URLWithString:model.logo] placeholderImage:[UIImage imageNamed:@"空白图"]];
+    self.bankName.text=0==model.name?@"":model.name;
+    self.maxPay.text=[NSString stringWithFormat:@"每日最大限额%.2f万",model.info];
 }
 
 @end

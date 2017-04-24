@@ -10,6 +10,6 @@
 
 @interface BankListController : BaseViewController
 
-@property (nonatomic,copy) void (^BankNameBlock)(NSString *bankName);
+@property (nonatomic,copy) void (^BankNameBlock)(NSString *bankName,NSInteger type);
 
 @end

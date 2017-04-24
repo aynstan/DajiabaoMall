@@ -11,6 +11,8 @@
 #import "BaseWebViewController.h"
 #import "SendProductController.h"
 #import "ChaojiHuoKeController.h"
+#import "OYCountDownManager.h"
+#import "CustomCatogoryModel.h"
 
 @interface GetCustomController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -18,7 +20,7 @@
 
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
 
-@property (nonatomic,assign) NSInteger maxSize;
+@property (nonatomic,strong) NomessageView *noMessageView;
 
 @end
 
@@ -32,45 +34,83 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [self.myTableView.mj_header beginRefreshing];
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [kCountDownManager stop];
+}
+
+//保存数据
+- (void)saveData:(id)response{
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"message"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else if (statusCode==1){
+            [self.dataSourceArray removeAllObjects];
+            NSArray<CustomCatogoryModel *> *catogoryArr=[CustomCatogoryModel mj_objectArrayWithKeyValuesArray:response[@"data"]];
+            [self.dataSourceArray addObjectsFromArray:catogoryArr];
+            if (self.dataSourceArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myTableView addSubview:self.noMessageView];
+            }
+            [self.myTableView reloadData];
+        }
+    }
+}
+
+
 #pragma mark uitableview delegate;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     GetCustomCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
+    CustomCatogoryModel *catogory=self.dataSourceArray[indexPath.section];
+    Huoke *huoke=catogory.data[indexPath.row];
+    [cell setModel:huoke];
     return cell;
 }
 
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 100;
+    return 80;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return self.dataSourceArray.count;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section==0||section==1) {
-        return 1;
-    }
-    return 3;
+    CustomCatogoryModel *catogory=self.dataSourceArray[section];
+    return catogory.data.count;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.section==0) {
+    CustomCatogoryModel *catogory=self.dataSourceArray[indexPath.section];
+    if (catogory.type==1) {
         SendProductController *send=[[SendProductController alloc]init];
         send.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:send animated:YES];
-    }else if (indexPath.section==1){
+    }else if (catogory.type==2){
         ChaojiHuoKeController *huoke=[[ChaojiHuoKeController alloc]init];
         huoke.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:huoke animated:YES];
     }else{
+        if (indexPath.row==0) {
+            [MobClick event:@"article"];
+        }else if (indexPath.row==1){
+            [MobClick event:@"card"];
+        }else if (indexPath.row==2){
+            [MobClick event:@"talk"];
+        }
+        Huoke *huoke=catogory.data[indexPath.row];
         BaseWebViewController *webView=[[BaseWebViewController alloc]init];
-        webView.urlStr=@"http://www.baidu.com";
+        webView.urlStr=huoke.url;
         webView.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:webView animated:YES];
+        
     }
 }
 
@@ -78,27 +118,22 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
+        NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,gethuoke];
+        [XWNetworking getJsonWithUrl:url params:nil success:^(id response) {
+            [self saveData:response];
+            [self endFreshAndLoadMore];
+        } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
 }
 
-#pragma mark 增加addMJ_Footer
-- (void)addMJ_Footer{
-    MJFooter *mjFooter=[MJFooter footerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_footer=mjFooter;
-}
 
 #pragma mark 关闭mjrefreshing
 - (void)endFreshAndLoadMore{
     [_myTableView.mj_header endRefreshing];
-    if (self.dataSourceArray.count>=self.maxSize) {
-        [_myTableView.mj_footer endRefreshingWithNoMoreData];
-    }else{
-        [_myTableView.mj_footer endRefreshing];
-    }
 }
 
 #pragma mark 懒加载
@@ -109,17 +144,29 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         _myTableView.delegate=self;
         _myTableView.dataSource=self;
         _myTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
-        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
+        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 15)];
         _myTableView.sectionHeaderHeight=0.0001;
-        _myTableView.sectionFooterHeight=GetHeight(10);
-        _myTableView.separatorInset=UIEdgeInsetsMake(0, 0, 0, 0);
+        _myTableView.sectionFooterHeight=GetHeight(15);
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([GetCustomCell class]) bundle:nil] forCellReuseIdentifier:tableviewCellIndentifer];
         [self.view addSubview:_myTableView];
-        _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,0).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,0);
+        _myTableView.sd_layout.topSpaceToView(self.view,0).bottomSpaceToView(self.view,0).widthIs(SCREEN_WIDTH);
         [self addMJheader];
     }
     return _myTableView;
+}
+
+//缺省页
+- (NomessageView *)noMessageView{
+    if (!_noMessageView) {
+        _noMessageView=[[NomessageView alloc]init];
+        _noMessageView.frame=CGRectMake(0, SCREEN_WIDTH/375.0*90, SCREEN_WIDTH, 180);
+        _noMessageView.buttomTitle=@"暂无相关内容";
+        _noMessageView.clickBlock=^(){
+            
+        };
+    }
+    return _noMessageView;
 }
 
 - (NSMutableArray *)dataSourceArray{
@@ -133,5 +180,23 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [super didReceiveMemoryWarning];
     
 }
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"展业获客神器"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"展业获客神器"];
+}
+
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BaseViewController.h"
+#import "MeModel.h"
 
 @interface BaseViewController (){
     UILabel *titleLabel;
@@ -20,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor=colorF3F4F5;
+    self.view.backgroundColor=[UIColor colorWithHexString:@"#f6f5f4"];
     [self initNavBar];
 }
 
@@ -107,7 +108,7 @@
     [self.view addSubview:titleLabel];
     
     UIView *line=[[UIView alloc]initWithFrame:CGRectMake(0, 63.5, SCREEN_WIDTH, 0.5)];
-    line.backgroundColor=colorc3c3c3;
+    line.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
     [self.view addSubview:line];
     
 };
@@ -182,7 +183,6 @@
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    
 }
 
 
@@ -242,25 +242,6 @@
         }
     }
     return cardIdStr;
-}
-
-- (UIView *)noMessageView :(NSString *)str{
-    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, GetWidth(101), GetWidth(101)+GetHeight(22)+GetWidth(13))];
-    view.backgroundColor=[UIColor clearColor];
-    
-    UIImageView *imageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"缺省页"]];
-    imageView.frame=CGRectMake(0, 0, GetWidth(101), GetWidth(101));
-    [view addSubview:imageView];
-    
-    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(imageView.frame)+GetHeight(22),GetWidth(101),GetWidth(13))];
-    label.text=str;
-    label.font=font12;
-    label.textAlignment=NSTextAlignmentCenter;
-    label.textColor=color9d9d9d;
-    [view addSubview:label];
-    
-    return view;
-    
 }
 
 
@@ -348,6 +329,22 @@
 }
 
 
+//获取本地保存的用户信息
+- (MeModel *)getMeModelMessage{
+    if ([NSKeyedUnarchiver unarchiveObjectWithData:[UserDefaults objectForKey:ME]]==nil) {
+        MeModel *meModel=[[MeModel alloc]init];
+        NSData  *data=[NSKeyedArchiver archivedDataWithRootObject:meModel];
+        [UserDefaults setValue:data forKey:ME];
+        [UserDefaults synchronize];
+    }
+     return [NSKeyedUnarchiver unarchiveObjectWithData:[UserDefaults valueForKey:ME]];
+};
+
+//保存用户信息
+- (void)saveMeModelMessage:(MeModel *)userData{
+    [UserDefaults setValue:[NSKeyedArchiver archivedDataWithRootObject:userData] forKey:ME];
+    [UserDefaults synchronize];
+};
 
 
 @end

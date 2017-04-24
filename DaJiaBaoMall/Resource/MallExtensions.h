@@ -27,6 +27,7 @@
 #import "numberBOOL.h"
 #import "MJExtension.h"
 #import "JQFMDB.h"
+#import "NomessageView.h"
 
 
 //Category

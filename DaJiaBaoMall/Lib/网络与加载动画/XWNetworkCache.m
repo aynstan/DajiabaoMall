@@ -8,6 +8,7 @@
 
 #import "XWNetworkCache.h"
 #import "YYCache.h"
+#import "MeModel.h"
 
 
 @implementation XWNetworkCache
@@ -57,6 +58,9 @@ static YYCache *_dataCache;
  *  根据url与params返回缓存的key
  */
 + (NSString *)cacheKeyWithURL:(NSString *)URL parameters:(NSDictionary *)parameters{
+    MeModel   *me = [NSKeyedUnarchiver unarchiveObjectWithData:[UserDefaults valueForKey:ME]];
+    NSString  *userPhone=me.mobilephone;
+    URL=[userPhone stringByAppendingString:URL];
     if(!parameters){
         return URL;
     };

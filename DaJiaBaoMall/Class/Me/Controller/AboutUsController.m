@@ -25,7 +25,7 @@
 //大家保介绍
 - (IBAction)jieshao:(id)sender {
     BaseWebViewController *webView=[[BaseWebViewController alloc]init];
-    webView.urlStr=@"http://www.baidu.com";
+    webView.urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,aboutus];
     webView.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:webView animated:YES];
 }
@@ -33,7 +33,7 @@
 //交流反馈
 - (IBAction)fankui:(id)sender {
     BaseWebViewController *webView=[[BaseWebViewController alloc]init];
-    webView.urlStr=@"http://www.baidu.com";
+    webView.urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,aboutalk];
     webView.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:webView animated:YES];
 }
@@ -43,6 +43,23 @@
     
 }
 
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"关于我们"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"关于我们"];
+}
 
 
 @end

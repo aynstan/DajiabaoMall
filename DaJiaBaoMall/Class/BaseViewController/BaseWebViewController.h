@@ -15,8 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *closeButton;
 //进度条
 @property (weak, nonatomic) IBOutlet UIProgressView *jinduProgress;
-//标题
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @property (nonatomic,copy) NSString *urlStr;
 

@@ -184,7 +184,7 @@
      UITextField *imageCodeField=[self viewWithTag:1001];
      PCLockLabel  *warmingLabel=[self viewWithTag:1000];
      NSString *urlStr=[NSString stringWithFormat:@"%@/verify/sms",codeUrl];
-    NSDictionary *dic=@{@"code":[imageCodeField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],@"phone":self.yanzhengtupianphoneNumber,@"smsCode":@"FXXT_API_LOGIN",@"sid":self.postSid};
+    NSDictionary *dic=@{@"code":[imageCodeField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],@"phone":self.yanzhengtupianphoneNumber,@"smsCode":@"TYHJ_CODE",@"sid":self.postSid};
     [XWNetworking postJsonWithUrl:urlStr params:dic success:^(id response) {
         NSDictionary *dic=response;
         NSInteger code=[dic integerForKey:@"code"];
@@ -197,13 +197,13 @@
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSString *errorMsg=[dic objectForKey:@"message"];
-                [MBProgressHUD showError:errorMsg];
+                [MBProgressHUD ToastInformation:errorMsg];
                 [imageCodeField resignFirstResponder];
                 self.cancelBlock();
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD showError:@"系统繁忙"];
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
     } showHud:NO];
 }
 

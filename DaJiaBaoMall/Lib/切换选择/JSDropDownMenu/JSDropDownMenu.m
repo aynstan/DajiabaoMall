@@ -295,14 +295,14 @@
         _leftTableView = [[UITableView alloc] initWithFrame:CGRectMake(origin.x, self.frame.origin.y + self.frame.size.height, 0, 0) style:UITableViewStyleGrouped];
         _leftTableView.rowHeight = 38;
         _leftTableView.separatorColor =  RGB(231, 231, 232);;
-        _leftTableView.tintColor = [UIColor redColor];
+        _leftTableView.tintColor = [UIColor colorWithHexString:@"#ff693a"];
         _leftTableView.dataSource = self;
         _leftTableView.delegate = self;
         
         _rightTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.size.width, self.frame.origin.y + self.frame.size.height, 0, 0) style:UITableViewStyleGrouped];
         _rightTableView.rowHeight = 38;
         _rightTableView.separatorColor = RGB(231, 231, 232);
-        _rightTableView.tintColor = [UIColor redColor];
+        _rightTableView.tintColor =[UIColor colorWithHexString:@"#ff693a"];
         _rightTableView.dataSource = self;
         _rightTableView.delegate = self;
         
@@ -820,9 +820,11 @@
         if ([cell.textLabel.text isEqualToString:[(CATextLayer *)[_titles objectAtIndex:_currentSelectedMenudIndex] string]]) {
             [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             cell.backgroundColor=[UIColor whiteColor];
+            cell.textLabel.textColor=_leftTableView.tintColor;
         } else{
             [cell setAccessoryType:UITableViewCellAccessoryNone];
             cell.backgroundColor = BackColor;
+            cell.textLabel.textColor=_textColor;
         }
     } else{
         if (!_hadSelected && _leftSelectedRow == indexPath.row) {
@@ -830,12 +832,14 @@
             BOOL haveRightTableView = [_dataSource haveRightTableViewInColumn:_currentSelectedMenudIndex];
             if(!haveRightTableView){
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                cell.textLabel.textColor=_leftTableView.tintColor;
             }else{
                 [cell setAccessoryType:UITableViewCellAccessoryNone];
             }
         } else{
             cell.backgroundColor = [UIColor whiteColor];
             [cell setAccessoryType:UITableViewCellAccessoryNone];
+            cell.textLabel.textColor=_textColor;
         }
     }
     return cell;

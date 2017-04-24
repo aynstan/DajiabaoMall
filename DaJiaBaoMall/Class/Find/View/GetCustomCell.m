@@ -7,18 +7,23 @@
 //
 
 #import "GetCustomCell.h"
+#import "Huoke.h"
 
 @implementation GetCustomCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+}
 
-    // Configure the view for the selected state
+- (void)setModel:(Huoke *)model{
+    [self.headImage sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"空白图"]];
+    self.contentTitle.text=(0==model.title.length?@"":model.title);
+    self.contentSubTitle.text=(0==model.info.length?@"":model.info);
 }
 
 @end

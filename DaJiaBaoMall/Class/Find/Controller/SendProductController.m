@@ -9,8 +9,11 @@
 #import "SendProductController.h"
 #import "SendUsedController.h"
 #import "SendUnUsedController.h"
+#import "SendProductShow.h"
 
 @interface SendProductController ()
+
+@property (nonatomic,strong) JCAlertView *alertView;
 
 @end
 
@@ -25,13 +28,14 @@
         self.menuHeight=GetHeight(44);
         self.progressHeight=GetHeight(4);
         self.titleSizeNormal=GetWidth(16);
-        self.titleSizeSelected=GetWidth(18);
-        self.progressViewCornerRadius=GetHeight(2);
+        self.titleSizeSelected=GetWidth(16);
+        self.progressViewCornerRadius=GetHeight(0);
         self.progressViewIsNaughty=YES;
-        self.titleColorSelected=color0196FF;
+        self.titleColorSelected=[UIColor colorWithHexString:@"#282828"];
+        self.titleColorNormal=[UIColor colorWithHexString:@"#282828"];
         self.itemsWidths=@[@(SCREEN_WIDTH/2.0),@(SCREEN_WIDTH/2.0)];
-        //self.automaticallyCalculatesItemWidths=YES;
-        self.progressViewWidths=@[@(GetWidth(50)),@(GetWidth(50))];
+        self.progressColor=[UIColor colorWithHexString:@"#ff693a"];
+        self.progressViewWidths=@[@(GetWidth(70)),@(GetWidth(70))];
         self.viewFrame=CGRectMake(0,64, SCREEN_WIDTH, SCREEN_HEIGHT-64);
     }
     return self;
@@ -47,8 +51,11 @@
     [super viewDidLoad];
     [self addTitle:@"赠客产品"];
     [self addLeftButton];
-    [self addRightButtonWithImageName:@"会员头像"];
+    [self addRightButtonWithImageName:@"question"];
+    [self addTitle:@""];
 }
+
+
 
 //添加标题
 - (void)addTitle:(NSString *)title{
@@ -60,9 +67,13 @@
     titleLabel.text=title;
     [self.view addSubview:titleLabel];
     
-    UIView *Bottonline=[[UIView alloc]initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 0.5)];
-    Bottonline.backgroundColor=colorc3c3c3;
+    UIView *Bottonline=[[UIView alloc]initWithFrame:CGRectMake(0, 63.5, SCREEN_WIDTH, 0.5)];
+    Bottonline.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
     [self.view addSubview:Bottonline];
+    
+    UIView *Bottonline2=[[UIView alloc]initWithFrame:CGRectMake(0, 64+43.5, SCREEN_WIDTH, 0.5)];
+    Bottonline2.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
+    [self.view addSubview:Bottonline2];
 };
 
 //返回按钮
@@ -82,17 +93,45 @@
     [self.view addSubview:RightButton];
 }
 
+//说明
+- (void)forward:(UIButton *)sender{
+    WeakSelf;
+    SendProductShow *showView=[[[NSBundle mainBundle]loadNibNamed:@"SendProductShow" owner:nil options:nil]lastObject];;
+    showView.frame=CGRectMake(0, 0, 280, 280*820/620.0);
+    showView.imageView.image=[UIImage imageNamed:@"弹窗bg"];
+    showView.mytextView.text=@"如何获得赠险？\n新人注册成功后，即可获得价值300元的赠险。\n\n如何使用已经获得的赠险？\n可自用也可以赠送客户，通过微信分享产品给客户，同一款产品可分享给多人，但仅有一个投保名额，投保成功即表示产品已使用。使用过的产品不再支持赠送或投保。\n\n产品是否有期限？\n产品的有效期为7天，自获得日开始计时，过期将自动作废，请在有效期内使用。\n\n如何查询客户的投保信息？\n您可在赠品>已使用页面查看客户投保信息详情。";
+    showView.closeBlock=^(){
+        [weakSelf.alertView dismissWithCompletion:nil];
+    };
+    self.alertView=[[JCAlertView alloc]initWithCustomView:showView dismissWhenTouchedBackground:NO];
+    [self.alertView show];
+}
+
 //返回
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)forward:(UIButton *)sender{
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"赠客产品_未使用"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"赠客产品_未使用"];
 }
 
 

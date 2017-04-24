@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class AllProductContentCell;
+@class ProductContentModel;
 
 @protocol AllProductContentCell_Delegate <NSObject>
 
@@ -30,5 +31,9 @@
 @property (nonatomic,assign) NSInteger butomTag;
 
 @property (nonatomic,assign) id<AllProductContentCell_Delegate> delegate;
+
+@property (nonatomic,strong) ProductContentModel *model;
+
+@property (nonatomic,assign) BOOL closeEye;
 
 @end

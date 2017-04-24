@@ -76,9 +76,11 @@
      [VersionManager checkVerSion];
     
     //创建本地数据库和通讯录表
-    BOOL success=[[JQFMDB shareDatabase] jq_createTable:@"contact" dicOrModel:[XWPersonModel class]];
-    if (success) {
-        [[JQFMDB shareDatabase] close];
+    if (![[JQFMDB shareDatabase] jq_isExistTable:@"contact"]) {
+        BOOL success=[[JQFMDB shareDatabase] jq_createTable:@"contact" dicOrModel:[XWPersonModel class]];
+        if (success) {
+            [[JQFMDB shareDatabase] close];
+        }
     }
     
     //窗口设置
@@ -204,7 +206,7 @@
                                        }
                                     buttonTitle:nil
                                  buttonCallback:nil
-                                     atPosition:TSMessageNotificationPositionTop
+                                     atPosition:TSMessageNotificationPositionNavBarOverlay
                            canBeDismissedByUser:YES];
 }
 
@@ -226,6 +228,8 @@
                     conversationVC.hidesBottomBarWhenPushed=YES;
                     [pushViewController.navigationController pushViewController:conversationVC animated:YES];
                 }
+                [UserDefaults setBool:YES forKey:@"haveUnredMsg"];
+                [UserDefaults synchronize];
             }
         }else {
             NSLog(@"该远程推送不包含来自融云的推送服务");
@@ -240,32 +244,12 @@
             if (0==content.length) {
                 return;
             }
-            if ([type isEqualToString:@"money"]){
-                //资产
-                BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-                webvView.urlStr=content;
-                webvView.hidesBottomBarWhenPushed=YES;
-                [pushViewController.navigationController pushViewController:webvView animated:YES];
-            }else if ([type isEqualToString:@"invite"]){
-                //邀请
-                BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-                webvView.urlStr=content;
-                webvView.hidesBottomBarWhenPushed=YES;
-                [pushViewController.navigationController pushViewController:webvView animated:YES];
-            }else if ([type isEqualToString:@"system"]){
-                //系统
-                BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-                webvView.urlStr=content;
-                webvView.hidesBottomBarWhenPushed=YES;
-                [pushViewController.navigationController pushViewController:webvView animated:YES];
-            }else{
-                //其它
-                BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-                webvView.urlStr=content;
-                webvView.hidesBottomBarWhenPushed=YES;
-                [pushViewController.navigationController pushViewController:webvView animated:YES];
-            }
+            BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
+            webvView.urlStr=content;
+            webvView.hidesBottomBarWhenPushed=YES;
+            [pushViewController.navigationController pushViewController:webvView animated:YES];
         }
+        [NotiCenter postNotificationName:@"haveMessage" object:nil];
     }
 }
 
@@ -289,7 +273,8 @@
     if (pushViewController!=nil) {
         if ([shortcutItem.type isEqualToString:@"com.dajiabao.frend"]){
             BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-            webvView.urlStr=@"http://www.baidu.com";
+            NSString *urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,@"/sns/wap/friend/index"];
+            webvView.urlStr=urlStr;
             webvView.hidesBottomBarWhenPushed=YES;
             [pushViewController.navigationController pushViewController:webvView animated:NO];
         }else if ([shortcutItem.type isEqualToString:@"com.dajiabao.myMoney"]){
@@ -300,7 +285,8 @@
             }
         }else if ([shortcutItem.type isEqualToString:@"com.dajiabao.invite"]){
             BaseWebViewController *webvView=[[BaseWebViewController alloc]init];
-            webvView.urlStr=@"http://www.sogou.com";
+            NSString *urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,inviteFrend];
+            webvView.urlStr=urlStr;
             webvView.hidesBottomBarWhenPushed=YES;
             [pushViewController.navigationController pushViewController:webvView animated:NO];
         }
@@ -309,7 +295,6 @@
 }
 
 //应用的根控制器
-//获取当前的uiviewController
 - (UIViewController *)getTopViewController:(UIViewController *)viewController {
     if ([UserDefaults boolForKey:@"firstLanch"]==NO) {
         //在启动页面

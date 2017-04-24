@@ -9,6 +9,8 @@
 #import "CurrentInviteController.h"
 #import "InviteCell.h"
 #import "InviteHeadView.h"
+#import "InviteModel.h"
+#import "BaseWebViewController.h"
 
 @interface CurrentInviteController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -16,7 +18,9 @@
 
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
 
-@property (nonatomic,assign) NSInteger maxSize;
+@property (nonatomic,strong) InviteModel *inviteModel;
+
+@property (nonatomic,strong) NomessageView *noMessageView;
 
 @end
 
@@ -30,32 +34,64 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [self.myTableView.mj_header beginRefreshing];
 }
 
+#pragma mark 下拉刷新
+- (void)savelist:(id)response{
+    NSLog(@"%@",response);
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"msg"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else{
+            [self.dataSourceArray removeAllObjects];
+            self.inviteModel=[InviteModel mj_objectWithKeyValues:response[@"data"]];
+            [self.dataSourceArray addObjectsFromArray:self.inviteModel.data];
+            if (self.dataSourceArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myTableView addSubview:self.noMessageView];
+            }
+            [self.myTableView reloadData];
+        }
+    }
+}
+
 #pragma mark uitableview delegate;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     InviteCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
+    InvitePersonModel *personModel=self.inviteModel.data[indexPath.row];
+    [cell setModel:personModel];
     return cell;
 }
 
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *clearView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
-    clearView.backgroundColor=[UIColor clearColor];
+    if (self.dataSourceArray.count>0){
+        UIView *clearView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 70)];
+        clearView.backgroundColor=[UIColor clearColor];
+        InviteHeadView *headView=[[[NSBundle mainBundle]loadNibNamed:@"InviteHeadView" owner:nil options:nil]lastObject];
+        headView.frame=CGRectMake(0, 0, SCREEN_WIDTH, 70);
+        [headView setModel:self.inviteModel];
+        [clearView addSubview:headView];
+        return clearView;
+    }else{
+        return [UIView new];
+    }
     
-    InviteHeadView *headView=[[[NSBundle mainBundle]loadNibNamed:@"InviteHeadView" owner:nil options:nil]lastObject];
-    headView.frame=CGRectMake(0, 0, SCREEN_WIDTH, 70);
-    [clearView addSubview:headView];
-    
-    return clearView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 80;
+    if (self.dataSourceArray.count>0) {
+        return 70;
+    }else{
+        return 0.001;
+    }
 }
 
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 70;
+    return 50;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -64,40 +100,45 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 3;
+    return self.inviteModel.data.count;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+    InvitePersonModel *personModel=self.inviteModel.data[indexPath.row];
+    if (0<personModel.url.length) {
+        BaseWebViewController *webView=[[BaseWebViewController alloc]init];
+        webView.urlStr=personModel.url;
+        webView.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:webView animated:YES];
+    }
 }
 
 
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
+         NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,monthInvite];
+         [XWNetworking getJsonWithUrl:url params:nil responseCache:^(id responseCache) {
+          if (responseCache) {
+                [self savelist:responseCache];
+            }
+         } success:^(id response) {
+            [self savelist:response];
+            [self endFreshAndLoadMore];
+         } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
 }
 
-#pragma mark 增加addMJ_Footer
-- (void)addMJ_Footer{
-    MJFooter *mjFooter=[MJFooter footerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
-    }];
-    _myTableView.mj_footer=mjFooter;
-}
 
 #pragma mark 关闭mjrefreshing
 - (void)endFreshAndLoadMore{
     [_myTableView.mj_header endRefreshing];
-    if (self.dataSourceArray.count>=self.maxSize) {
-        [_myTableView.mj_footer endRefreshingWithNoMoreData];
-    }else{
-        [_myTableView.mj_footer endRefreshing];
-    }
 }
 
 #pragma mark 懒加载
@@ -108,19 +149,30 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         _myTableView.delegate=self;
         _myTableView.dataSource=self;
         _myTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
-        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
-        
+        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 15)];
         _myTableView.sectionFooterHeight=0.001;
-        _myTableView.separatorInset=UIEdgeInsetsMake(0, 0, 0, 0);
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([InviteCell class]) bundle:nil] forCellReuseIdentifier:tableviewCellIndentifer];
         [self.view addSubview:_myTableView];
         
-        _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,0).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,0);
+        _myTableView.sd_layout.topSpaceToView(self.view,0).bottomSpaceToView(self.view,0).widthIs(SCREEN_WIDTH);
         [self addMJheader];
     }
     return _myTableView;
+}
+
+//缺省页
+- (NomessageView *)noMessageView{
+    if (!_noMessageView) {
+        _noMessageView=[[NomessageView alloc]init];
+        _noMessageView.frame=CGRectMake(0, SCREEN_WIDTH/375.0*90, SCREEN_WIDTH, 180);
+        _noMessageView.buttomTitle=@"暂无相关内容";
+        _noMessageView.clickBlock=^(){
+            
+        };
+    }
+    return _noMessageView;
 }
 
 - (NSMutableArray *)dataSourceArray{
@@ -135,6 +187,23 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     
 }
 
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"我的邀请-当月邀请"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"我的邀请-当月邀请"];
+}
 
 
 

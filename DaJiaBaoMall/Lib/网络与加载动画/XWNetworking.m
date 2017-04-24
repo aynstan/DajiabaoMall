@@ -11,8 +11,11 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import "MBProgressHUD+ADD.h"
 #import "XWNetworkCache.h"
-
-
+#import "BaseNavigationController.h"
+#import "LoginController.h"
+#import "MeModel.h"
+#import "UMessage.h"
+#import <RongIMKit/RongIMKit.h>
 
 @implementation XWNetworking
 
@@ -24,11 +27,11 @@ static NSMutableArray *tasks;
 + (void)initialize{
     manager = [AFHTTPSessionManager manager];
     // 设置请求的超时时间
-    manager.requestSerializer.timeoutInterval = 20.f;
+    manager.requestSerializer.timeoutInterval = 15.f;
     manager.requestSerializer.stringEncoding = NSUTF8StringEncoding;
-    [manager.requestSerializer setValue:VERSION forHTTPHeaderField:@"CL-app-v"];
-    [manager.requestSerializer setValue:zhengShiCeShi forHTTPHeaderField:@"CL-app-m"];
-    [manager.requestSerializer setValue:MYUUID forHTTPHeaderField:@"uuid"];
+    [manager.requestSerializer setValue:VERSION forHTTPHeaderField:@"app_Version"];
+    [manager.requestSerializer setValue:zhengShiCeShi forHTTPHeaderField:@"app_Status"];
+    [manager.requestSerializer setValue:MYUUID forHTTPHeaderField:@"app_UUID"];
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
 }
 
@@ -222,8 +225,6 @@ static NSMutableArray *tasks;
     
     [manager.requestSerializer setValue:[UserDefaults objectForKey:TOKENID] forHTTPHeaderField:TOKENID];
     
-    [manager.requestSerializer setValue:[[UserDefaults objectForKey:USERID] stringValue] forHTTPHeaderField:USERID];
-    
     if (responseType==JSON) {
         
         manager.responseSerializer = [AFJSONResponseSerializer serializer];//设置返回数据为json
@@ -250,30 +251,32 @@ static NSMutableArray *tasks;
                 [MBProgressHUD hiddenHUD];
             }
             
-            if ([responseObject isKindOfClass:[NSDictionary class]]&&[[responseObject allKeys] containsObject:@"code"]) {
+            if (responseType==JSON) {
                 
-                NSInteger statusCode=[responseObject integerForKey:@"code"];
-                
-                if (statusCode==100) {
-                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,userLogout]]) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]&&[[responseObject allKeys] containsObject:@"code"]) {
+                    
+                    NSInteger statusCode=[responseObject integerForKey:@"code"];
+                    
+                    if (statusCode==250) {
+                        
                         //会话过期，需要重连
                         [self connectToLogin];
-                    }
-                }else{
-                    
-                    success ? success(responseObject) : nil;
-                    
-                    if (statusCode==1) {
                         
-                        //对数据进行异步缓存
-                        responseCache ? [XWNetworkCache setHttpCache:responseObject URL:url parameters:params] : nil;
+                    }else{
+                        
+                        success ? success(responseObject) : nil;
+                        
+                        if (statusCode==1) {
+                            
+                            //对数据进行异步缓存
+                            responseCache ? [XWNetworkCache setHttpCache:responseObject URL:url parameters:params] : nil;
+                        }
+                        
                     }
                     
-                 }
+                }
                 
-            }
-            
-            if (responseType==DATA) {
+            }else if (responseType==DATA) {
                 
                 success ? success(responseObject) : nil;
                 
@@ -310,28 +313,30 @@ static NSMutableArray *tasks;
                 
             }
             
-            if ([responseObject isKindOfClass:[NSDictionary class]]&&[[responseObject allKeys] containsObject:@"code"]) {
+            if (responseType==JSON) {
                 
-                NSInteger statusCode=[responseObject integerForKey:@"code"];
-                
-                if (statusCode==100) {
-                    if (![url isEqualToString:[NSString stringWithFormat:@"%@%@",APPHOSTURL,userLogout]]) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]&&[[responseObject allKeys] containsObject:@"code"]) {
+                    
+                    NSInteger statusCode=[responseObject integerForKey:@"code"];
+                    
+                    if (statusCode==250) {
+                        
                         //会话过期，需要重连
                         [self connectToLogin];
+                        
+                    }else{
+                        
+                        success ? success(responseObject) : nil;
+                        
+                        if (statusCode==1) {
+                            //对数据进行异步缓存
+                            responseCache ? [XWNetworkCache setHttpCache:responseObject URL:url parameters:params] : nil;
+                        }
                     }
-                }else{
                     
-                    success ? success(responseObject) : nil;
-                    
-                    if (statusCode==1) {
-                        //对数据进行异步缓存
-                        responseCache ? [XWNetworkCache setHttpCache:responseObject URL:url parameters:params] : nil;
-                    }
                 }
                 
-            }
-            
-            if (responseType==DATA) {
+            }else if (responseType==DATA) {
                 
                 success ? success(responseObject) : nil;
                 
@@ -367,7 +372,29 @@ static NSMutableArray *tasks;
  *  会话过期重新登录
  */
 + (void)connectToLogin{
+    if (nil!=[UserDefaults objectForKey:TOKENID]) {
+        [self toastMessage:@"系统检测到您已在其它设备上登录，本地已下线，请重新登录"];
+    }
+    MeModel *me=[NSKeyedUnarchiver unarchiveObjectWithData:[UserDefaults valueForKey:ME]];;
+    [UMessage removeAlias:me.mobilephone type:@"com.dajiabao.qqb" response:nil];
+    [[RCIM sharedRCIM] logout];
+    [UserDefaults setObject:nil forKey:TOKENID];
+    [UserDefaults setValue:nil forKey:ME];
+    [UserDefaults synchronize];
+    KeyWindow.rootViewController=[[BaseNavigationController alloc]initWithRootViewController:[[LoginController alloc]init]];
+    
+    
 }
+
+//提示
++ (void)toastMessage:(NSString *)toastMessage{
+    UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"提醒" message:toastMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:cancel];
+    [KeyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+}
+
 
 /**
  *  上传文件
@@ -408,8 +435,6 @@ static NSMutableArray *tasks;
     
     [manager.requestSerializer setValue:[UserDefaults objectForKey:TOKENID] forHTTPHeaderField:TOKENID];
     
-    [manager.requestSerializer setValue:[[UserDefaults objectForKey:USERID] stringValue] forHTTPHeaderField:USERID];
-    
     manager.responseSerializer = [AFJSONResponseSerializer serializer];//设置返回数据为json
     
     manager.responseSerializer.acceptableContentTypes =  [NSSet setWithArray:@[@"application/json", @"text/html",@"text/json",@"text/plain",@"text/javascript",@"text/xml",@"image/*"]];
@@ -447,7 +472,7 @@ static NSMutableArray *tasks;
             
             NSInteger statusCode=[responseObject integerForKey:@"code"];
             
-            if (statusCode==100) {
+            if (statusCode==250) {
                 
                 //会话过期，需要重连
                 [self connectToLogin];
@@ -526,8 +551,6 @@ static NSMutableArray *tasks;
     
     [manager.requestSerializer setValue:[UserDefaults objectForKey:TOKENID] forHTTPHeaderField:TOKENID];
     
-    [manager.requestSerializer setValue:[[UserDefaults objectForKey:USERID] stringValue] forHTTPHeaderField:USERID];
-    
     manager.responseSerializer = [AFJSONResponseSerializer serializer];//设置返回数据为json
     
     manager.responseSerializer.acceptableContentTypes =  [NSSet setWithArray:@[@"application/json", @"text/html",@"text/json",@"text/plain",@"text/javascript",@"text/xml",@"image/*"]];
@@ -573,7 +596,7 @@ static NSMutableArray *tasks;
             
             NSInteger statusCode=[responseObject integerForKey:@"code"];
             
-            if (statusCode==100) {
+            if (statusCode==250) {
                 
                 //会话过期，需要重连
                 [self connectToLogin];
@@ -633,8 +656,6 @@ static NSMutableArray *tasks;
     NSURLRequest *downloadRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     
     [manager.requestSerializer setValue:[UserDefaults objectForKey:TOKENID] forHTTPHeaderField:TOKENID];
-    
-    [manager.requestSerializer setValue:[[UserDefaults objectForKey:USERID] stringValue] forHTTPHeaderField:USERID];
     
     manager.responseSerializer = [AFJSONResponseSerializer serializer];//设置返回数据为json
     

@@ -7,6 +7,7 @@
 //
 
 #import "MeHeadCell.h"
+#import "MeModel.h"
 
 @implementation MeHeadCell
 
@@ -16,6 +17,11 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+}
+
+- (void)setModel:(MeModel *)model{
+    [self.headImageView sd_setImageWithURL:[NSURL URLWithString:model.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
+    self.phoneOrWeChat.text=0==model.mobilephone.length?@"":model.mobilephone;
 }
 
 //更改我的信息

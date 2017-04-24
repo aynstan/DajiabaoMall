@@ -20,46 +20,52 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="会员头像" translatesAutoresizingMaskIntoConstraints="NO" id="gz7-Hq-CRP">
-                    <rect key="frame" x="137.5" y="110" width="100" height="100"/>
-                    <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_me" translatesAutoresizingMaskIntoConstraints="NO" id="gz7-Hq-CRP">
+                    <rect key="frame" x="147.5" y="104" width="80" height="80"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="100" id="CFF-jc-7u3"/>
-                        <constraint firstAttribute="height" constant="100" id="JOe-3z-nnG"/>
+                        <constraint firstAttribute="width" constant="80" id="CFF-jc-7u3"/>
+                        <constraint firstAttribute="height" constant="80" id="JOe-3z-nnG"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                             <real key="value" value="10"/>
                         </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zdf-nV-80T">
-                    <rect key="frame" x="0.0" y="256" width="375" height="100"/>
+                    <rect key="frame" x="0.0" y="224" width="375" height="100"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7t0-Dj-s4v">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="3Ap-0s-2JZ"/>
                             </constraints>
-                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                            <inset key="titleEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            <state key="normal" title="大家保介绍">
-                                <color key="titleColor" red="0.23122459649999999" green="0.2306745946" blue="0.26796981689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                            <inset key="titleEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <state key="normal" title="圈圈保介绍">
+                                <color key="titleColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="jieshao:" destination="-1" eventType="touchUpInside" id="J2G-Oa-tH4"/>
                             </connections>
                         </button>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="forward" translatesAutoresizingMaskIntoConstraints="NO" id="w2w-eJ-IEx">
-                            <rect key="frame" x="343" y="15" width="20" height="20"/>
+                            <rect key="frame" x="353" y="19" width="7" height="12"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="20" id="QpZ-3d-c9F"/>
-                                <constraint firstAttribute="width" constant="20" id="nnW-lG-iv4"/>
+                                <constraint firstAttribute="height" constant="12" id="QpZ-3d-c9F"/>
+                                <constraint firstAttribute="width" constant="7" id="nnW-lG-iv4"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="enF-gg-wJ4">
-                            <rect key="frame" x="12" y="50" width="363" height="0.5"/>
-                            <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                            <rect key="frame" x="15" y="50" width="360" height="0.5"/>
+                            <color key="backgroundColor" red="0.86274509803921573" green="0.86274509803921573" blue="0.86274509803921573" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="0.5" id="iKP-jy-9Y3"/>
                             </constraints>
@@ -69,31 +75,32 @@
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AIq-nP-FNQ">
                             <rect key="frame" x="0.0" y="50.5" width="375" height="49.5"/>
-                            <inset key="titleEdgeInsets" minX="12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
+                            <inset key="titleEdgeInsets" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <state key="normal" title="交流反馈">
-                                <color key="titleColor" red="0.23122459649999999" green="0.2306745946" blue="0.26796981689999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="titleColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="fankui:" destination="-1" eventType="touchUpInside" id="oSb-4o-jPe"/>
                             </connections>
                         </button>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="forward" translatesAutoresizingMaskIntoConstraints="NO" id="O2J-6h-LQX">
-                            <rect key="frame" x="343" y="65" width="20" height="20"/>
+                            <rect key="frame" x="353" y="69" width="7" height="12"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="20" id="WKe-Vw-cz8"/>
-                                <constraint firstAttribute="width" constant="20" id="t4F-8b-3f3"/>
+                                <constraint firstAttribute="height" constant="12" id="WKe-Vw-cz8"/>
+                                <constraint firstAttribute="width" constant="7" id="t4F-8b-3f3"/>
                             </constraints>
                         </imageView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="bottom" secondItem="AIq-nP-FNQ" secondAttribute="bottom" id="2hn-6i-GQh"/>
-                        <constraint firstItem="enF-gg-wJ4" firstAttribute="leading" secondItem="Zdf-nV-80T" secondAttribute="leading" constant="12" id="5bT-pb-4LI"/>
+                        <constraint firstItem="enF-gg-wJ4" firstAttribute="leading" secondItem="Zdf-nV-80T" secondAttribute="leading" constant="15" id="5bT-pb-4LI"/>
                         <constraint firstItem="enF-gg-wJ4" firstAttribute="top" secondItem="7t0-Dj-s4v" secondAttribute="bottom" id="8rb-Mf-LRM"/>
-                        <constraint firstAttribute="bottom" secondItem="O2J-6h-LQX" secondAttribute="bottom" constant="15" id="9Ru-rl-b8f"/>
-                        <constraint firstItem="w2w-eJ-IEx" firstAttribute="top" secondItem="Zdf-nV-80T" secondAttribute="top" constant="15" id="JVR-AB-Jak"/>
+                        <constraint firstAttribute="bottom" secondItem="O2J-6h-LQX" secondAttribute="bottom" constant="19" id="9Ru-rl-b8f"/>
+                        <constraint firstItem="w2w-eJ-IEx" firstAttribute="top" secondItem="Zdf-nV-80T" secondAttribute="top" constant="19" id="JVR-AB-Jak"/>
                         <constraint firstItem="AIq-nP-FNQ" firstAttribute="leading" secondItem="Zdf-nV-80T" secondAttribute="leading" id="MYB-nB-Zij"/>
-                        <constraint firstAttribute="trailing" secondItem="O2J-6h-LQX" secondAttribute="trailing" constant="12" id="PpK-ao-UHE"/>
+                        <constraint firstAttribute="trailing" secondItem="O2J-6h-LQX" secondAttribute="trailing" constant="15" id="PpK-ao-UHE"/>
                         <constraint firstAttribute="height" constant="100" id="bpB-p3-cPT"/>
                         <constraint firstAttribute="trailing" secondItem="enF-gg-wJ4" secondAttribute="trailing" id="c9R-bN-Vm3"/>
                         <constraint firstItem="AIq-nP-FNQ" firstAttribute="top" secondItem="enF-gg-wJ4" secondAttribute="bottom" id="cdd-Ch-fEi"/>
@@ -101,11 +108,11 @@
                         <constraint firstItem="7t0-Dj-s4v" firstAttribute="top" secondItem="Zdf-nV-80T" secondAttribute="top" id="gCX-7r-fTb"/>
                         <constraint firstItem="7t0-Dj-s4v" firstAttribute="leading" secondItem="Zdf-nV-80T" secondAttribute="leading" id="iuj-2x-Hfh"/>
                         <constraint firstAttribute="trailing" secondItem="7t0-Dj-s4v" secondAttribute="trailing" id="mAt-Dd-1sh"/>
-                        <constraint firstAttribute="trailing" secondItem="w2w-eJ-IEx" secondAttribute="trailing" constant="12" id="t3X-sW-RLK"/>
+                        <constraint firstAttribute="trailing" secondItem="w2w-eJ-IEx" secondAttribute="trailing" constant="15" id="t3X-sW-RLK"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="v1.0.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="krI-OX-oNa">
-                    <rect key="frame" x="167.5" y="614" width="39.5" height="18"/>
+                    <rect key="frame" x="167.5" y="609" width="39.5" height="18"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
@@ -113,19 +120,19 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="gz7-Hq-CRP" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="110" id="dxf-59-Apd"/>
+                <constraint firstItem="gz7-Hq-CRP" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="104" id="dxf-59-Apd"/>
                 <constraint firstItem="krI-OX-oNa" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="eda-Ru-NZF"/>
                 <constraint firstItem="gz7-Hq-CRP" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="hHX-kq-npp"/>
-                <constraint firstAttribute="bottom" secondItem="krI-OX-oNa" secondAttribute="bottom" constant="35" id="hL3-YG-vQi"/>
+                <constraint firstAttribute="bottom" secondItem="krI-OX-oNa" secondAttribute="bottom" constant="40" id="hL3-YG-vQi"/>
                 <constraint firstAttribute="trailing" secondItem="Zdf-nV-80T" secondAttribute="trailing" id="nzP-XK-adC"/>
                 <constraint firstItem="Zdf-nV-80T" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="tR2-p5-22U"/>
-                <constraint firstItem="Zdf-nV-80T" firstAttribute="top" secondItem="gz7-Hq-CRP" secondAttribute="bottom" constant="46" id="yLE-R3-UWz"/>
+                <constraint firstItem="Zdf-nV-80T" firstAttribute="top" secondItem="gz7-Hq-CRP" secondAttribute="bottom" constant="40" id="yLE-R3-UWz"/>
             </constraints>
             <point key="canvasLocation" x="25.5" y="51.5"/>
         </view>
     </objects>
     <resources>
-        <image name="forward" width="20" height="20"/>
-        <image name="会员头像" width="80" height="80"/>
+        <image name="forward" width="7" height="12"/>
+        <image name="logo_me" width="511" height="512"/>
     </resources>
 </document>

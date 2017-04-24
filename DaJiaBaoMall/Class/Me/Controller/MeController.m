@@ -17,7 +17,8 @@
 #import "SetController.h"
 #import "MyOrderListController.h"
 #import "MyInViteListController.h"
-#define HEADHEIGHT  SCREEN_WIDTH*445/750.0
+#import "MeModel.h"
+#define HEADHEIGHT  SCREEN_WIDTH*318/750.0
 
 @interface MeController ()<UITableViewDelegate,UITableViewDataSource,MeHeadCell_Delegate>{
     UIView *headView;
@@ -30,6 +31,8 @@
 
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
 
+@property (nonatomic,strong) MeModel *meModel;
+
 @end
 
 static NSString *const tableViewCellIndentifer=@"HeadCell";
@@ -41,14 +44,43 @@ static NSString *const tableviewContentCell=@"ContentCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.bgView.hidden=YES;
+    self.meModel=[self getMeModelMessage];
     [self.myTableView.mj_header beginRefreshing];
     [self addHeadView];
+    //添加更改头像通知
+    [NotiCenter addObserver:self selector:@selector(changeHeadImage) name:@"changeUserInfor" object:nil];
 }
+
+//保存数据
+- (void)saveData:(id)response{
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"message"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else if (statusCode==1){
+            WeakSelf;
+            weakSelf.meModel=[MeModel mj_objectWithKeyValues:[response objectForKey:@"data"]];
+            [weakSelf saveMeModelMessage:self.meModel];
+            [headImage sd_setImageWithURL:[NSURL URLWithString:self.meModel.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
+            [weakSelf.myTableView reloadData];
+        }
+    }
+}
+
+//更改头像
+- (void)changeHeadImage{
+    WeakSelf;
+    weakSelf.meModel=[self getMeModelMessage];
+    [headImage sd_setImageWithURL:[NSURL URLWithString:weakSelf.meModel.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
+    [weakSelf.myTableView reloadData];
+}
+
 
 #pragma mark 自定义导航栏
 - (void)addHeadView{
     headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-    headView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"渐变"]];
+    headView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg"]];
     headView.alpha=0;
     headView.hidden=YES;
     [self.view addSubview:headView];
@@ -65,11 +97,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
     headImage.layer.cornerRadius=15;
     headImage.clipsToBounds=YES;
     headImage.hidden=YES;
-    headImage.image=[UIImage imageNamed:@"会员头像"];
+    [headImage sd_setImageWithURL:[NSURL URLWithString:self.meModel.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
     [self.view addSubview:headImage];
     
     setButtom=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-44-12, 20, 44, 44)];
-    [setButtom setImage:[UIImage imageNamed:@"安全设置"] forState:0];
+    [setButtom setImage:[UIImage imageNamed:@"设置"] forState:0];
     [setButtom addTarget:self action:@selector(toSet) forControlEvents:UIControlEventTouchUpInside];
     setButtom.hidden=NO;
     [self.view addSubview:setButtom];
@@ -103,21 +135,31 @@ static NSString *const tableviewContentCell=@"ContentCell";
         MeHeadCell *cell=[tableView dequeueReusableCellWithIdentifier:tableViewCellIndentifer];
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
         cell.delegate=self;
+        [cell setModel:self.meModel];
         return cell;
     }else{
         MeContentCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewContentCell];
         NSArray *arr=self.dataSourceArray[indexPath.section];
         cell.contentTitle.text=arr[indexPath.row][0];
         cell.isHot.hidden=![arr[indexPath.row][1] integerValue];
+        cell.hadImage.image=[UIImage imageNamed:arr[indexPath.row][2]];
+        if (indexPath.row==2) {
+            cell.subTile.text=self.meModel.weixinauth==false?@"未绑定":@"已绑定";
+            cell.forwarImage.hidden=(self.meModel.weixinauth==false?NO:YES);
+            cell.widthConstens.constant=(self.meModel.weixinauth==false?7:0);
+            cell.heithConstens.constant=(self.meModel.weixinauth==false?12:0);
+            cell.rightContents.constant=(self.meModel.weixinauth==false?15:0);
+            cell.selectionStyle=self.meModel.weixinauth==false?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone;
+        }
         return cell;
     }
 }
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section==0) {
-        return HEADHEIGHT+50;
+        return HEADHEIGHT+90;
     }
-    return 45;
+    return 50;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -129,6 +171,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     return arr.count;
 }
 
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section==1) {
@@ -139,27 +182,28 @@ static NSString *const tableviewContentCell=@"ContentCell";
             [self.navigationController pushViewController:invite animated:YES];
         }else if (indexPath.row==1){
             //邀请好友一起赚
-            NSString *urlStr=@"http://www.sina.com";
+            NSString *urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,inviteFrend];
+            //NSString *urlStr=@"http://sns.wap.yulin.dev.dajiabao.com/sns/wap/zengxian/success?memberId=71";
             BaseWebViewController *webView=[[BaseWebViewController alloc]init];
             webView.urlStr=urlStr;
             webView.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:webView animated:YES];
-        }
-    }else if(indexPath.section==2){
-        //绑定微信
-        [self bangdingWechat];
-    }else if (indexPath.section==self.dataSourceArray.count-1) {
-        if (indexPath.row==1) {
+        }else if (indexPath.row==2){
+            //绑定微信
+            if (self.meModel.weixinauth==false) {
+                [self bangdingWechat];
+            }
+        }else if (indexPath.row==3){
+            //常见问题
+            BaseWebViewController *webView=[[BaseWebViewController alloc]init];
+            webView.urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,qa];;
+            webView.hidesBottomBarWhenPushed=YES;
+            [self.navigationController pushViewController:webView animated:YES];
+        }else if (indexPath.row==4){
             //关于我们
             AboutUsController *about=[[AboutUsController alloc]init];
             about.hidesBottomBarWhenPushed=YES;
             [self.navigationController pushViewController:about animated:YES];
-        }else if (indexPath.row==0){
-            //常见问题
-            BaseWebViewController *webView=[[BaseWebViewController alloc]init];
-            webView.urlStr=@"http://www.baidu.com";
-            webView.hidesBottomBarWhenPushed=YES;
-            [self.navigationController pushViewController:webView animated:YES];
         }
     }
 }
@@ -171,32 +215,48 @@ static NSString *const tableviewContentCell=@"ContentCell";
             if (error) {
             } else {
                 UMSocialUserInfoResponse *resp = result;
-                // 授权信息
-                NSLog(@"Wechat uid: %@", resp.uid);
-                NSLog(@"Wechat openid: %@", resp.openid);
-                NSLog(@"Wechat accessToken: %@", resp.accessToken);
-                NSLog(@"Wechat refreshToken: %@", resp.refreshToken);
-                NSLog(@"Wechat expiration: %@", resp.expiration);
-                // 用户信息
-                NSLog(@"Wechat name: %@", resp.name);
-                NSLog(@"Wechat iconurl: %@", resp.iconurl);
-                NSLog(@"Wechat gender: %@", resp.gender);
-                // 第三方平台SDK源数据
-                NSLog(@"Wechat originalResponse: %@", resp.originalResponse);
+                NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,wechatInLine];
+                NSDictionary *dic=@{@"wxToken":resp.uid,@"wxName":resp.name,@"wximage":resp.iconurl};
+                [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
+                    if (response) {
+                        WeakSelf;
+                        NSInteger statusCode=[response integerForKey:@"code"];
+                        if (statusCode==0) {
+                            NSString *errorMsg=[response stringForKey:@"message"];
+                            [MBProgressHUD ToastInformation:errorMsg];
+                        }else{
+                            [weakSelf saveData:response];
+                        }
+                    }
+                } fail:^(NSError *error) {
+                    [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                } showHud:YES];
             }
         }];
     }else{
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"提醒" message:@"您尚未安装微信客户端，暂无法绑定微信" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:cancelAction];
-        [self presentViewController:alertController animated:YES completion:nil];
+        WeakSelf;
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
     }
 }
 
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
-        [self endFreshAndLoadMore];
+        NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,personinfo];
+        [XWNetworking getJsonWithUrl:url params:nil responseCache:^(id responseCache) {
+            if (responseCache) {
+                [self saveData:responseCache];
+            }
+        } success:^(id response) {
+            [self saveData:response];
+            [self endFreshAndLoadMore];
+        } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
 }
@@ -217,8 +277,6 @@ static NSString *const tableviewContentCell=@"ContentCell";
         _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
         _myTableView.tableFooterView=[self tableViewFootView];
         _myTableView.sectionHeaderHeight=0.0001;
-        _myTableView.sectionFooterHeight=GetHeight(10);
-        //_myTableView.separatorColor=colorc3c3c3;
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([MeHeadCell class]) bundle:nil] forCellReuseIdentifier:tableViewCellIndentifer];
@@ -240,6 +298,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [self.navigationController pushViewController:myMessage animated:YES];
 };
 
+//我的订单
 - (void)clickIncell:(MeHeadCell *)cell onTheMyOrderButtom:(UIButton *)sender{
     MyOrderListController *list=[[MyOrderListController alloc]init];
     list.hidesBottomBarWhenPushed=YES;
@@ -257,13 +316,19 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 #pragma mark 客服电话
 - (UIView *)tableViewFootView{
-    UIView *view=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH,70*SCREEN_HEIGHT/667.0)];
+    
+    UIView *view=[[UIView alloc]init];
+    if (SCREEN_WIDTH>375) {
+        view.frame=CGRectMake(0, 0, SCREEN_WIDTH,115*SCREEN_HEIGHT/667.0);
+    }else{
+        view.frame=CGRectMake(0, 0, SCREEN_WIDTH,80*SCREEN_HEIGHT/667.0);
+    }
     view.backgroundColor=[UIColor clearColor];
     
     UIButton *phoneButtom=[[UIButton alloc]init];
     [phoneButtom setTitle:@"客服电话：400-111-4567" forState:0];
-    [phoneButtom setTitleColor:[UIColor darkGrayColor] forState:0];
-    [phoneButtom.titleLabel setFont:font13];
+    [phoneButtom setTitleColor:[UIColor colorWithHexString:@"9d9d9d"] forState:0];
+    [phoneButtom.titleLabel setFont:font12];
     [phoneButtom addTarget:self action:@selector(toCall:) forControlEvents:UIControlEventTouchUpInside];
     phoneButtom.backgroundColor=[UIColor clearColor];
     [view addSubview:phoneButtom];
@@ -302,7 +367,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
 #pragma mark 数据源
 - (NSMutableArray *)dataSourceArray{
     if (!_dataSourceArray) {
-        _dataSourceArray=[[NSMutableArray alloc] initWithObjects:@[@"头部"],@[@[@"我的邀请",@"0"],@[@"邀请朋友一起赚",@"1"]],@[@[@"绑定微信",@"0"]],@[@[@"常见问题",@"0"],@[@"关于我们",@"0"]], nil];
+        _dataSourceArray=[[NSMutableArray alloc] initWithObjects:@[@"头部"],@[@[@"我的邀请",@"0",@"我的邀请"],@[@"邀请朋友一起赚",@"1",@"邀请朋友一起赚"],@[@"绑定微信",@"0",@"绑定"],@[@"常见问题",@"0",@"常见问题"],@[@"关于我们",@"0",@"关于我们"]], nil];
     }
     return _dataSourceArray;
 }
@@ -312,10 +377,31 @@ static NSString *const tableviewContentCell=@"ContentCell";
     return UIStatusBarStyleLightContent;
 }
 
+//移除通知
+- (void)dealloc{
+    [NotiCenter removeObserver:self];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
+}
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"我的"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"我的"];
 }
 
 

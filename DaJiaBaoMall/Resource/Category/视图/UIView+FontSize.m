@@ -12,7 +12,7 @@
 #define IgnoreTagKey @"IgnoreTagKey"
 #define FontScaleKey @"FontScaleKey"
 
-#define ScrenScale [UIScreen mainScreen].bounds.size.width/375.0
+#define ScrenScale 1
 
 @implementation UIView (FontSize)
 /**

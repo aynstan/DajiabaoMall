@@ -8,6 +8,7 @@
 
 #import "KehuContentCell.h"
 
+
 @implementation KehuContentCell
 
 - (void)awakeFromNib {
@@ -17,5 +18,6 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
+
 
 @end

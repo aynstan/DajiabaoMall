@@ -17,12 +17,10 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    self.isHot.backgroundColor=[UIColor redColor];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated{
     [super setHighlighted:highlighted animated:animated];
-    self.isHot.backgroundColor=[UIColor redColor];
 }
 
 @end

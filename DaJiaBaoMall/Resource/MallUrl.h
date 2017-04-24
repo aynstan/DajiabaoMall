@@ -10,72 +10,141 @@
 #define MallUrl_h
 
 //友盟分享
-//#define weChatId       @"wx2c74c71b775936b6"
-//#define weChatScreat   @"42764bb57c18a5433216b442c84e8203"
-//#define UMENG_APPKEY   @"58ae8a1da325114bae000a00"
+#define UMENG_APPKEY   @"58f4304bf29d98036d000d61"
 #define weChatId       @"wxd9706b31477efec2"
 #define weChatScreat   @"8ab75970786ba5e7f1dcd01ba1dd15b5"
-#define UMENG_APPKEY   @"579aefcae0f55a521a0023d9"
 
 //友盟推送
-#define UMPUSHKEY      @"58e5fdc5734be4435d000a7a"
-#define UMPUSHSECRET   @"japgoq1ip1divf6mseygdx8etqvjxi8t"
+#define UMPUSHKEY      @"58f4304bf29d98036d000d61"
+#define UMPUSHSECRET   @"rjt33enby6zaozqyh9jy4fbwlwenqhdi"
 
-//融云开发环境key
-//#define RongCloudKey @"y745wfm844fzv"
-#define RongCloudKey @"p5tvi9dstt904"
-//融云开发环境用户token
-//#define RongCloudToken @"lRmkKn4hPDzGKSept93QTbIFm5tCVT9LJTH/M4vL6853YdiioQ208zy+xZECYE5rizsDS2sRdnYEOVWQmtPGMF3bjJSZoTbv"
-#define RongCloudToken @"nY3NUl8JkhnFA0DK7t/Dzc8VYFh0UeudjOOJBB2leU+mw0qZO4+Dm0FmCuUf0pdo+nRpQHhLKj8="
+//融云正式环境key
+#define RongCloudKey   @"pkfcgjstp9ca8"
+//融云正式环境用户token
+#define RongCloudToken @"HcykLZuBncpigMqb3vShSzxy+6s0Y7/owVrYZxi99xEbaCBh3M0SLl5aYawhMlQfQ8WR4sVP++ZusJMqLRuJ/NYzxuGhGZa9"
 //融云客服id
-//#define RongCloudServiceID  @"KEFU147063862929099"
-#define RongCloudServiceID  @"KEFU147079483448315"
+#define RongCloudServiceID  @"KEFU149260495739963"
 
 //短信服务器地址
-#define codeUrl        @"http://mapi.dajiabao.com"
-//徐浩服务器地址
-//#define   APPHOSTURL   @"http://www.xuhao.dev.dajiabao.com"
-//#define   APPHOSTURL     @"http://callback.yulin.dev.dajiabao.com"
+#define codeUrl        @"http://mapi.pre.dajiabao.com"
+//#define codeUrl        @"http://mapi.dajiabao.com"
+//玉林服务器地址
+#define   APPHOSTURL     @"http://sns.api.yulin.dev.dajiabao.com/"
 //测试环境
 //#define     APPHOSTURL   @"http://test02.dev.dajiabao.com"
 //pre服务器地址
 //#define     APPHOSTURL     @"http://fx.pre.weijiabaoxian.com"
 //正式服务器地址
-#define     APPHOSTURL     @"http://api.fx.weijiabaoxian.com"
+//#define     APPHOSTURL     @"http://api.fx.weijiabaoxian.com"
 //登录
-#define LOGINURL       @"/login"
-//获取全部产品
-#define ProductList    @"/getProductList"
-//主页更新信息
-#define updateUserInfo @"/updateUserInfo"
-//我的收益
-#define getProfit      @"/getProfit"
-//我的交易
-#define getBusiness    @"/getBusiness"
+#define LOGINURL       @"/v1/member/login"
+//自动登录
+#define AUTOLOGINURL   @"/v1/member/autologin"
+//微信登录
+#define wechatLogin    @"/v1/member/wxlogin"
+//客户界面
+#define customer       @"/v1/customer/index"
+//获取免费赠险
+#define freeinsurance  @"/v1/freeinsurance/get"
+//查询已使用的赠险
+#define freeinsurance_getused    @"/v1/freeinsurance/getused"
+//按需获取通讯录
+#define supercontacts        @"/v1/supercontacts/get"
+//添加到通讯录
+#define supercontacts_add    @"/v1/supercontacts/add"
+//获取微信群
+#define getAccountList       @"/v1/supercontacts/getwxgroup"
+//个人信息详情
+#define  personinfo          @"/v1/person/personinfo"
+//修改 昵称 公司 职务
+#define  changeMeInfo        @"/v1/person/alter"
+//真实姓名认证
+#define  person_auth         @"/v1/person/auth"
+//获客
+#define supercontacts        @"/v1/supercontacts/get"
+//添加通讯录
+#define addcontacts          @"/v1/supercontacts/add"
+//主页
+#define getconfig            @"/v1/index/getconfig"
+//所有产品
+#define getAllProduct        @"/v1/index/getproduct"
+//获客
+#define gethuoke             @"/v1/index/gethuoke"
+//课程
+#define getClass             @"/v1/index/getprolesson"
+//获取消息
+#define getAllMessage        @"/v1/message/all"
+//改变消息状态
+#define changeMessageStatus      @"/v1/message/all"
+//推广收入
+#define moneyIn       @"/v1/money/in"
+//提现支出
+#define moneyOut      @"/v1/money/out"
+//待支付
+#define loadPay       @"/v1/order/query/1"
+//已支付
+#define alreadyPay    @"/v1/order/query/2"
+//已退保
+#define rebackPay     @"/v1/order/query/3"
+//微信是否已绑定手机号
+#define checkWechatAndPhone   @"v1/member/prewxlogin"
+//应用内绑定微信
+#define wechatInLine          @"/v1/member/tiewx"
+//实名认证信息
+#define shimingrenzhengMsg    @"/v1/money/authinfo"
+//银行卡列表
+#define bankList         @"/v1/money/bankinfo"
+//绑定银行卡
+#define bangdingBank     @"/v1/money/tiebank"
+//重新获取容云链接口令
+#define reConnectRcToken @"/v1/member/gettoken"
+//上传头像
+#define uploadTouxiang   @"/v1/member/image"
+//上传个人二维码
+#define uploadErweiMa    @"/v1/member/wxqrimg"
+//上传群二维码
+#define uploadWXGroup    @"/v1/supercontacts/wxqun"
+//获取群资料
+#define  getWechatGroup  @"/v1/supercontacts/getwxgroup"
+//全部邀请
+#define  inviteAll       @"/v1/invite/getall"
+//当月邀请
+#define  monthInvite     @"/v1/invite/getmonth"
+//更新融云token
+#define refreshRcToken   @"/v1/member/uptoken"
+
+
+//h5地址域名
+#define   H5HOSTURL   @"http://sns.wap.yulin.dev.dajiabao.com"
+//关于我们
+#define aboutus        @"/sns/wap/aboutus"
+//交流反馈
+#define aboutalk       @"/sns/wap/aboutalk"
+//邀请好友一起赚钱
+#define inviteFrend    @"/sns/wap/invite/invite"
+//邀请好友一起赚钱
+#define  qa            @"/sns/wap/qa/index"
+//如何获取微信二维码
+#define  getqrcode     @"/getqrcode"
+//资产
+#define  zichanUrl        @"/message/list?type=10"
+//邀请
+#define  inviteUrl        @"/message/list?type=20"
+//客户
+#define  kehuUrl          @"/message/list?type=30"
+//系统
+#define  systemUrl        @"/message/list?type=40"
 //提现
-#define withDraw       @"/withDraw"
-//账户记录
-#define getAccountList @"/getAccountList"
-//账户记录
-#define getEmployeeList @"/getEmployeeList"
-//创建店员
-#define addEmployee     @"/addEmployee"
-//推荐注册
-#define registerPage    @"/registerPage"
-//银行卡绑定（更换）
-#define bindBankCard    @"/bindBankCard"
-//退出登录
-#define userLogout          @"/logout"
-//检查更新
-#define updateVersion   @"/updateVersion"
+#define  tixianUrl        @"/sns/wap/account/index"
+
 
 
 //本地保存的user
-#define USER           @"User"
+#define ME           @"Me"
 //本地保存的user
-#define TOKENID        @"TokenId"
+#define TOKENID      @"sid"
 //本地保存的userid
-#define USERID         @"UserId"
+#define RCTOEKN      @"RcToken"
 
 
 

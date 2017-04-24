@@ -61,7 +61,7 @@
     
     hud.offset=CGPointMake(hud.offset.x, hud.offset.y-offSety);
     
-    hud.bezelView.backgroundColor=RGBA(0, 0, 0, 0.6);
+    hud.bezelView.backgroundColor=[[UIColor blackColor] colorWithAlphaComponent:0.8];
     
     hud.userInteractionEnabled = NO;
     

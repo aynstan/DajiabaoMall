@@ -10,4 +10,6 @@
 
 @interface ShouyeContentHeadCell : UIView
 
+@property (weak, nonatomic) IBOutlet UIButton *titleButtom;
+
 @end

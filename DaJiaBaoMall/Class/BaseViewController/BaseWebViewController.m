@@ -9,16 +9,18 @@
 #import "BaseWebViewController.h"
 #import <WebKit/WebKit.h>
 #import "WXApi.h"
+#import "SDPhotoBrowser.h"
+#import <Photos/Photos.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "MyMessageControllerViewController.h"
 #define changeTotalTime 2.0
 #define changeTotalCount 8.0
 
-@interface BaseWebViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler>
-
+@interface BaseWebViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler,SDPhotoBrowserDelegate>
+//浏览器
 @property (nonatomic,strong) WKWebView *myWebView;
-
-@property (nonatomic,assign) BOOL netWorkError;
-
-@property (nonatomic,strong) NSURL *currentUrl;
+//图片数组
+@property (nonatomic,strong) NSArray   *imageArray;
 
 @end
 
@@ -26,7 +28,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //电池栏
+    UIView *topView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 20)];
+    topView.backgroundColor=[UIColor whiteColor];
+    [self.view addSubview:topView];
+    //关闭自动下滑
+    self.automaticallyAdjustsScrollViewInsets=NO;
     [UIView setIgnoreTags:@[@1000]];
+    //初始化图片数组
+    self.imageArray=[NSArray array];
     //创建一个webview的配置项
     WKWebViewConfiguration *config=[[WKWebViewConfiguration alloc]init];
     // 设置偏好设置
@@ -39,28 +49,38 @@
     config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     //打开h5上的video
     config.allowsInlineMediaPlayback=YES;
-#define js调用oc方法
+    #define js调用oc方法
     //注入js对象(js通过window.webkit.messageHandlers.JSMethod.postMessage({body: '传数据'});
-    //config.userContentController = [[WKUserContentController alloc]init];
-    //[config.userContentController addScriptMessageHandler:self name:@"JSMethod"];
-    
-    self.myWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 64.5, SCREEN_WIDTH, SCREEN_HEIGHT-64.5)  configuration:config];
+    config.userContentController = [[WKUserContentController alloc]init];
+    //分享
+    [config.userContentController addScriptMessageHandler:self name:@"share"];
+    //保存字符串图片
+    [config.userContentController addScriptMessageHandler:self name:@"saveimg"];
+    //查看图片
+    [config.userContentController addScriptMessageHandler:self name:@"lookImages"];
+    //保存url图片
+    [config.userContentController addScriptMessageHandler:self name:@"saveImageWithUrl"];
+    //提现成功
+    [config.userContentController addScriptMessageHandler:self name:@"drawMoney"];
+    //编辑名片
+    [config.userContentController addScriptMessageHandler:self name:@"editCard"];
+    //mywebview
+    self.myWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 20, SCREEN_WIDTH, SCREEN_HEIGHT-20)  configuration:config];
     self.myWebView.navigationDelegate = self;
     self.myWebView.UIDelegate=self;
     self.myWebView.allowsBackForwardNavigationGestures = YES;
-    
+    if (0<self.urlStr.length) {
+        if ([self.urlStr containsString:@"?"]) {
+            self.urlStr=[self.urlStr stringByAppendingString:[NSString stringWithFormat:@"&sid=%@",[UserDefaults objectForKey:TOKENID]]];
+        }else{
+            self.urlStr=[self.urlStr stringByAppendingString:[NSString stringWithFormat:@"?sid=%@",[UserDefaults objectForKey:TOKENID]]];
+        }
+    }
+    NSLog(@"请求地址：%@",self.urlStr);
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.urlStr]];
-    
-//    NSLog(@"%@",[NSURL URLWithString:self.urlStr]);
-    
-    
     [self.myWebView loadRequest:request];
-    
     [self addObservers];
-    
-    [self.view addSubview:self.myWebView];
-    [self.view bringSubviewToFront:self.myWebView];
-
+    [self.view insertSubview:self.myWebView atIndex:0];
 }
 
 
@@ -79,7 +99,6 @@
         }
     }else if ([keyPath isEqualToString:@"title"]) {
         if (object == self.myWebView) {
-            self.titleLabel.text = self.myWebView.title;
         }else{
             [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         }
@@ -98,7 +117,7 @@
     }else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-#define oc调用js方法
+    #define oc调用js方法
     // 加载完成
 //    if (!self.myWebView.loading) {
 //        // 手动调用JS代码
@@ -139,24 +158,22 @@
 #pragma mark WKNavigationDelegate
 #pragma mark 页面开始加载
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-    self.currentUrl=webView.URL;
-    self.netWorkError=NO;
+    
 }
 
 #pragma mark 内容返回
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
-    self.netWorkError=NO;
+    
 };
 
 #pragma mark 加载完成
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    self.netWorkError=NO;
     
 }
 
 #pragma mark 加载失败
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    self.netWorkError=YES;
+    
 }
 
 #pragma mark WKUIDelegate
@@ -199,13 +216,175 @@
 }
 
 #pragma mark WKScriptMessageHandler
-#define js调用oc方法
+#pragma mark js调用oc方法,参数只支持NSNumber, NSString, NSDate, NSArray,NSDictionary, and   NSNull类型
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
-//    if ([message.name isEqualToString:@"JSMethod"]) {
-//        // 打印所传过来的参数，只支持NSNumber, NSString, NSDate, NSArray,NSDictionary, and NSNull类型
-//        NSLog(@"%@", message.body);
-//    }
+    //分享
+    if ([message.name isEqualToString:@"share"]) {
+        if ([message.body isKindOfClass:[NSDictionary class]]&&[[message.body allKeys]containsObject:@"body"]) {
+            NSDictionary *contentDic=[message.body objectForKey:@"body"];
+            if ([[contentDic allKeys] containsObject:@"shareType"]) {
+                [self shareImageUrl:contentDic[@"shareImageUrl"] shareUrl:contentDic[@"shareUrl"] title:contentDic[@"shareTile"] subTitle:contentDic[@"subTitle"] shareType:[contentDic[@"shareType"] integerValue]];
+            }
+        }//保存图片
+    }else if ([message.name isEqualToString:@"saveimg"]) {
+        if ([message.body isKindOfClass:[NSDictionary class]]&&[[message.body allKeys]containsObject:@"body"]) {
+            if ([[message.body objectForKey:@"body"] isKindOfClass:[NSString class]]) {
+                NSString *contentStr=[message.body objectForKey:@"body"];
+                [self saveImage:contentStr];
+            }
+        }//显示图片
+    }else if ([message.name isEqualToString:@"lookImages"]) {
+        NSLog(@"%@",message.body);
+        if ([message.body isKindOfClass:[NSDictionary class]]&&[[message.body allKeys]containsObject:@"body"]) {
+            if ([[message.body objectForKey:@"body"] isKindOfClass:[NSArray class]]) {
+                self.imageArray=[message.body objectForKey:@"body"];
+                [self showImage:self.imageArray andSlectIndex:0];
+            }
+        }//保存图片url
+    }else if ([message.name isEqualToString:@"saveImageWithUrl"]){
+        if ([message.body isKindOfClass:[NSDictionary class]]&&[[message.body allKeys]containsObject:@"body"]) {
+            if ([[message.body objectForKey:@"body"] isKindOfClass:[NSString class]]) {
+                NSString *urlStr=[message.body objectForKey:@"body"];
+                [self saveImageWithUrl:urlStr];
+            }
+        }
+    }else if ([message.name isEqualToString:@"drawMoney"]){
+        [self.navigationController popViewControllerAnimated:YES];
+        //编辑名片
+    }else if ([message.name isEqualToString:@"editCard"]){
+        MyMessageControllerViewController *message=[[MyMessageControllerViewController alloc]init];
+        message.hidesBottomBarWhenPushed=YES;
+        [self.navigationController pushViewController:message animated:YES];
+    }
 };
+
+
+//显示图片
+- (void)showImage:(NSArray *)imageArr andSlectIndex:(NSInteger )index{
+    SDPhotoBrowser *photoBrowser = [SDPhotoBrowser new];
+    photoBrowser.delegate = self;
+    photoBrowser.currentImageIndex = index;
+    photoBrowser.imageCount = imageArr.count;
+    photoBrowser.modalTransitionStyle=UIModalTransitionStyleCrossDissolve;
+    [self presentViewController:photoBrowser animated:YES completion:nil];
+}
+
+//保存图片
+- (void)saveImageWithUrl:(NSString *)urlStr{
+    PHAuthorizationStatus author = [PHPhotoLibrary authorizationStatus];
+    if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+        });
+    }else if(author == ALAuthorizationStatusNotDetermined){
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            if (status == PHAuthorizationStatusRestricted || status == PHAuthorizationStatusDenied){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+                });
+            }else if (status == PHAuthorizationStatusAuthorized){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self saveWithUrl:urlStr];
+                });
+            }
+        }];
+    }else if(author == ALAuthorizationStatusAuthorized){
+        [self saveWithUrl:urlStr];
+    }
+    
+}
+
+//通过url储存图片
+- (void)saveWithUrl:(NSString *)url{
+    [MBProgressHUD showHUDWithTitle:@"正在保存"];
+    NSData *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+    UIImage *saveImage=[UIImage imageWithData:imageData];
+    if (saveImage) {
+        UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+    }
+}
+
+
+
+//保存图片
+- (void)saveImage:(NSString *)urlStr{
+    PHAuthorizationStatus author = [PHPhotoLibrary authorizationStatus];
+    if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+        });
+    }else if(author == ALAuthorizationStatusNotDetermined){
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            if (status == PHAuthorizationStatusRestricted || status == PHAuthorizationStatusDenied){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+                });
+            }else if (status == PHAuthorizationStatusAuthorized){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                        [self save:urlStr];
+                });
+            }
+        }];
+    }else if(author == ALAuthorizationStatusAuthorized){
+        [self save:urlStr];
+    }
+    
+}
+
+
+//保存
+- (void)save:(NSString *)urlStr{
+    [MBProgressHUD showHUDWithTitle:@"正在保存"];
+    UIImage  *saveImage=[self imageFromString:urlStr];
+    if (saveImage) {
+        UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+    }else{
+        [MBProgressHUD ToastInformation:@"图片格式不正确"];
+    }
+}
+
+//字符串转图片
+- (UIImage *)imageFromString:(NSString *)string{
+    // NSString --> NSData
+    NSData *data=[[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    // NSData --> UIImage
+    UIImage *image = [UIImage imageWithData:data];
+    return image;
+}
+
+//图片转字符串
+- (NSString *)imageToString:(UIImage *)image{
+    // UIImage --> NSData
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.0);
+    // NSData --> NSString
+    NSString *imageDataString = [imageData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    return imageDataString;
+}
+
+//权限提醒
+- (void)alertWithMessage:(NSString *)toastMessage{
+    UIAlertController *phoneAlert=[UIAlertController alertControllerWithTitle:@"提醒" message:toastMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [phoneAlert addAction:cancel];
+    [self presentViewController:phoneAlert animated:YES completion:nil];
+}
+
+
+//保存图片回调
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    if (error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD showSuccess:@"保存失败"];
+        });
+    }else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD showSuccess:@"图片已保存到相册"];
+        });
+    }
+}
+
 
 #pragma mark 回退
 - (IBAction)goBack:(id)sender {
@@ -222,9 +401,9 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark 刷新按钮
+#pragma mark 刷新按钮(测试保存图片)
 - (IBAction)freshReload:(id)sender {
-    [self.myWebView loadRequest:[NSURLRequest requestWithURL:self.currentUrl]];
+    //[self.myWebView loadRequest:[NSURLRequest requestWithURL:self.currentUrl]];
 }
 
 #pragma mark wkwebview属性监听
@@ -250,18 +429,21 @@
         WeakSelf;
         [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
             if (type==0) {
+                NSLog(@"分享网页");
                //分享网页
                [weakSelf shareWebPageToPlatformType:platformType ImageUrl:shareImageUrl shareUrl:shareUrl title:shareTile subTitle:subTitle] ;
             }else if(type==1){
-                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl];
+                NSLog(@"分享图片");
+                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl type:1];
+            }else if(type==3){
+                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl type:3];
             }
-            
         }];
     }else{
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"提醒" message:@"您尚未安装微信客户端，暂无法使用微信分享功能" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:cancelAction];
-        [KeyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+        [KeyWindow.rootViewController presentViewController:alertController animated:NO completion:nil];
     }
 }
 
@@ -279,34 +461,61 @@
     //调用分享接口
     [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
         if (error) {
-            [MBProgressHUD ToastInformation:@"分享失败"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD ToastInformation:@"分享失败"];
+            });
         }else{
-            [MBProgressHUD ToastInformation:@"分享成功"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD ToastInformation:@"分享成功"];
+            });
         }
     }];
 }
 
 //分享图片
-- (void)shareImageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl{
+- (void)shareImageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl type:(NSInteger )type{
     //创建分享消息对象
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     //创建图片内容对象
     UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
     //分享的图片
-    NSData  *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:(0==shareImageUrl.length?@"":shareImageUrl)]];
-    [shareObject setShareImage:imageData];
+    if (type==1) {
+        NSData  *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:(0==shareImageUrl.length?@"":shareImageUrl)]];
+        [shareObject setShareImage:imageData];
+    }else if (type==3){
+        NSLog(@"---------------%@",shareImageUrl);
+        [shareObject setShareImage:[self imageFromString:shareImageUrl]];
+    }
     //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     //调用分享接口
     [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
         if (error) {
-            [MBProgressHUD ToastInformation:@"分享失败"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD ToastInformation:@"分享失败"];
+            });
         }else{
-            [MBProgressHUD ToastInformation:@"分享成功"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD ToastInformation:@"分享成功"];
+            });
         }
     }];
 }
 
+#pragma mark  SDPhotoBrowserDelegate
+
+// 返回临时占位图片（即原来的小图）
+- (UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index{
+    // 不建议用此种方式获取小图，这里只是为了简单实现展示而
+    return [UIImage imageNamed:@"空白图"];
+}
+
+
+// 返回高质量图片的url
+- (NSURL *)photoBrowser:(SDPhotoBrowser *)browser highQualityImageURLForIndex:(NSInteger)index{
+    NSString *urlStr = self.imageArray[index];
+    return [NSURL URLWithString:urlStr];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -10,7 +10,10 @@
 #import "TuiguangController.h"
 #import "TixianController.h"
 
+
 @interface MyMoneyDetailController ()
+
+
 
 @end
 
@@ -25,13 +28,14 @@
         self.menuHeight=GetHeight(44);
         self.progressHeight=GetHeight(4);
         self.titleSizeNormal=GetWidth(16);
-        self.titleSizeSelected=GetWidth(18);
-        self.progressViewCornerRadius=GetHeight(2);
+        self.titleSizeSelected=GetWidth(16);
+        self.progressViewCornerRadius=GetHeight(0);
         self.progressViewIsNaughty=YES;
-        self.titleColorSelected=color0196FF;
+        self.titleColorSelected=[UIColor colorWithHexString:@"#282828"];
+        self.titleColorNormal=[UIColor colorWithHexString:@"#282828"];
         self.itemsWidths=@[@(SCREEN_WIDTH/2.0),@(SCREEN_WIDTH/2.0)];
-        //self.automaticallyCalculatesItemWidths=YES;
-        self.progressViewWidths=@[@(GetWidth(80)),@(GetWidth(80))];
+        self.progressColor=[UIColor colorWithHexString:@"#ff693a"];
+        self.progressViewWidths=@[@(GetWidth(73)),@(GetWidth(73))];
         self.viewFrame=CGRectMake(0,64, SCREEN_WIDTH, SCREEN_HEIGHT-64);
     }
     return self;
@@ -60,8 +64,12 @@
     [self.view addSubview:titleLabel];
     
     UIView *Bottonline=[[UIView alloc]initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 0.5)];
-    Bottonline.backgroundColor=colorc3c3c3;
+    Bottonline.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
     [self.view addSubview:Bottonline];
+    
+    UIView *Bottonline2=[[UIView alloc]initWithFrame:CGRectMake(0, 43.5+64, SCREEN_WIDTH, 0.5)];
+    Bottonline2.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
+    [self.view addSubview:Bottonline2];
 };
 
 //返回按钮

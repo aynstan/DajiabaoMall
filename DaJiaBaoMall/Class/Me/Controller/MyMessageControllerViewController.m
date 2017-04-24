@@ -12,9 +12,12 @@
 #import "EditController.h"
 #import "CheckPhoneController.h"
 #import "ShimingRenzhengController.h"
+#import "BaseWebViewController.h"
+#import "MeModel.h"
 
 @interface MyMessageControllerViewController ()<UITableViewDelegate,UITableViewDataSource>{
     UIImageView *touxiangImageView;
+    UIButton *addButtom;
 }
 
 @property (nonatomic,strong)UITableView *myTableView;
@@ -22,6 +25,8 @@
 @property (nonatomic,strong)NSMutableArray *dataSourceArray;
 
 @property (nonatomic, strong) CameraAndPhotoPicker *picker;
+
+@property (nonatomic, strong) MeModel *meModel;
 
 @end
 
@@ -33,23 +38,57 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [super viewDidLoad];
     [self addTitle:@"名片信息"];
     [self addLeftButton];
-    [self addRightButton:@"保存"];
-    [self.myTableView setHidden:NO];
+    [self.myTableView.mj_header beginRefreshing];
 }
 
-//保存事件
-- (void)forward:(UIButton *)button{
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.meModel=[self getMeModelMessage];
+    [self.myTableView reloadData];
 }
+
 
 #pragma mark uitableview delegate;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSArray *arr=self.dataSourceArray[indexPath.section];
     MyMessageCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
     cell.titleStr.text=arr[indexPath.row];
-    if ([cell.titleStr.text isEqualToString:@"实名认证"]) {
-        cell.jiaV.hidden=NO;
-    }else{
-        cell.jiaV.hidden=YES;
+    if (indexPath.section==0) {
+        if (indexPath.row==0) {
+            cell.subTitle.text=(0==self.meModel.name.length?@"":self.meModel.name);
+        }else if (indexPath.row==1) {
+            cell.subTitle.text=(0==self.meModel.mobilephone.length?@"":self.meModel.mobilephone);
+            cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            cell.widthContens.constant=0;
+            cell.rightContents.constant=0;
+        }if (indexPath.row==2) {
+            cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            cell.widthContens.constant=0;
+            cell.rightContents.constant=0;
+            if (self.meModel.isauth) {
+                cell.subTitle.text=([self.meModel.sex isEqualToString:@"N"]?@"男":@"女");
+            }else{
+                cell.subTitle.text=@"保密";
+            };
+        }if (indexPath.row==3) {
+            cell.jiaV.highlighted=(self.meModel.isauth?YES:NO);
+            cell.jiaV.hidden=NO;
+            cell.subTitle.text=self.meModel.isauth==false?@"未认证":@"已认证";
+            cell.widthContens.constant=(self.meModel.isauth==false?7:0);
+            cell.heightContents.constant=(self.meModel.isauth==false?12:0);
+            cell.rightContents.constant=(self.meModel.isauth==false?15:0);
+            if (self.meModel.isauth) {
+               cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            }else{
+               cell.selectionStyle=UITableViewCellSelectionStyleDefault;
+            }
+        }
+    }else if (indexPath.section==1){
+        if (indexPath.row==0) {
+            cell.subTitle.text=(0==self.meModel.company.length?@"":self.meModel.company);
+        }else if (indexPath.row==1){
+            cell.subTitle.text=(0==self.meModel.position.length?@"":self.meModel.position);
+        }
     }
     return cell;
 }
@@ -57,16 +96,16 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if (section==0) {
         
-        UIView *whiteView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 90)];
+        UIView *whiteView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
         whiteView.backgroundColor=[UIColor clearColor];
         
-        UIButton *touxiang=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 80)];
+        UIButton *touxiang=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
         [touxiang setTitle:@"头像" forState:0];
         [touxiang addTarget:self action:@selector(changeTouxiang:) forControlEvents:UIControlEventTouchUpInside];
-        [touxiang.titleLabel setFont:font16];
-        [touxiang setTitleColor:[UIColor blackColor] forState:0];
+        [touxiang.titleLabel setFont:font15];
+        [touxiang setTitleColor:[UIColor colorWithHexString:@"#282828"] forState:0];
         [touxiang setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-        [touxiang setContentEdgeInsets:UIEdgeInsetsMake(0, 12, 0, 0)];
+        [touxiang setContentEdgeInsets:UIEdgeInsetsMake(0, 15, 0, 0)];
         [touxiang setBackgroundColor:[UIColor whiteColor]];
         [whiteView addSubview:touxiang];
         
@@ -74,17 +113,30 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         [touxiang addSubview:imageView];
         [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(0);
-            make.right.mas_equalTo(-12);
-            make.size.mas_equalTo(CGSizeMake(20, 20));
+            make.right.mas_equalTo(-15);
+            make.size.mas_equalTo(CGSizeMake(7, 12));
         }];
         
-        touxiangImageView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"会员头像"]];
+        touxiangImageView=[[UIImageView alloc]init];
+        [touxiangImageView sd_setImageWithURL:[NSURL URLWithString:self.meModel.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
         touxiangImageView.tag=1000;
+        touxiangImageView.layer.cornerRadius=30;
+        touxiangImageView.clipsToBounds=YES;
         [touxiang addSubview:touxiangImageView];
         [touxiangImageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(0);
-            make.right.mas_equalTo(imageView.mas_left).offset(-12);
+            make.right.mas_equalTo(imageView.mas_left).offset(-15);
             make.size.mas_equalTo(CGSizeMake(60, 60));
+        }];
+        
+        UILabel *line=[[UILabel alloc]init];
+        line.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
+        [touxiang addSubview:line];
+        [line mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(0);
+            make.left.mas_equalTo(15);
+            make.right.mas_equalTo(0);
+            make.height.mas_equalTo(0.5);
         }];
         
         return whiteView;
@@ -97,9 +149,9 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (section==0) {
-        return 90;
+        return 100;
     }else if(section==1){
-        return 10;
+        return 15;
     }
     return 0;
 }
@@ -109,38 +161,48 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     if (section==0) {
         return [UIView new];
     }else if(section==1){
-        UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 110)];
+        
+        UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 115)];
         bgView.backgroundColor=[UIColor clearColor];
         
-        UIView *whiteView=[[UIView alloc]initWithFrame:CGRectMake(0, 10, SCREEN_WIDTH, 100)];
+        
+        UIView *whiteView=[[UIView alloc]initWithFrame:CGRectMake(0, 15, SCREEN_WIDTH, 100)];
         whiteView.backgroundColor=[UIColor whiteColor];
         [bgView addSubview:whiteView];
         
-        UIButton *addButtom=[UIButton buttonWithTitle:@"+" titleColor:[UIColor clearColor] font:[UIFont systemFontOfSize:100] target:self action:@selector(addErWeiMa)];
-        [addButtom setBackgroundColor:[UIColor lightGrayColor]];
-        [addButtom setTitleColor:[UIColor darkGrayColor] forState:0];
+        
+        UIImageView *imageView=[[UIImageView alloc]init];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:self.meModel.qrimage] placeholderImage:[UIImage imageNamed:@"上传二维码"]];
+        [whiteView addSubview:imageView];
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.mas_equalTo(0);
+            make.left.mas_equalTo(15);
+            make.size.mas_equalTo(CGSizeMake(60, 60));
+        }];
+        
+        addButtom=[UIButton buttonWithTitle:@"" titleColor:[UIColor clearColor] font:[UIFont systemFontOfSize:0] target:self action:@selector(addErWeiMa)];
         [whiteView addSubview:addButtom];
         [addButtom mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.mas_equalTo(0);
-            make.left.mas_equalTo(12);
-            make.size.mas_equalTo(CGSizeMake(76, 76));
+            make.left.mas_equalTo(15);
+            make.size.mas_equalTo(CGSizeMake(60, 60));
         }];
         
         UILabel *label=[[UILabel alloc]init];
-        label.textColor=[UIColor darkGrayColor];
-        label.font=font14;
+        label.textColor=[UIColor colorWithHexString:@"#282828"];
+        label.font=font13;
         label.text=@"个人微信二维码（将显示在名片中）";
         [whiteView addSubview:label];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(addButtom);
-            make.left.mas_equalTo(addButtom.mas_right).offset(12);
+            make.left.mas_equalTo(addButtom.mas_right).offset(15);
         }];
         
-        UIButton *jieshao=[UIButton buttonWithTitle:@"如何获取二维码？" titleColor:[UIColor lightGrayColor] font:[UIFont systemFontOfSize:13] target:self action:@selector(jishao)];
+        UIButton *jieshao=[UIButton buttonWithTitle:@"如何获取二维码？" titleColor:[UIColor colorWithHexString:@"#595959"] font:[UIFont systemFontOfSize:12] target:self action:@selector(jishao)];
         [whiteView addSubview:jieshao];
         [jieshao mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(label.mas_bottom).offset(0);
-            make.left.mas_equalTo(addButtom.mas_right).offset(12);
+            make.top.mas_equalTo(label.mas_bottom).offset(-5);
+            make.left.mas_equalTo(addButtom.mas_right).offset(15);
             make.height.mas_equalTo(35);
         }];
         
@@ -154,7 +216,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     if (section==0) {
         return 0.001;
     }else if(section==1){
-        return 110;
+        return 130;
     }
     return 0;
 }
@@ -182,22 +244,27 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             EditController *edit=[[EditController alloc]init];
             edit.hidesBottomBarWhenPushed=YES;
             edit.titleStr=@"名片昵称";
+            edit.fieldText=self.meModel.name;
             edit.placeHorderStr=@"请设置名片昵称";
             edit.subTitleStr=@"该昵称将显示在您的个人名片等展业宣传信息中";
             edit.BackBlock=^(NSString *backStr){
                 MyMessageCell *cell=[self.myTableView cellForRowAtIndexPath:indexPath];
                 cell.subTitle.text=backStr;
+                [NotiCenter postNotificationName:@"changeUserInfor" object:nil];
             };
             [self.navigationController pushViewController:edit animated:YES];
         }else if (indexPath.row==1){
             //手机号
-            [self changePhone:indexPath];
+            //[self changePhone:indexPath];
         }else if (indexPath.row==2){
             //性别
-            [self changeSex:indexPath];
+            //[self changeSex:indexPath];
         }else if(indexPath.row==3){
-            //实名认证
-            [self shimingrenzheng:indexPath];
+            if (self.meModel.isauth) {
+            }else{
+                //实名认证
+                [self shimingrenzheng:indexPath];
+            }
         }
      }else if (indexPath.section==1){
         if (indexPath.row==0) {
@@ -206,6 +273,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             edit.titleStr=@"公司";
             edit.placeHorderStr=@"请输入您所在公司的名称";
             edit.subTitleStr=@"";
+            edit.fieldText=self.meModel.company;
             edit.BackBlock=^(NSString *backStr){
                 MyMessageCell *cell=[self.myTableView cellForRowAtIndexPath:indexPath];
                 cell.subTitle.text=backStr;
@@ -217,6 +285,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             edit.titleStr=@"职务";
             edit.placeHorderStr=@"请输入您的职务";
             edit.subTitleStr=@"";
+            edit.fieldText=self.meModel.position;
             edit.BackBlock=^(NSString *backStr){
                 MyMessageCell *cell=[self.myTableView cellForRowAtIndexPath:indexPath];
                 cell.subTitle.text=backStr;
@@ -248,10 +317,6 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 - (void)changePhone:(NSIndexPath *)indexPath{
     CheckPhoneController *phone=[[CheckPhoneController alloc]init];
     phone.hidesBottomBarWhenPushed=YES;
-    phone.BackBlock=^(NSString *backStr){
-        MyMessageCell *cell=[self.myTableView cellForRowAtIndexPath:indexPath];
-        cell.subTitle.text=backStr;
-    };
     [self.navigationController pushViewController:phone animated:YES];
 }
 
@@ -268,12 +333,58 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 //修改名片
 - (void)addErWeiMa{
-    
+    UIAlertController *alertController=[UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *camera=[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.picker getPhotoWithCamera:^(UIImage *selectedImage) {
+            [self postErweiMa:selectedImage];
+        } editing:YES faild:^{
+            [self alertWithMessage:@"请在iphone的“设置-隐私-相机”选项中，允许圈圈使用您的相机"];
+        } showIn:self];
+    }];
+    UIAlertAction *photo=[UIAlertAction actionWithTitle:@"从相册选择" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.picker getPhotoWithPhotoLib:^(UIImage *selecteImage) {
+            [self postErweiMa:selecteImage];
+        } editing:YES faild:^{
+            [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+        } showIn:self];
+    }];
+    [alertController addAction:cancelAction];
+    [alertController addAction:camera];
+    [alertController addAction:photo];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+//上传微信二维码
+- (void)postErweiMa:(UIImage *)erweimaImage{
+    NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,uploadErweiMa];
+    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[erweimaImage] fileNames:nil imageScale:0.6 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
+    } success:^(id response) {
+        if (response) {
+            NSInteger statusCode=[response integerForKey:@"code"];
+            if (statusCode==0) {
+                NSString *errorMsg=[response stringForKey:@"message"];
+                [MBProgressHUD ToastInformation:errorMsg];
+            }else if (statusCode==1){
+                WeakSelf;
+                weakSelf.meModel=[MeModel mj_objectWithKeyValues:[response objectForKey:@"data"]];
+                [weakSelf saveMeModelMessage:self.meModel];
+                [weakSelf.myTableView reloadData];
+                [MBProgressHUD showSuccess:@"上传成功"];
+            }
+        }
+        
+    } failure:^(NSError *error) {
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+    } showHUD:YES];
 }
 
 //如何使用微信二维码
 - (void)jishao{
-    
+    BaseWebViewController *webView=[[BaseWebViewController alloc]init];
+    webView.urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,getqrcode];
+    webView.hidesBottomBarWhenPushed=YES;
+    [self.navigationController pushViewController:webView animated:YES];
 }
 
 //更换头像
@@ -303,13 +414,35 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 //保存头像数据
 - (void)saveTouxiang:(UIImage *)touxiangImage{
     touxiangImageView.image=touxiangImage;
+    NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,uploadTouxiang];
+    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[touxiangImage] fileNames:nil imageScale:0.6 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
+        
+    } success:^(id response) {
+        if (response) {
+            NSInteger statusCode=[response integerForKey:@"code"];
+            if (statusCode==0) {
+                NSString *errorMsg=[response stringForKey:@"message"];
+                [MBProgressHUD ToastInformation:errorMsg];
+            }else if (statusCode==1){
+                WeakSelf;
+                weakSelf.meModel=[MeModel mj_objectWithKeyValues:[response objectForKey:@"data"]];
+                [weakSelf saveMeModelMessage:self.meModel];
+                [weakSelf.myTableView reloadData];
+                [NotiCenter postNotificationName:@"changeUserInfor" object:nil];
+                [MBProgressHUD showSuccess:@"上传成功"];
+            }
+        }
+        
+    } failure:^(NSError *error) {
+        NSLog(@"错误：%@",error.description);
+        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+    } showHUD:YES];
 }
 
 //权限提醒
 - (void)alertWithMessage:(NSString *)toastMessage{
     UIAlertController *phoneAlert=[UIAlertController alertControllerWithTitle:@"提醒" message:toastMessage preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
     }];
     [phoneAlert addAction:cancel];
     [self presentViewController:phoneAlert animated:YES completion:nil];
@@ -324,18 +457,60 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         _myTableView.delegate=self;
         _myTableView.dataSource=self;
         _myTableView.tableFooterView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.0001)];
-        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
-        _myTableView.separatorInset=UIEdgeInsetsMake(0, 0, 0, 0);
+        _myTableView.tableHeaderView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 0.001)];
         _myTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         
         [_myTableView registerNib:[UINib nibWithNibName:NSStringFromClass([MyMessageCell class]) bundle:nil] forCellReuseIdentifier:tableviewCellIndentifer];
         [self.view addSubview:_myTableView];
-        
         _myTableView.sd_layout.leftSpaceToView(self.view,0).topSpaceToView(self.view,64).rightSpaceToView(self.view,0).bottomSpaceToView(self.view,0);
+        
+        [self addMJheader];
 
     }
     return _myTableView;
 }
+
+#pragma mark 增加addMJ_Head
+- (void)addMJheader{
+    MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
+        NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,personinfo];
+        [XWNetworking getJsonWithUrl:url params:nil responseCache:^(id responseCache) {
+            if (responseCache) {
+                [self saveData:responseCache];
+            }
+        } success:^(id response) {
+            [self saveData:response];
+            [self endFreshAndLoadMore];
+        } fail:^(NSError *error) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            [self endFreshAndLoadMore];
+        } showHud:NO];
+    }];
+    _myTableView.mj_header=mjHeader;
+}
+
+//保存数据
+- (void)saveData:(id)response{
+    if (response) {
+        NSInteger statusCode=[response integerForKey:@"code"];
+        if (statusCode==0) {
+            NSString *errorMsg=[response stringForKey:@"message"];
+            [MBProgressHUD ToastInformation:errorMsg];
+        }else if (statusCode==1){
+            self.meModel=[MeModel mj_objectWithKeyValues:[response objectForKey:@"data"]];
+            [self saveMeModelMessage:self.meModel];
+            [self.myTableView reloadData];
+        }
+    }
+}
+
+
+
+#pragma mark 关闭mjrefreshing
+- (void)endFreshAndLoadMore{
+    [_myTableView.mj_header endRefreshing];
+}
+
 
 - (CameraAndPhotoPicker *)picker{
     if (!_picker) {
@@ -344,8 +519,6 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     }
     return _picker;
 }
-
-
 
 
 - (NSMutableArray *)dataSourceArray{
@@ -358,6 +531,23 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
+}
+
+/**
+ *  友盟统计页面打开开始时间
+ *
+ */
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"名片信息"];
+}
+/**
+ *  友盟统计页面关闭时间
+ *
+ */
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"名片信息"];
 }
 
 

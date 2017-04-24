@@ -32,8 +32,8 @@
 
 
 - (IBAction)beginPost:(id)sender {
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickView:clickPost:)]) {
-        [self.delegate clickView:self clickPost:sender];
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickView:clickPost:postImage:wechatName:)]) {
+        [self.delegate clickView:self clickPost:sender postImage:self.erweiMaImageView.image wechatName:self.erweimaNum.text];
     }
 }
 
