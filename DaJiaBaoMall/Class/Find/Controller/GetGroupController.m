@@ -23,6 +23,8 @@
 
 @property (nonatomic,strong) JCAlertView *alertView;
 
+@property (nonatomic,strong) NomessageView *noMessageView;
+
 @end
 
 static NSString  * const Indentifer=@"CollectTion_Cell";
@@ -81,6 +83,11 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
             [self.CollectionArray removeAllObjects];
             NSArray<WechatGrop *> *catogoryArr=[WechatGrop mj_objectArrayWithKeyValuesArray:response[@"data"]];
             [self.CollectionArray addObjectsFromArray:catogoryArr];
+            if (self.CollectionArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myCollectionView addSubview:self.noMessageView];
+            }
             [self.myCollectionView reloadData];
         }
     }
@@ -152,7 +159,11 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
         }
         
     } failure:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHUD:YES];
 }
 
@@ -189,6 +200,7 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     WechatGrop *grop=self.CollectionArray[indexPath.item];
     ToastErweiMaView *cell=[[[NSBundle mainBundle]loadNibNamed:@"ToastErweiMaView" owner:nil options:nil]lastObject];
     cell.delegate=self;
+    cell.index=indexPath.item;
     cell.frame=CGRectMake(0, 0, 280, 280*450/310.0);
     [cell.erweimaImageView sd_setImageWithURL:[NSURL URLWithString:grop.images] placeholderImage:[UIImage imageNamed:@"空白图"]];
     _alertView=[[JCAlertView alloc]initWithCustomView:cell dismissWhenTouchedBackground:NO];
@@ -249,6 +261,7 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
         UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc]init];
         layout.scrollDirection=UICollectionViewScrollDirectionVertical;
         layout.sectionInset=UIEdgeInsetsMake(20, 13, 70, 13);
+        layout.minimumInteritemSpacing=0;
         _myCollectionView=[[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
         self.myCollectionView.backgroundColor=[UIColor whiteColor];
         [_myCollectionView registerNib:[UINib nibWithNibName:NSStringFromClass([GetGroupCell class]) bundle:nil] forCellWithReuseIdentifier:Indentifer];
@@ -262,6 +275,20 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
     return _myCollectionView;
 }
 
+//缺省页
+- (NomessageView *)noMessageView{
+    if (!_noMessageView) {
+        _noMessageView=[[NomessageView alloc]init];
+        _noMessageView.frame=CGRectMake(0, SCREEN_WIDTH/375.0*90, SCREEN_WIDTH, 180);
+        _noMessageView.buttomTitle=@"暂无相关内容";
+        _noMessageView.clickBlock=^(){
+            
+        };
+    }
+    return _noMessageView;
+}
+
+
 #pragma mark 增加addMJ_Head
 - (void)addMJheader{
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
@@ -270,7 +297,11 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

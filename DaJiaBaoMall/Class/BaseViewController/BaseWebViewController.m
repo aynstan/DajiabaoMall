@@ -13,6 +13,11 @@
 #import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "MyMessageControllerViewController.h"
+#import "LoginController.h"
+#import "MeModel.h"
+#import "UMessage.h"
+#import <RongIMKit/RongIMKit.h>
+#import "BaseNavigationController.h"
 #define changeTotalTime 2.0
 #define changeTotalCount 8.0
 
@@ -64,6 +69,8 @@
     [config.userContentController addScriptMessageHandler:self name:@"drawMoney"];
     //编辑名片
     [config.userContentController addScriptMessageHandler:self name:@"editCard"];
+    //被踢下线
+    [config.userContentController addScriptMessageHandler:self name:@"loginOut"];
     //mywebview
     self.myWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 20, SCREEN_WIDTH, SCREEN_HEIGHT-20)  configuration:config];
     self.myWebView.navigationDelegate = self;
@@ -255,8 +262,38 @@
         MyMessageControllerViewController *message=[[MyMessageControllerViewController alloc]init];
         message.hidesBottomBarWhenPushed=YES;
         [self.navigationController pushViewController:message animated:YES];
+    }else if ([message.name isEqualToString:@"loginOut"]){
+        //被踢下线
+        [self connectToLogin];
     }
+    
 };
+
+/**
+ *  会话过期重新登录
+ */
+- (void)connectToLogin{
+    if (nil!=[UserDefaults objectForKey:TOKENID]) {
+        [self toastMessage:@"系统检测到您已在其它设备上登录，本地已下线，请重新登录"];
+    }
+    MeModel *me=[NSKeyedUnarchiver unarchiveObjectWithData:[UserDefaults valueForKey:ME]];;
+    [UMessage removeAlias:me.mobilephone type:@"com.dajiabao.qqb" response:nil];
+    [[RCIM sharedRCIM] logout];
+    [UserDefaults setObject:nil forKey:TOKENID];
+    [UserDefaults setValue:nil forKey:ME];
+    [UserDefaults synchronize];
+    KeyWindow.rootViewController=[[BaseNavigationController alloc]initWithRootViewController:[[LoginController alloc]init]];
+}
+
+//提示
+- (void)toastMessage:(NSString *)toastMessage{
+    UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"提醒" message:toastMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"我知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:cancel];
+    [KeyWindow.rootViewController presentViewController:alert animated:YES completion:nil];
+}
+
 
 
 //显示图片
@@ -515,6 +552,16 @@
 - (NSURL *)photoBrowser:(SDPhotoBrowser *)browser highQualityImageURLForIndex:(NSInteger)index{
     NSString *urlStr = self.imageArray[index];
     return [NSURL URLWithString:urlStr];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [IQKeyboardManager sharedManager].enable = NO;
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [IQKeyboardManager sharedManager].enable = YES;
 }
 
 - (void)didReceiveMemoryWarning {

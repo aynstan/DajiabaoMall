@@ -24,7 +24,7 @@
                         <constraint firstAttribute="height" constant="45" id="pk9-oe-ujl"/>
                         <constraint firstAttribute="width" constant="45" id="s8P-Pf-X0S"/>
                     </constraints>
-                    <inset key="imageEdgeInsets" minX="-5" minY="-11" maxX="0.0" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="-5" minY="-11" maxX="2" maxY="0.0"/>
                     <state key="normal" image="gb"/>
                     <connections>
                         <action selector="close:" destination="iN0-l3-epB" eventType="touchUpInside" id="431-df-Klu"/>

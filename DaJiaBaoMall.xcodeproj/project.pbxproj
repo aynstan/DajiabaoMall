@@ -1718,7 +1718,7 @@
 					51F3AC9E1E88D350000D5FAC = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = D3S96SQKWE;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
@@ -2188,8 +2188,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = DaJiaBaoMall/DaJiaBaoMall.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai Caihuabao Network Technology Co., Ltd. (D3S96SQKWE)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai Caihuabao Network Technology Co., Ltd. (D3S96SQKWE)";
 				DEVELOPMENT_TEAM = D3S96SQKWE;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DaJiaBaoMall/Lib/友盟/UMSocialSDK",
@@ -2206,8 +2207,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dajiabao.tyhj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "ffd89c77-0e80-447d-91f3-c923afb04d70";
+				PROVISIONING_PROFILE_SPECIFIER = "XC iOS Ad Hoc: com.dajiabao.tyhj";
 			};
 			name = Debug;
 		};
@@ -2219,8 +2220,9 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = DaJiaBaoMall/DaJiaBaoMall.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Shanghai Caihuabao Network Technology Co., Ltd. (D3S96SQKWE)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Shanghai Caihuabao Network Technology Co., Ltd. (D3S96SQKWE)";
 				DEVELOPMENT_TEAM = D3S96SQKWE;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DaJiaBaoMall/Lib/友盟/UMSocialSDK",
@@ -2237,8 +2239,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dajiabao.tyhj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "ffd89c77-0e80-447d-91f3-c923afb04d70";
+				PROVISIONING_PROFILE_SPECIFIER = "XC iOS Ad Hoc: com.dajiabao.tyhj";
 			};
 			name = Release;
 		};

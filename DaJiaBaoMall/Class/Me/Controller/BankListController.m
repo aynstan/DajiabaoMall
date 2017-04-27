@@ -43,6 +43,12 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             [self.dataSourceArray removeAllObjects];
             NSArray<BankModel *> *array=[BankModel mj_objectArrayWithKeyValuesArray:response[@"data"]];
             self.dataSourceArray=[NSMutableArray arrayWithArray:array];
+            if (self.dataSourceArray.count>0) {
+                [self.noMessageView removeFromSuperview];
+            }else{
+                [self.myTableView addSubview:self.noMessageView];
+            }
+            [self.myTableView reloadData];
             [self.myTableView reloadData];
         }
     }
@@ -92,7 +98,11 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *jianshuLabel;
 //金额
 @property (weak, nonatomic) IBOutlet UILabel *moneyLabel;
+//type (0:当月邀请 1:全部邀请)
+@property (nonatomic, assign) NSInteger type;
 //model
 @property (nonatomic,strong) InvitePersonModel *model;
 

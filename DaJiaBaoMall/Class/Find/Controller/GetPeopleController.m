@@ -153,7 +153,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [bottomView addSubview:bottomLine];
     //清楚按钮
     clearButton=[[UIButton alloc]initWithFrame:CGRectMake(0, 0.5, SCREEN_WIDTH/2.0, 49.5)];
-    [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
+    [clearButton setTitle:[NSString stringWithFormat:@"清除已导入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
     [clearButton addTarget:self action:@selector(clearAll:) forControlEvents:UIControlEventTouchUpInside];
     [clearButton setTitleColor:[UIColor colorWithHexString:@"#383838"] forState:0];
     [clearButton.titleLabel setFont:font13];
@@ -201,7 +201,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     menu = [[JSDropDownMenu alloc] initWithOrigin:point andHeight:44 inView:self.view];
     menu.indicatorColor = RGB(83, 83, 83);
     menu.separatorColor = RGB(231, 231, 232);
-    menu.textColor =RGB(83, 83, 83);
+    menu.textColor =[UIColor colorWithHexString:@"#282828"];
     menu.dataSource = self;
     menu.delegate = self;
     [self.view addSubview:menu];
@@ -221,11 +221,10 @@ static NSString *const tableviewContentCell=@"ContentCell";
         [deleteMutableArray addObject:pm];
     }
     [XW_AddressManager deletePersonArray:deleteMutableArray SuccessBlock:^{
-        [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
+        [clearButton setTitle:[NSString stringWithFormat:@"清除已导入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
         [[JQFMDB shareDatabase] close];
     } FaildBlcok:^{
-        [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
-        [[JQFMDB shareDatabase] close];
+        
     }];
 }
 
@@ -248,13 +247,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
     }
 
     [XW_AddressManager addPersonArray:self.selectedArray SuccessBlock:^{
-        [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
+        [clearButton setTitle:[NSString stringWithFormat:@"清除已导入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
         [[JQFMDB shareDatabase] close];
         [self postSaveContacts];
     } FaildBlcok:^{
-        [clearButton setTitle:[NSString stringWithFormat:@"清除已倒入的号码(%d)",[[JQFMDB shareDatabase] jq_tableItemCount:@"contact"]] forState:0];
-        [[JQFMDB shareDatabase] close];
-        [self postSaveContacts];
+
      }];
 }
 
@@ -379,15 +376,21 @@ static NSString *const tableviewContentCell=@"ContentCell";
     ContactHeader *mjHeader=[ContactHeader headerWithRefreshingBlock:^{
         NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,supercontacts];
         NSDictionary *dic=@{@"province":province,@"city":city,@"sex":sex,@"district":@""};
-        [XWNetworking getJsonWithUrl:url params:dic success:^(id response) {
+        NSLog(@"所传参数：%@",dic);
+        [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];
     _myTableView.mj_header=mjHeader;
+    
 }
 
 #pragma mark 增加addMJ_Footer
@@ -396,11 +399,15 @@ static NSString *const tableviewContentCell=@"ContentCell";
         mjFooter=[ContactFooter footerWithRefreshingBlock:^{
             NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,supercontacts];
             NSDictionary *dic=@{@"province":province,@"city":city,@"sex":sex,@"district":@""};
-            [XWNetworking getJsonWithUrl:url params:dic success:^(id response) {
+            [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
                 [self saveData:response];
                 [self endFreshAndLoadMore];
             } fail:^(NSError *error) {
-                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                if ([XWNetworking isHaveNetwork]) {
+                    [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                }else{
+                    [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+                }
                 [self endFreshAndLoadMore];
             } showHud:NO];
             [self.myTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -590,13 +597,14 @@ static NSString *const tableviewContentCell=@"ContentCell";
         }else if ([sexStr isEqualToString:@"女"]) {
             sex=@"0";
         }
+        NSLog(@"选中的省=%@,选中的城市=%@,选中的性别=%@",province,city,sex);
         [self.myTableView.mj_header beginRefreshing];
     } @catch (NSException *exception) {
         
     } @finally {
         
     }
-    NSLog(@"选中的省=%@,选中的城市=%@,选中的性别=%@",province,city,sex);
+    
 }
 
 

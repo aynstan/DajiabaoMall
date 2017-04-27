@@ -99,7 +99,7 @@
     SendProductShow *showView=[[[NSBundle mainBundle]loadNibNamed:@"SendProductShow" owner:nil options:nil]lastObject];;
     showView.frame=CGRectMake(0, 0, 280, 280*820/620.0);
     showView.imageView.image=[UIImage imageNamed:@"弹窗bg"];
-    showView.mytextView.text=@"如何获得赠险？\n新人注册成功后，即可获得价值300元的赠险。\n\n如何使用已经获得的赠险？\n可自用也可以赠送客户，通过微信分享产品给客户，同一款产品可分享给多人，但仅有一个投保名额，投保成功即表示产品已使用。使用过的产品不再支持赠送或投保。\n\n产品是否有期限？\n产品的有效期为7天，自获得日开始计时，过期将自动作废，请在有效期内使用。\n\n如何查询客户的投保信息？\n您可在赠品>已使用页面查看客户投保信息详情。";
+    showView.mytextView.text=@"如何获得赠险？\n新人注册成功后，即可获得价值300元的赠险。\n如何使用已经获得的赠险？\n可自用也可以赠送客户，通过微信分享产品给客户，同一款产品可分享给多人，但仅有一个投保名额，投保成功即表示产品已使用。使用过的产品不再支持赠送或投保。\n产品是否有期限？\n产品的有效期为7天，自获得日开始计时，过期将自动作废，请在有效期内使用。\n如何查询客户的投保信息？\n您可在赠品>已使用页面查看客户投保信息详情。";
     showView.closeBlock=^(){
         [weakSelf.alertView dismissWithCompletion:nil];
     };

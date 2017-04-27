@@ -180,7 +180,11 @@
             }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -188,7 +192,7 @@
 #pragma mark 有sid * 获取短信验证码 *
 - (void)getSnsCode:(NSString *)sid{
     NSString *urlStr=[NSString stringWithFormat:@"%@/verify/sms",codeUrl];
-    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:field.text],@"smsCode":@"TYHJ_CODE",@"sid":sid};
+    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:field.text],@"smsCode":@"QQB_YZM",@"sid":sid};
     [XWNetworking postJsonWithUrl:urlStr params:dic success:^(id response) {
         NSDictionary *dic=response;
         NSInteger code=[dic integerForKey:@"code"];
@@ -208,7 +212,11 @@
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -251,7 +259,11 @@
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -295,7 +307,11 @@
             }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 

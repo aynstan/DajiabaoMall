@@ -31,7 +31,7 @@
                         <constraint firstAttribute="height" constant="45" id="wVh-fq-oQz"/>
                         <constraint firstAttribute="width" constant="45" id="wdp-K3-NKe"/>
                     </constraints>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="-11" maxX="-11" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="-11" maxX="2" maxY="0.0"/>
                     <state key="normal" image="gb">
                         <color key="titleColor" red="0.1764705882" green="0.1764705882" blue="0.1764705882" alpha="1" colorSpace="calibratedRGB"/>
                     </state>

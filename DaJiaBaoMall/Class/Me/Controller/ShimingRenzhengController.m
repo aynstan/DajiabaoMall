@@ -168,12 +168,17 @@
                 meModel.isauth=YES;
                 [self saveMeModelMessage:meModel];
                 self.BackBlock?self.BackBlock(@"已认证"):nil;
+                [NotiCenter postNotificationName:@"changeUserInfor" object:nil];
                 [self.navigationController popViewControllerAnimated:YES];
                 [MBProgressHUD showSuccess:@"认证成功"];
             }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -182,6 +187,9 @@
 - (void)textFieldChanged:(UITextField *)textField {
     if (nameFiled == textField || IDCardFiled == textField) {
         tixianButton.enabled = (nameFiled.text.length && IDCardFiled.text.length);
+    }
+    if (nameFiled == textField &&textField.text.length >= 10 && textField.markedTextRange==nil ) {
+        textField.text = [textField.text substringToIndex:10];
     }
 }
 

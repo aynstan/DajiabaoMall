@@ -68,8 +68,6 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [self.myTableView.mj_header beginRefreshing];
     //自定义导航栏
     [self addHeadView];
-    //设置推送别名
-    [self setPushAlias];
     //自动登录
     [self autoLogin];
     //添加刷新用户信息监听
@@ -474,7 +472,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];
@@ -567,6 +569,8 @@ static NSString *const tableviewContentCell=@"ContentCell";
 //初始化
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    //设置推送别名
+    [self setPushAlias];
     //通知banner
     [NotiCenter postNotificationName:@"baner" object:nil];
     RCConnectionStatus status=[[RCIM sharedRCIM] getConnectionStatus];

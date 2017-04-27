@@ -65,8 +65,12 @@
     [self.view addSubview:titleLabel];
     
     UIView *Bottonline=[[UIView alloc]initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 0.5)];
-    Bottonline.backgroundColor=colorc3c3c3;
+    Bottonline.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
     [self.view addSubview:Bottonline];
+    
+    UIView *Bottonline2=[[UIView alloc]initWithFrame:CGRectMake(0, 64+43.5, SCREEN_WIDTH, 0.5)];
+    Bottonline2.backgroundColor=[UIColor colorWithHexString:@"#dcdcdc"];
+    [self.view addSubview:Bottonline2];
 };
 
 //返回按钮

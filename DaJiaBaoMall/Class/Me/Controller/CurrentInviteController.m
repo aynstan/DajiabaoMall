@@ -61,6 +61,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     InviteCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     InvitePersonModel *personModel=self.inviteModel.data[indexPath.row];
+    cell.type=0;
     [cell setModel:personModel];
     return cell;
 }
@@ -91,7 +92,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 
 - (CGFloat )tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    return 64;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -128,7 +129,11 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             [self savelist:response];
             [self endFreshAndLoadMore];
          } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+             if ([XWNetworking isHaveNetwork]) {
+                 [MBProgressHUD ToastInformation:@"服务器开小差了"];
+             }else{
+                 [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+             }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

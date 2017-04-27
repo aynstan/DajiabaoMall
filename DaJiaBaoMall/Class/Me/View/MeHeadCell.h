@@ -31,6 +31,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *myOrderButtom;
 //我的钱包
 @property (weak, nonatomic) IBOutlet UIButton *myMoneyButtom;
+//是否是vip
+@property (weak, nonatomic) IBOutlet UIImageView *vipImageView;
 
 @property (nonatomic,assign) id<MeHeadCell_Delegate> delegate;
 

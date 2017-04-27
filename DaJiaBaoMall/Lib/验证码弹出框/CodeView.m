@@ -184,7 +184,7 @@
      UITextField *imageCodeField=[self viewWithTag:1001];
      PCLockLabel  *warmingLabel=[self viewWithTag:1000];
      NSString *urlStr=[NSString stringWithFormat:@"%@/verify/sms",codeUrl];
-    NSDictionary *dic=@{@"code":[imageCodeField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],@"phone":self.yanzhengtupianphoneNumber,@"smsCode":@"TYHJ_CODE",@"sid":self.postSid};
+    NSDictionary *dic=@{@"code":[imageCodeField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]],@"phone":self.yanzhengtupianphoneNumber,@"smsCode":@"QQB_YZM",@"sid":self.postSid};
     [XWNetworking postJsonWithUrl:urlStr params:dic success:^(id response) {
         NSDictionary *dic=response;
         NSInteger code=[dic integerForKey:@"code"];
@@ -203,7 +203,11 @@
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:NO];
 }
 

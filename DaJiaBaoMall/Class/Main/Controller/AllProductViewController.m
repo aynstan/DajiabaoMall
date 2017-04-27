@@ -48,7 +48,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [self addTitle:@"全部产品"];
     [self addLeftButton];
     [self addRightButton];
-    self.size=20;
+    self.size=15;
     [self.myTableView.mj_header beginRefreshing];
 }
 
@@ -111,7 +111,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
             [MBProgressHUD ToastInformation:errorMsg];
         }else{
             if (response[@"data"] !=[NSNull null]&&[[response[@"data"] allKeys] containsObject:@"rows"]) {
-                self.size=[response[@"data"] integerForKey:@"rows"];
+                self.rows=[response[@"data"] integerForKey:@"rows"];
             }
             NSArray<ProductContentModel*> *dataArray=[ProductContentModel mj_objectArrayWithKeyValuesArray:response[@"data"][@"productList"]];
             [self.dataSourceArray addObjectsFromArray:dataArray];
@@ -240,7 +240,8 @@ static NSString *const tableviewContentCell=@"ContentCell";
     MJHeader *mjHeader=[MJHeader headerWithRefreshingBlock:^{
         self.page=1;
         NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,getAllProduct];
-        NSDictionary *dic=@{@"page":@(self.page),@"pageSize":@(self.size)};
+        NSDictionary *dic=@{@"page":@(self.page),@"size":@(self.size)};
+        NSLog(@"===参数%@",dic);
         [XWNetworking getJsonWithUrl:url params:dic responseCache:^(id responseCache) {
             if (responseCache) {
                 [self savelist:responseCache];
@@ -249,7 +250,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
             [self savelist:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];
@@ -262,7 +267,8 @@ static NSString *const tableviewContentCell=@"ContentCell";
         self.mjFooter=[MJFooter footerWithRefreshingBlock:^{
                     self.page++;
                     NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,getAllProduct];
-                    NSDictionary *dic=@{@"page":@(self.page),@"pageSize":@(self.size)};
+                    NSDictionary *dic=@{@"page":@(self.page),@"size":@(self.size)};
+            NSLog(@"参数=%@",dic);
                     [XWNetworking getJsonWithUrl:url params:dic  success:^(id response) {
                         [self addlist:response];
                         [self endFreshAndLoadMore];
@@ -270,7 +276,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
                         if (self.page>1) {
                             self.page--;
                         }
-                        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                        if ([XWNetworking isHaveNetwork]) {
+                            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                        }else{
+                            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+                        }
                         [self endFreshAndLoadMore];
                     } showHud:NO];
         }];

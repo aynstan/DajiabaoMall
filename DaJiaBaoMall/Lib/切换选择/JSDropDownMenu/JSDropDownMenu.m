@@ -109,7 +109,8 @@
         // Initialization code
         _cellTextLabel = [[UILabel alloc] init];
         _cellTextLabel.textAlignment = NSTextAlignmentCenter;
-        _cellTextLabel.font = [UIFont systemFontOfSize:14.0f];
+        _cellTextLabel.font = font15;
+        _cellTextLabel.textColor=[UIColor colorWithHexString:@"#282828"];
         [self addSubview:_cellTextLabel];
     }
     return self;
@@ -119,7 +120,7 @@
     
     _cellTextLabel.text = text;
     // 只取宽度
-    CGSize textSize = [text textSizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(MAXFLOAT, 14) lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize textSize = [text textSizeWithFont:font15 constrainedToSize:CGSizeMake(MAXFLOAT, 15) lineBreakMode:NSLineBreakByWordWrapping];
 //    CGSize textSize = [text sizeWithFont:[UIFont systemFontOfSize:14.0f] constrainedToSize:CGSizeMake(MAXFLOAT, 14)];
     
     CGFloat marginX = 20;
@@ -392,7 +393,7 @@
     CGFloat sizeWidth = (size.width < (self.frame.size.width / _numOfMenu) - 25) ? size.width : self.frame.size.width / _numOfMenu - 25;
     layer.bounds = CGRectMake(0, 0, sizeWidth, size.height);
     layer.string = string;
-    layer.fontSize = 14.0;
+    layer.fontSize = 15;
     layer.alignmentMode = kCAAlignmentCenter;
     layer.foregroundColor = color.CGColor;
     layer.contentsScale = [[UIScreen mainScreen] scale];
@@ -402,8 +403,7 @@
 
 //文字尺寸
 - (CGSize)calculateTitleSizeWithString:(NSString *)string{
-    CGFloat fontSize = 14.0;
-    NSDictionary *dic = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize]};
+    NSDictionary *dic = @{NSFontAttributeName: font15};
     CGSize size = [string boundingRectWithSize:CGSizeMake(280, 0) options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:dic context:nil].size;
     return size;
 }
@@ -806,7 +806,7 @@
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     cell.selectedBackgroundView.backgroundColor = BackColor;
     [cell.textLabel setTextColor:self.textColor];
-    cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+    cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     cell.separatorInset = UIEdgeInsetsZero;
     NSInteger leftOrRight = 0;
     if (_rightTableView==tableView) {
@@ -924,7 +924,7 @@
     }
     cell.backgroundColor = [UIColor whiteColor];
     cell.selectedBackgroundView.backgroundColor = BackColor;
-    cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+    cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     cell.textLabel.textColor = self.textColor;
     
     if ([cell.textLabel.text isEqualToString:[(CATextLayer *)[_titles objectAtIndex:_currentSelectedMenudIndex] string]]) {

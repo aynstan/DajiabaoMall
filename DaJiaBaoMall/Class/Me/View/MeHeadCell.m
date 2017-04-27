@@ -22,10 +22,18 @@
 - (void)setModel:(MeModel *)model{
     [self.headImageView sd_setImageWithURL:[NSURL URLWithString:model.picture] placeholderImage:[UIImage imageNamed:@"head-portrait-big"]];
     self.phoneOrWeChat.text=0==model.mobilephone.length?@"":model.mobilephone;
+    self.vipImageView.highlighted=model.isauth;
 }
 
 //更改我的信息
 - (IBAction)changeMyMessage:(id)sender {
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(clickIncell:onTheChangeButtom:)]) {
+        [self.delegate clickIncell:self onTheChangeButtom:sender];
+    }
+}
+
+//点击头像
+- (IBAction)clickHeadView:(id)sender {
     if (self.delegate&&[self.delegate respondsToSelector:@selector(clickIncell:onTheChangeButtom:)]) {
         [self.delegate clickIncell:self onTheChangeButtom:sender];
     }

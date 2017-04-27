@@ -117,17 +117,34 @@
             }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
 #pragma mark - 输入框改变事件
 /** 输入框内容发生改变 */
 - (void)textFieldChanged:(UITextField *)textField {
-    //  限制输入框的输入长度为100
-    if (textField.text.length >= 100 && textField.markedTextRange==nil ) {
-        textField.text = [textField.text substringToIndex:100];
+    if ([self.titleStr isEqualToString:@"名片昵称"]) {
+        //  限制输入框的输入长度为100
+        if (textField.text.length >= 10 && textField.markedTextRange==nil ) {
+            textField.text = [textField.text substringToIndex:10];
+        }
+    }else if ([self.titleStr isEqualToString:@"公司"]){
+        //  限制输入框的输入长度为100
+        if (textField.text.length >= 60 && textField.markedTextRange==nil ) {
+            textField.text = [textField.text substringToIndex:60];
+        }
+    }else if ([self.titleStr isEqualToString:@"职务"]){
+        //  限制输入框的输入长度为100
+        if (textField.text.length >= 40 && textField.markedTextRange==nil ) {
+            textField.text = [textField.text substringToIndex:40];
+        }
     }
+    
     save.enabled = ([self clearSpace:textField.text].length && [[self clearSpace:textField.text] isEqualToString:self.fieldText]==NO);
 }
 

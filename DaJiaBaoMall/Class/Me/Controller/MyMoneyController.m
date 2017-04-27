@@ -243,7 +243,11 @@
     } success:^(id response) {
         [self saveData:response];
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
     
 }
@@ -460,17 +464,15 @@
 
 //计算剩余天数
 - (NSString *)dateTimeDifferenceWithStartTime:(long long)lostTime{
-    long long value=lostTime;
-    int minute = (int)value /60%60;
+    long long value=lostTime/1000.0;
+    //int minute = (int)value /60%60;
     int house = (int)value / (24 * 3600)%3600;
     int day = (int)value / (24 * 3600);
     NSString *str;
     if (day > 0) {
-        str = [NSString stringWithFormat:@"%d天%d小时%d分",day,house,minute];
+        str = [NSString stringWithFormat:@"%d天%d小时",day,house];
     }else if (day<=0 && house > 0) {
-        str = [NSString stringWithFormat:@"%d小时%d分",house,minute];
-    }else{
-        str = [NSString stringWithFormat:@"%d分",minute];
+        str = [NSString stringWithFormat:@"%d小时",house];
     }
     return str;
 }

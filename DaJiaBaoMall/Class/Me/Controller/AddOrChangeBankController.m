@@ -42,6 +42,7 @@
 - (void)getShimingMsg{
     NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,shimingrenzhengMsg];
     [XWNetworking getJsonWithUrl:url params:nil  success:^(id response) {
+        NSLog(@"=======%@",response);
         if (response) {
             nameFiled.text=response[@"data"][@"name"];
             IDCardFiled.text=response[@"data"][@"idcard"];
@@ -354,7 +355,11 @@
              }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:NO];
     
     

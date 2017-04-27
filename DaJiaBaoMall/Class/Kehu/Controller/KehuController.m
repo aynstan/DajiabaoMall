@@ -98,7 +98,7 @@ static NSString *const tableViewFootCellIndentifer=@"FootCell";
             cell.subTitleLabel.text=[NSString stringWithFormat:@"%ld次",(long)self.visitCountModel.zengCount];
         }else if (indexPath.row==2) {
             cell.titleLabel.text=@"产品";
-            [cell.imageViewHead setImage:[UIImage imageNamed:@"产品"]];
+            [cell.imageViewHead setImage:[UIImage imageNamed:@"产品-1"]];
             cell.subTitleLabel.text=[NSString stringWithFormat:@"%ld次",(long)self.visitCountModel.productCount];
         }
         return cell;
@@ -192,7 +192,11 @@ static NSString *const tableViewFootCellIndentifer=@"FootCell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

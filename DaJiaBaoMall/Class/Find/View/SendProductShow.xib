@@ -24,7 +24,7 @@
                         <constraint firstAttribute="width" constant="45" id="FyI-W0-qA6"/>
                         <constraint firstAttribute="height" constant="45" id="alS-DJ-sfD"/>
                     </constraints>
-                    <inset key="imageEdgeInsets" minX="-3" minY="-11" maxX="0.0" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="-3" minY="-11" maxX="2" maxY="0.0"/>
                     <state key="normal" image="gb"/>
                     <connections>
                         <action selector="close:" destination="iN0-l3-epB" eventType="touchUpInside" id="pqI-GP-nqf"/>
@@ -41,10 +41,12 @@
                         <action selector="gotoLook:" destination="iN0-l3-epB" eventType="touchUpInside" id="2ZT-TP-90R"/>
                     </connections>
                 </button>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="htA-9J-otc">
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="htA-9J-otc">
                     <rect key="frame" x="32" y="95" width="216" height="138"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <string key="text">如何获得赠险？
+                    <attributedString key="attributedText">
+                        <fragment>
+                            <string key="content">如何获得赠险？
 新人注册成功后，即可获得价值300元的赠险。
 
 如何使用已经获得的赠险？
@@ -54,8 +56,22 @@
 产品的有效期为7天，自获得日开始计时，过期将自动作废，请在有效期内使用。
 
 如何查询客户的投保信息？
-您可在赠品&gt;已使用页面查看客户投保信息详情。</string>
-                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+</string>
+                            <attributes>
+                                <color key="NSBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="NSColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                <font key="NSFont" size="14" name="PingFangSC-Regular"/>
+                            </attributes>
+                        </fragment>
+                        <fragment content="您可在赠品&gt;已使用页面查看客户投保信息详情。">
+                            <attributes>
+                                <color key="NSBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="NSColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                <font key="NSFont" size="14" name="PingFangSC-Regular"/>
+                                <paragraphStyle key="NSParagraphStyle" alignment="justified" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineSpacing="6" tighteningFactorForTruncation="0.0"/>
+                            </attributes>
+                        </fragment>
+                    </attributedString>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
             </subviews>

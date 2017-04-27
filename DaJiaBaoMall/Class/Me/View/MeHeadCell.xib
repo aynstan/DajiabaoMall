@@ -65,15 +65,36 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="+v-未点亮" highlightedImage="+v-点亮" translatesAutoresizingMaskIntoConstraints="NO" id="31W-nH-I6i">
+                                <rect key="frame" x="71" y="101.5" width="15" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="c8f-TN-Vhc"/>
+                                    <constraint firstAttribute="width" constant="15" id="oWR-cF-ZF5"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="efY-8i-6o8">
+                                <rect key="frame" x="12" y="38" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="h9J-wu-RoN"/>
+                                    <constraint firstAttribute="height" constant="80" id="x6d-fF-coV"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="clickHeadView:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="ygz-bo-196"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="efY-8i-6o8" firstAttribute="leading" secondItem="k6O-8S-kPl" secondAttribute="leading" constant="12" id="0ps-O6-hEe"/>
                             <constraint firstItem="myu-MB-igh" firstAttribute="centerY" secondItem="k6O-8S-kPl" secondAttribute="centerY" constant="29" id="0wa-lW-6wg"/>
                             <constraint firstItem="cc3-Kh-fIe" firstAttribute="leading" secondItem="k6O-8S-kPl" secondAttribute="leading" id="1Q5-vQ-h7U"/>
                             <constraint firstItem="9kU-JT-DT2" firstAttribute="leading" secondItem="k6O-8S-kPl" secondAttribute="leading" constant="12" id="2OO-Ex-9Ur"/>
+                            <constraint firstItem="efY-8i-6o8" firstAttribute="centerY" secondItem="k6O-8S-kPl" secondAttribute="centerY" constant="10" id="2e4-LV-K4T"/>
                             <constraint firstAttribute="width" secondItem="k6O-8S-kPl" secondAttribute="height" multiplier="750:318" id="5py-Vn-9VJ"/>
                             <constraint firstAttribute="bottom" secondItem="cc3-Kh-fIe" secondAttribute="bottom" id="68M-4x-ren"/>
                             <constraint firstItem="fBa-O9-0uy" firstAttribute="centerY" secondItem="k6O-8S-kPl" secondAttribute="centerY" constant="-5" id="CjF-fh-po2"/>
+                            <constraint firstItem="31W-nH-I6i" firstAttribute="centerY" secondItem="k6O-8S-kPl" secondAttribute="centerY" constant="41" id="LRv-z9-Scr"/>
+                            <constraint firstItem="31W-nH-I6i" firstAttribute="leading" secondItem="k6O-8S-kPl" secondAttribute="leading" constant="71" id="aZb-Nq-wQl"/>
                             <constraint firstAttribute="trailing" secondItem="cc3-Kh-fIe" secondAttribute="trailing" id="jPE-ob-xSU"/>
                             <constraint firstItem="9kU-JT-DT2" firstAttribute="centerY" secondItem="k6O-8S-kPl" secondAttribute="centerY" constant="10" id="kO8-J7-ZRw"/>
                             <constraint firstItem="cc3-Kh-fIe" firstAttribute="top" secondItem="k6O-8S-kPl" secondAttribute="top" id="pWk-k8-u8A"/>
@@ -153,10 +174,13 @@
                 <outlet property="myMoneyButtom" destination="5Oc-fs-7eY" id="ZFB-wf-wJa"/>
                 <outlet property="myOrderButtom" destination="CJh-Hr-EBA" id="Brq-tj-m01"/>
                 <outlet property="phoneOrWeChat" destination="fBa-O9-0uy" id="xjS-jo-Plf"/>
+                <outlet property="vipImageView" destination="31W-nH-I6i" id="as7-3s-FRB"/>
             </connections>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="+v-未点亮" width="15" height="15"/>
+        <image name="+v-点亮" width="15" height="15"/>
         <image name="bg" width="375" height="159"/>
         <image name="修改名片信息" width="127" height="25"/>
         <image name="我的订单" width="44" height="44"/>

@@ -382,8 +382,6 @@ static NSMutableArray *tasks;
     [UserDefaults setValue:nil forKey:ME];
     [UserDefaults synchronize];
     KeyWindow.rootViewController=[[BaseNavigationController alloc]initWithRootViewController:[[LoginController alloc]init]];
-    
-    
 }
 
 //提示

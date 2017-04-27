@@ -229,7 +229,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
                         }
                     }
                 } fail:^(NSError *error) {
-                    [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                    if ([XWNetworking isHaveNetwork]) {
+                        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                    }else{
+                        [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+                    }
                 } showHud:YES];
             }
         }];
@@ -254,7 +258,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

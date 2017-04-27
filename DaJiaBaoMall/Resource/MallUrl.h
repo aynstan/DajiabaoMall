@@ -11,8 +11,8 @@
 
 //友盟分享
 #define UMENG_APPKEY   @"58f4304bf29d98036d000d61"
-#define weChatId       @"wxd9706b31477efec2"
-#define weChatScreat   @"8ab75970786ba5e7f1dcd01ba1dd15b5"
+#define weChatId       @"wx2cb63a03944301c6"
+#define weChatScreat   @"519a67c3b5a4148400fa872a4b9f1b1a"
 
 //友盟推送
 #define UMPUSHKEY      @"58f4304bf29d98036d000d61"
@@ -26,16 +26,16 @@
 #define RongCloudServiceID  @"KEFU149260495739963"
 
 //短信服务器地址
-#define codeUrl        @"http://mapi.pre.dajiabao.com"
+#define codeUrl          @"http://mapi.pre.dajiabao.com"
 //#define codeUrl        @"http://mapi.dajiabao.com"
 //玉林服务器地址
-#define   APPHOSTURL     @"http://sns.api.yulin.dev.dajiabao.com/"
+//#define   APPHOSTURL   @"http://sns.api.yulin.dev.dajiabao.com/"
 //测试环境
-//#define     APPHOSTURL   @"http://test02.dev.dajiabao.com"
+//#define     APPHOSTURL @"http://api.qqb.test02.arrill.com"
 //pre服务器地址
-//#define     APPHOSTURL     @"http://fx.pre.weijiabaoxian.com"
+#define     APPHOSTURL   @"http://api.qqb.pre.arrill.com"
 //正式服务器地址
-//#define     APPHOSTURL     @"http://api.fx.weijiabaoxian.com"
+//#define     APPHOSTURL @"http://api.fx.weijiabaoxian.com"
 //登录
 #define LOGINURL       @"/v1/member/login"
 //自动登录
@@ -87,7 +87,7 @@
 //已退保
 #define rebackPay     @"/v1/order/query/3"
 //微信是否已绑定手机号
-#define checkWechatAndPhone   @"v1/member/prewxlogin"
+#define checkWechatAndPhone   @"/v1/member/prewxlogin"
 //应用内绑定微信
 #define wechatInLine          @"/v1/member/tiewx"
 //实名认证信息
@@ -114,8 +114,11 @@
 #define refreshRcToken   @"/v1/member/uptoken"
 
 
+
 //h5地址域名
-#define   H5HOSTURL   @"http://sns.wap.yulin.dev.dajiabao.com"
+//#define   H5HOSTURL   @"http://sns.wap.yulin.dev.dajiabao.com"
+//#define   H5HOSTURL   @"http://www.qqb.test02.arrill.com"
+#define   H5HOSTURL     @"http://www.qqb.pre.arrill.com"
 //关于我们
 #define aboutus        @"/sns/wap/aboutus"
 //交流反馈
@@ -136,16 +139,13 @@
 #define  systemUrl        @"/message/list?type=40"
 //提现
 #define  tixianUrl        @"/sns/wap/account/index"
-
+//注册协议
+#define  loginagreement   @"/loginagreement"
 
 
 //本地保存的user
 #define ME           @"Me"
 //本地保存的user
 #define TOKENID      @"sid"
-//本地保存的userid
-#define RCTOEKN      @"RcToken"
-
-
 
 #endif /* QMYBUrl_h */

@@ -66,7 +66,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             cell.widthContens.constant=0;
             cell.rightContents.constant=0;
             if (self.meModel.isauth) {
-                cell.subTitle.text=([self.meModel.sex isEqualToString:@"N"]?@"男":@"女");
+                cell.subTitle.text=([self.meModel.sex isEqualToString:@"M"]?@"男":@"女");
             }else{
                 cell.subTitle.text=@"保密";
             };
@@ -375,7 +375,11 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         }
         
     } failure:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHUD:YES];
 }
 
@@ -434,8 +438,11 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         }
         
     } failure:^(NSError *error) {
-        NSLog(@"错误：%@",error.description);
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHUD:YES];
 }
 
@@ -482,7 +489,11 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             [self saveData:response];
             [self endFreshAndLoadMore];
         } fail:^(NSError *error) {
-            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            if ([XWNetworking isHaveNetwork]) {
+                [MBProgressHUD ToastInformation:@"服务器开小差了"];
+            }else{
+                [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+            }
             [self endFreshAndLoadMore];
         } showHud:NO];
     }];

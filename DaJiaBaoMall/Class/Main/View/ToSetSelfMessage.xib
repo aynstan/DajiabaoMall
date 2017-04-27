@@ -40,7 +40,7 @@
                         <constraint firstAttribute="width" constant="45" id="6hr-UB-RNt"/>
                         <constraint firstAttribute="height" constant="45" id="qlg-61-m3a"/>
                     </constraints>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="-11" maxX="-2" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="-11" maxX="2" maxY="0.0"/>
                     <state key="normal" image="gb"/>
                     <connections>
                         <action selector="close:" destination="iN0-l3-epB" eventType="touchUpInside" id="ffy-Vo-kiP"/>

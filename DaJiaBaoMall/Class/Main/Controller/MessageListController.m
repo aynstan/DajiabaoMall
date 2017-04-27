@@ -34,6 +34,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     [super viewDidLoad];
     [self addTitle:@"消息中心"];
     [self addLeftButton];
+    [self.myTableView reloadData];
     [NotiCenter addObserver:self selector:@selector(haveMessage) name:@"haveMessage" object:nil];
 }
 
@@ -134,7 +135,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 
 - (NSMutableArray *)dataSourceArray{
     if (!_dataSourceArray) {
-        _dataSourceArray=[[NSMutableArray alloc]initWithObjects:@[@"在线客服",@"在线客服",@"有问题？直接找在线客服"],@[@"我的资产",@"我的资产",@"一笔热腾腾的推广费到账啦！再接再厉！"],@[@"邀请通知",@"邀请通知",@"您又有一位好友成功注册了"],@[@"客户动态",@"客户动态",@"您收到了新的访问"],@[@"系统消息",@"系统消息",@"您好，欢迎使用圈圈保"], nil];
+        _dataSourceArray=[[NSMutableArray alloc]initWithObjects:@[@"在线客服",@"在线客服",@"有问题？直接找在线客服！"],@[@"我的资产",@"我的资产",@"在这里，您可以看到所有的资产动态！"],@[@"邀请通知",@"邀请通知",@"在这里，您可以查看所有已邀请的小伙伴！"],@[@"客户动态",@"客户动态",@"在这里，您可以查看所有的客户动态！"],@[@"系统消息",@"系统消息",@"在这里，您可以查看所有的系统消息！"], nil];
         
     }
     return _dataSourceArray;

@@ -12,6 +12,7 @@
 #import "MeModel.h"
 #import "WXApi.h"
 #import "CheckPhoneController.h"
+#import "BaseWebViewController.h"
 
 @interface LoginController ()<UITextFieldDelegate>{
     UITextField *userNameFiled;
@@ -189,14 +190,32 @@
     [contentView addSubview:loginButton];
     [loginButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(wordLine.mas_bottom).offset(SCREEN_WIDTH/375.0*65);
-        make.left.mas_equalTo(contentView.mas_left).offset(GetWidth(50));
-        make.right.mas_equalTo(contentView.mas_right).offset(-GetWidth(50));
-        make.height.mas_equalTo(GetHeight(40));
+        make.width.mas_equalTo(288);
+        make.centerX.mas_equalTo(0);
+        make.height.mas_equalTo(GetHeight(46));
     }];
     
     
+    UIButton *xieyiButtom=[[UIButton alloc]init];
+    [xieyiButtom.titleLabel setFont:font12];
+    NSString *xieyiContent=@"注册即代表同意用户服务协议";
+    NSMutableAttributedString *xieyiattr=[[NSMutableAttributedString alloc]initWithString:xieyiContent];
+    [xieyiattr addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInteger:NSUnderlineStyleSingle] range:NSMakeRange(xieyiContent.length-6, 6)];
+    [xieyiattr addAttribute:NSForegroundColorAttributeName value:[[UIColor whiteColor] colorWithAlphaComponent:0.6] range:NSMakeRange(0, xieyiContent.length)];
+    [xieyiButtom setAttributedTitle:xieyiattr forState:0];
+    [xieyiButtom addTarget:self action:@selector(xieyi:) forControlEvents:UIControlEventTouchUpInside];
+    [contentView addSubview:xieyiButtom];
+    [xieyiButtom mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(loginButton.mas_bottom).mas_offset(SCREEN_WIDTH/375.0*13);
+        make.width.mas_equalTo(200);
+        make.height.mas_equalTo(35);
+        make.centerX.mas_equalTo(0);
+    }];
+    
+    
+    
     [contentView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(loginButton.mas_bottom).offset(GetHeight(65));
+        make.bottom.mas_equalTo(xieyiButtom.mas_bottom).offset(GetHeight(65));
     }];
     
     [self setIQKeyBorderManager];
@@ -289,7 +308,11 @@
             }
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -297,7 +320,7 @@
 #pragma mark 有sid * 获取短信验证码 *
 - (void)getSnsCode:(NSString *)sid{
     NSString *urlStr=[NSString stringWithFormat:@"%@/verify/sms",codeUrl];
-    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:userNameFiled.text],@"smsCode":@"TYHJ_CODE",@"sid":sid};
+    NSDictionary *dic=@{@"code":@"",@"phone":[self clearSpace:userNameFiled.text],@"smsCode":@"QQB_YZM",@"sid":sid};
     [XWNetworking postJsonWithUrl:urlStr params:dic success:^(id response) {
         NSDictionary *dic=response;
         NSInteger code=[dic integerForKey:@"code"];
@@ -317,7 +340,11 @@
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -363,7 +390,11 @@
             });
         }
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -374,7 +405,11 @@
     [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
         [self saveData:response];
     } fail:^(NSError *error) {
-        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        if ([XWNetworking isHaveNetwork]) {
+            [MBProgressHUD ToastInformation:@"服务器开小差了"];
+        }else{
+            [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+        }
     } showHud:YES];
 }
 
@@ -407,7 +442,9 @@
                 UMSocialUserInfoResponse *resp = result;
                 NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,checkWechatAndPhone];
                 NSDictionary *dic=@{@"wxToken":resp.uid};
+                NSLog(@"%@ ---- %@",url,dic);
                 [XWNetworking postJsonWithUrl:url params:dic success:^(id response) {
+                    NSLog(@"------%@",response);
                     if (response) {
                         NSInteger statusCode=[response integerForKey:@"code"];
                         if (statusCode==0) {
@@ -427,7 +464,12 @@
                         }
                     }
                 } fail:^(NSError *error) {
-                    [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                    NSLog(@"错误：%@",error.localizedDescription);
+                    if ([XWNetworking isHaveNetwork]) {
+                        [MBProgressHUD ToastInformation:@"服务器开小差了"];
+                    }else{
+                        [MBProgressHUD ToastInformation:@"网络似乎已断开..."];
+                    }
                 } showHud:YES];
             }
         }];
@@ -519,5 +561,12 @@
     [MobClick endLogPageView:@"登录"];
 }
 
+//注册协议
+- (void)xieyi:(UIButton *)sender{
+    BaseWebViewController *webview=[[BaseWebViewController alloc]init];
+    webview.hidesBottomBarWhenPushed=YES;
+    webview.urlStr=[NSString stringWithFormat:@"%@%@",H5HOSTURL,loginagreement];
+    [self.navigationController pushViewController:webview animated:YES];
+}
 
 @end
