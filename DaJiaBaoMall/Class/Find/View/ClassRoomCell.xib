@@ -69,6 +69,7 @@
             <connections>
                 <outlet property="contentImageUrl" destination="Iuf-UK-xuj" id="vdq-hP-3gp"/>
                 <outlet property="contentTitle" destination="80r-oe-w9N" id="3eW-vB-3hL"/>
+                <outlet property="line" destination="9Eq-41-uPe" id="adI-wO-prF"/>
             </connections>
         </tableViewCell>
     </objects>

@@ -12,6 +12,9 @@
 #import "ErweiMaView.h"
 #import "ToastErweiMaView.h"
 #import "WechatGrop.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <Photos/Photos.h>
 
 @interface GetGroupController ()<UICollectionViewDelegate,UICollectionViewDataSource,ErweiMaView_Delegate,ToastErweiMaView_Delegate>
 
@@ -145,7 +148,7 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
 - (void)postImage:(UIImage *)postImage andWechatName:(NSString *)name{
     NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,uploadWXGroup];
     NSDictionary *dic=@{@"name":name};
-    [XWNetworking uploadImagesWithURL:url parameters:dic name:@"upload" images:@[postImage] fileNames:nil imageScale:0.6 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
+    [XWNetworking uploadImagesWithURL:url parameters:dic name:@"upload" images:@[postImage] fileNames:nil imageScale:0.8 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
         
     } success:^(id response) {
         if (response) {
@@ -218,11 +221,35 @@ static NSString  * const Indentifer=@"CollectTion_Cell";
 //保存图片
 - (void)clickView:(ToastErweiMaView *)view clickSave:(UIButton *)sender andIndex:(NSInteger)index{
     [_alertView dismissWithCompletion:^{
-        WechatGrop *grop=self.CollectionArray[index];
-        UIImage *saveImage=[[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:grop.images]]];
-        if (saveImage) {
-            [MBProgressHUD showHUDWithTitle:@"正在保存..."];
-            UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+        PHAuthorizationStatus author = [PHPhotoLibrary authorizationStatus];
+        if (author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+            });
+        }else if(author == ALAuthorizationStatusNotDetermined){
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                if (status == PHAuthorizationStatusRestricted || status == PHAuthorizationStatusDenied){
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self alertWithMessage:@"请在iphone的“设置-隐私-照片”选项中，允许圈圈访问您的手机相册"];
+                    });
+                }else if (status == PHAuthorizationStatusAuthorized){
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        WechatGrop *grop=self.CollectionArray[index];
+                        UIImage *saveImage=[[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:grop.images]]];
+                        if (saveImage) {
+                            [MBProgressHUD showHUDWithTitle:@"正在保存..."];
+                            UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+                        }
+                    });
+                }
+            }];
+        }else if(author == ALAuthorizationStatusAuthorized){
+            WechatGrop *grop=self.CollectionArray[index];
+            UIImage *saveImage=[[UIImage alloc]initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:grop.images]]];
+            if (saveImage) {
+                [MBProgressHUD showHUDWithTitle:@"正在保存..."];
+                UIImageWriteToSavedPhotosAlbum(saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), NULL);
+            }
         }
     }];
 };

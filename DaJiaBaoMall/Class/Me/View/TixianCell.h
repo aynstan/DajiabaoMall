@@ -18,5 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
 @property (nonatomic,strong) TixianModel *model;
+//分割线
+@property (weak, nonatomic) IBOutlet UILabel *line;
 
 @end

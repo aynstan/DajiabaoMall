@@ -19,4 +19,6 @@
 
 @property (nonatomic, strong) BankModel *model;
 
+@property (weak, nonatomic) IBOutlet UILabel *line;
+
 @end

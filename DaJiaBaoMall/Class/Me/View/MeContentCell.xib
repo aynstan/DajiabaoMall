@@ -89,6 +89,7 @@
                 <outlet property="hadImage" destination="Hjs-OR-ZgO" id="iPi-8s-Tju"/>
                 <outlet property="heithConstens" destination="Qrv-7r-qOF" id="XIO-zd-OC8"/>
                 <outlet property="isHot" destination="ngE-gR-hgE" id="Bq6-Oc-tk2"/>
+                <outlet property="line" destination="hE9-95-DAd" id="6TE-UT-dPv"/>
                 <outlet property="rightContents" destination="dRv-Vm-TOv" id="Lor-1A-wLO"/>
                 <outlet property="subTile" destination="bSW-3k-ZPi" id="fgb-K6-fBZ"/>
                 <outlet property="widthConstens" destination="vf2-8n-maW" id="Gcw-uZ-smK"/>

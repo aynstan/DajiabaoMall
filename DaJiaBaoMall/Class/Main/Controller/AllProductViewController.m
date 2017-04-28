@@ -45,7 +45,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self addTitle:@"全部产品"];
+    [self addTitle:@"保险客栈"];
     [self addLeftButton];
     [self addRightButton];
     self.size=15;

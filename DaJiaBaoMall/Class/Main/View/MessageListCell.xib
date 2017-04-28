@@ -86,6 +86,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="FirstImageView" destination="PE9-c3-wfX" id="CJo-UZ-5KG"/>
+                <outlet property="line" destination="9L5-Kl-MEk" id="aJA-JU-und"/>
                 <outlet property="redImageView" destination="uje-po-PXO" id="sUb-uO-fGu"/>
                 <outlet property="subTitle" destination="r2i-qL-3Gq" id="1YR-Mv-3oE"/>
                 <outlet property="title" destination="Sjc-wM-H9w" id="xnS-kj-EzB"/>

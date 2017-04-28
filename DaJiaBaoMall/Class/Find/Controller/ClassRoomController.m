@@ -73,6 +73,7 @@ static NSString *const tableviewBottomCellIndentifer=@"BottomCell";
         ClassRoomCell *cell=[tableView dequeueReusableCellWithIdentifier:tableviewCellIndentifer];
         ClassContentModel *contentModel=model.data[indexPath.row];
         [cell setModel:contentModel];
+        cell.line.hidden=indexPath.row==model.data.count-1;
         return cell;
     }
 }

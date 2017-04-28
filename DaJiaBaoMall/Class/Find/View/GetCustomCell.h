@@ -18,5 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *contentSubTitle;
 //model
 @property (nonatomic,strong) Huoke *model;
+//分割线
+@property (weak, nonatomic) IBOutlet UILabel *line;
 
 @end

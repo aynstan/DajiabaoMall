@@ -60,6 +60,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     BankModel *bankeModel=self.dataSourceArray[indexPath.row];
     [cell setModel:bankeModel];
+    cell.line.hidden=indexPath.row==self.dataSourceArray.count-1;
     return cell;
 }
 

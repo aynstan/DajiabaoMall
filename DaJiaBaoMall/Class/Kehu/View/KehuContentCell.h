@@ -15,6 +15,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 //副标题
 @property (weak, nonatomic) IBOutlet UILabel *subTitleLabel;
+//分割线
+@property (weak, nonatomic) IBOutlet UILabel *line;
 
 
 @end

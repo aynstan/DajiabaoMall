@@ -61,7 +61,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
             cell.widthContens.constant=0;
             cell.rightContents.constant=0;
-        }if (indexPath.row==2) {
+        }else if (indexPath.row==2) {
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
             cell.widthContens.constant=0;
             cell.rightContents.constant=0;
@@ -70,7 +70,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
             }else{
                 cell.subTitle.text=@"保密";
             };
-        }if (indexPath.row==3) {
+        }else if (indexPath.row==3) {
             cell.jiaV.highlighted=(self.meModel.isauth?YES:NO);
             cell.jiaV.hidden=NO;
             cell.subTitle.text=self.meModel.isauth==false?@"未认证":@"已认证";
@@ -83,12 +83,14 @@ static NSString *const tableviewCellIndentifer=@"Cell";
                cell.selectionStyle=UITableViewCellSelectionStyleDefault;
             }
         }
+        cell.line.hidden=indexPath.row==3;
     }else if (indexPath.section==1){
         if (indexPath.row==0) {
             cell.subTitle.text=(0==self.meModel.company.length?@"":self.meModel.company);
         }else if (indexPath.row==1){
             cell.subTitle.text=(0==self.meModel.position.length?@"":self.meModel.position);
         }
+        cell.line.hidden=indexPath.row==1;
     }
     return cell;
 }
@@ -102,7 +104,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
         UIButton *touxiang=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
         [touxiang setTitle:@"头像" forState:0];
         [touxiang addTarget:self action:@selector(changeTouxiang:) forControlEvents:UIControlEventTouchUpInside];
-        [touxiang.titleLabel setFont:font15];
+        [touxiang.titleLabel setFont:font16];
         [touxiang setTitleColor:[UIColor colorWithHexString:@"#282828"] forState:0];
         [touxiang setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
         [touxiang setContentEdgeInsets:UIEdgeInsetsMake(0, 15, 0, 0)];
@@ -358,7 +360,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 //上传微信二维码
 - (void)postErweiMa:(UIImage *)erweimaImage{
     NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,uploadErweiMa];
-    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[erweimaImage] fileNames:nil imageScale:0.6 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
+    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[erweimaImage] fileNames:nil imageScale:0.8 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
     } success:^(id response) {
         if (response) {
             NSInteger statusCode=[response integerForKey:@"code"];
@@ -419,7 +421,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
 - (void)saveTouxiang:(UIImage *)touxiangImage{
     touxiangImageView.image=touxiangImage;
     NSString *url=[NSString stringWithFormat:@"%@%@",APPHOSTURL,uploadTouxiang];
-    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[touxiangImage] fileNames:nil imageScale:0.6 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
+    [XWNetworking uploadImagesWithURL:url parameters:nil name:@"upload" images:@[touxiangImage] fileNames:nil imageScale:0.8 imageType:nil progress:^(int64_t bytesProgress, int64_t totalBytesProgress) {
         
     } success:^(id response) {
         if (response) {

@@ -62,6 +62,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="bankName" destination="Qpq-lg-xOu" id="WhN-h6-sok"/>
+                <outlet property="line" destination="hzu-ZG-8cT" id="LdW-aC-Vl7"/>
                 <outlet property="logo" destination="95S-LC-qJI" id="aSf-ez-VU3"/>
                 <outlet property="maxPay" destination="ZEr-UU-oqc" id="dmM-0K-Zk2"/>
             </connections>

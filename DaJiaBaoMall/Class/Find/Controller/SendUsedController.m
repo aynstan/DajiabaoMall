@@ -113,6 +113,7 @@
 
 #pragma mark 分享到朋友圈
 - (void)touch:(ShareModel *)model{
+    NSLog(@"%@,%@,%@,%@",model.title,model.intro,model.image,model.url);
     if ([WXApi isWXAppInstalled]) {
         WeakSelf;
         [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {

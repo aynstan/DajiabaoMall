@@ -96,20 +96,20 @@
 
 //计算剩余天数
 - (NSString *)dateTimeDifferenceWithStartTime:(long long)lostTime{
-    long long value=lostTime;
-    int second = (int)value %60;//秒
-    int minute = (int)value /60%60;
-    int house = (int)value / (24 * 3600)%3600;
-    int day = (int)value / (24 * 3600);
+    long long value= lostTime;
+    long long second = value % 60;//秒
+    long long minute = value / 60 % 60;
+    long long house =value / 3600 % 24;
+    long long day = value / ( 24 * 3600 );
     NSString *str;
     if (day != 0) {
-        str = [NSString stringWithFormat:@"%d天%d小时%d分%d秒后过期",day,house,minute,second];
+        str = [NSString stringWithFormat:@"%lld天%lld小时%lld分%lld秒后过期",day,house,minute,second];
     }else if (day==0 && house != 0) {
-        str = [NSString stringWithFormat:@"%d小时%d分%d秒后过期",house,minute,second];
+        str = [NSString stringWithFormat:@"%lld小时%lld分%lld秒后过期",house,minute,second];
     }else if (day== 0 && house== 0 && minute!=0) {
-        str = [NSString stringWithFormat:@"%d分%d秒后过期",minute,second];
+        str = [NSString stringWithFormat:@"%lld分%lld秒后过期",minute,second];
     }else{
-        str = [NSString stringWithFormat:@"%d秒后过期",second];
+        str = [NSString stringWithFormat:@"%lld秒后过期",second];
     }
     return str;
 }

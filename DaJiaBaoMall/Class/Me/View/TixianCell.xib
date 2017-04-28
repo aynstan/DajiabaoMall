@@ -69,6 +69,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="line" destination="gYT-RN-Hhg" id="47Y-bu-UUX"/>
                 <outlet property="statusLabel" destination="LGN-dx-Imk" id="8TK-HZ-mEd"/>
                 <outlet property="timeLabel" destination="Bfe-HF-V05" id="dUJ-jV-XAx"/>
                 <outlet property="tixianMoney" destination="flj-YS-G8v" id="wK4-ee-hUg"/>

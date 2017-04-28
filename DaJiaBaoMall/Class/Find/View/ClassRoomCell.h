@@ -16,5 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *contentImageUrl;
 //model
 @property (nonatomic,strong) ClassContentModel *model;
+//分割线
+@property (weak, nonatomic) IBOutlet UILabel *line;
 
 @end

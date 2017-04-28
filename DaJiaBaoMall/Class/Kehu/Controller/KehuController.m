@@ -83,8 +83,8 @@ static NSString *const tableViewFootCellIndentifer=@"FootCell";
         kehuFootCell *cell=[tableView dequeueReusableCellWithIdentifier:tableViewFootCellIndentifer];
         cell.delegate=self;
         cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        [cell.noPayButtom setTitle:[NSString stringWithFormat:@"未支付订单：%ld单",(long)self.visitCountModel.unpayOrder] forState:0];
-        [cell.alReadyButton setTitle:[NSString stringWithFormat:@"已支付订单：%ld单",(long)self.visitCountModel.payOrder] forState:0];
+        [cell.noPayButtom setTitle:[NSString stringWithFormat:@"未支付订单:%ld单",(long)self.visitCountModel.unpayOrder] forState:0];
+        [cell.alReadyButton setTitle:[NSString stringWithFormat:@"已支付订单:%ld单",(long)self.visitCountModel.payOrder] forState:0];
         return cell;
     }else if (indexPath.section==1){
         KehuContentCell *cell=[tableView dequeueReusableCellWithIdentifier:tableViewCellIndentifer];
@@ -101,6 +101,7 @@ static NSString *const tableViewFootCellIndentifer=@"FootCell";
             [cell.imageViewHead setImage:[UIImage imageNamed:@"产品-1"]];
             cell.subTitleLabel.text=[NSString stringWithFormat:@"%ld次",(long)self.visitCountModel.productCount];
         }
+        cell.line.hidden=indexPath.row==2;
         return cell;
     }
     return nil;
@@ -171,12 +172,14 @@ static NSString *const tableViewFootCellIndentifer=@"FootCell";
 - (void)clickInHeadCell:(kehuFootCell *)cell withLoadPayButtom:(UIButton *)btn{
     MyOrderListController *orderList=[[MyOrderListController alloc]init];
     orderList.hidesBottomBarWhenPushed=YES;
+    orderList.selectIndex=0;
     [self.navigationController pushViewController:orderList animated:YES];
 };
 
 - (void)clickInHeadCell:(kehuFootCell *)cell withCompletePayButtom:(UIButton *)btn{
     MyOrderListController *orderList=[[MyOrderListController alloc]init];
     orderList.hidesBottomBarWhenPushed=YES;
+    orderList.selectIndex=1;
     [self.navigationController pushViewController:orderList animated:YES];
 };
 

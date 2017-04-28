@@ -116,17 +116,17 @@ static NSString *const tableviewContentCell=@"ContentCell";
 
 #pragma mark 拨打电话
 - (void)toCall:(UIButton *)sender{
-    UIAlertController *phoneAlert=[UIAlertController alertControllerWithTitle:@"确定拨打400-1114-567?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancel=[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    UIAlertAction *queding=[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSURL *url =[NSURL URLWithString:@"tel:4001114567"];
-        [[UIApplication sharedApplication] openURL:url];
-    }];
-    [phoneAlert addAction:cancel];
-    [phoneAlert addAction:queding];
-    [self presentViewController:phoneAlert animated:YES completion:nil];
+    NSString *callPhone = [NSString stringWithFormat:@"telprompt://%@", @"4001114567"];
+    /// 防止iOS 10及其之后，拨打电话系统弹出框延迟出现
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:callPhone]]) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:callPhone]];
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD ToastInformation:@"您的设备不支持电话拨打"];
+            });
+        }
+    });
 }
 
 #pragma mark uitableview delegate;
@@ -151,6 +151,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
             cell.rightContents.constant=(self.meModel.weixinauth==false?15:0);
             cell.selectionStyle=self.meModel.weixinauth==false?UITableViewCellSelectionStyleDefault:UITableViewCellSelectionStyleNone;
         }
+        cell.line.hidden=indexPath.row==arr.count-1;
         return cell;
     }
 }

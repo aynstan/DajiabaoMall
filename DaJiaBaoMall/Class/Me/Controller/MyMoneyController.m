@@ -464,15 +464,14 @@
 
 //计算剩余天数
 - (NSString *)dateTimeDifferenceWithStartTime:(long long)lostTime{
-    long long value=lostTime/1000.0;
-    //int minute = (int)value /60%60;
-    int house = (int)value / (24 * 3600)%3600;
-    int day = (int)value / (24 * 3600);
+    long long value= lostTime / 1000.0;
+    long long house = value / 3600 % 24;
+    long long day = value / (24 * 3600);
     NSString *str;
     if (day > 0) {
-        str = [NSString stringWithFormat:@"%d天%d小时",day,house];
+        str = [NSString stringWithFormat:@"%lld天%lld小时",day,house];
     }else if (day<=0 && house > 0) {
-        str = [NSString stringWithFormat:@"%d小时",house];
+        str = [NSString stringWithFormat:@"%lld小时",house];
     }
     return str;
 }

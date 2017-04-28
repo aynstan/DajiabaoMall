@@ -39,7 +39,7 @@
     NSString *city;
     //选中的性别
     NSString *sex;
-    //今日剩余获客名额
+    //本周剩余获客名额
     NSInteger LastCount;
     //获客剩余人数
     UILabel *show;
@@ -90,9 +90,9 @@ static NSString *const tableviewContentCell=@"ContentCell";
             LastCount=[[response objectForKey:@"data"] integerForKey:@"count"];
             
             if (LastCount<=0) {
-                show.text=@"今日获客名额已用完，明日再来吧！";
+                show.text=@"本周获客名额已用完，下周再来吧！";
             }else{
-                show.text=[NSString stringWithFormat:@"您今日获客剩余名额为：%ld人,尚未使用",(long)LastCount];
+                show.text=[NSString stringWithFormat:@"您本周获客剩余名额为：%ld人,尚未使用",(long)LastCount];
             }
             
             for (XWPersonModel *saveModel in sourceArray) {
@@ -124,7 +124,7 @@ static NSString *const tableviewContentCell=@"ContentCell";
     [self.view addSubview:headView];
     //获客剩余人数
     show=[[UILabel alloc]initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH, 44)];
-    show.text=@"您今日获客剩余名额为：--人,尚未使用";
+    show.text=@"您本周获客剩余名额为：--人,尚未使用";
     show.font=font14;
     show.textColor=[UIColor colorWithHexString:@"#ff5c3a"];
     [headView addSubview:show];
@@ -234,11 +234,11 @@ static NSString *const tableviewContentCell=@"ContentCell";
 - (void)daoru:(UIButton *)sender{
     [MobClick event:@"get_my_guest"];
     if (LastCount<=0) {
-        [MBProgressHUD ToastInformation:@"今日名额已用完！"];
+        [MBProgressHUD ToastInformation:@"本周名额已用完！"];
         return;
     }
     if (self.selectedArray.count>LastCount) {
-        [MBProgressHUD ToastInformation:@"所选人数大于今日剩余可获客人数"];
+        [MBProgressHUD ToastInformation:@"所选人数大于本周剩余可获客人数"];
         return;
     }
     if (self.selectedArray.count==0) {
@@ -275,9 +275,9 @@ static NSString *const tableviewContentCell=@"ContentCell";
             if (statusCode==1){
                 LastCount=LastCount-postCount;
                 if (LastCount<=0) {
-                    show.text=@"今日获客名额已用完，明日再来吧！";
+                    show.text=@"本周获客名额已用完，下周再来吧！";
                 }else{
-                    show.text=[NSString stringWithFormat:@"您今日获客剩余名额为：%ld人,尚未使用",(long)LastCount];
+                    show.text=[NSString stringWithFormat:@"您本周获客剩余名额为：%ld人,尚未使用",(long)LastCount];
                 }
                 //清除已导入的
                 [self.dataSourceArray removeObjectsInArray:self.selectedArray];

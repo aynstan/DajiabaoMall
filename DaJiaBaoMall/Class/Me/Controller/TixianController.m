@@ -61,6 +61,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     cell.selectionStyle=UITableViewCellSelectionStyleNone;
     TixianModel *tixianModel=self.dataSourceArray[indexPath.row];
     [cell setModel:tixianModel];
+    cell.line.hidden=indexPath.row==self.dataSourceArray.count-1;
     return cell;
 }
 

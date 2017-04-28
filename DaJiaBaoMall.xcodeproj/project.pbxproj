@@ -2207,8 +2207,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dajiabao.tyhj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ffd89c77-0e80-447d-91f3-c923afb04d70";
-				PROVISIONING_PROFILE_SPECIFIER = "XC iOS Ad Hoc: com.dajiabao.tyhj";
+				PROVISIONING_PROFILE = "f6eb008b-4bc7-4757-9d27-09aeddf423ea";
+				PROVISIONING_PROFILE_SPECIFIER = tyhj_adhoc;
 			};
 			name = Debug;
 		};
@@ -2239,8 +2239,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dajiabao.tyhj;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ffd89c77-0e80-447d-91f3-c923afb04d70";
-				PROVISIONING_PROFILE_SPECIFIER = "XC iOS Ad Hoc: com.dajiabao.tyhj";
+				PROVISIONING_PROFILE = "f6eb008b-4bc7-4757-9d27-09aeddf423ea";
+				PROVISIONING_PROFILE_SPECIFIER = tyhj_adhoc;
 			};
 			name = Release;
 		};

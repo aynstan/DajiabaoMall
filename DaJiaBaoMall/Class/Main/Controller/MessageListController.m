@@ -66,6 +66,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     }else if (indexPath.row==4) {
         cell.redImageView.hidden=systemCount<=0;
     }
+    cell.line.hidden=indexPath.row==self.dataSourceArray.count-1;
     return cell;
 }
 

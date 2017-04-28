@@ -67,6 +67,7 @@ static NSString *const tableviewCellIndentifer=@"Cell";
     CustomCatogoryModel *catogory=self.dataSourceArray[indexPath.section];
     Huoke *huoke=catogory.data[indexPath.row];
     [cell setModel:huoke];
+    cell.line.hidden=indexPath.row==catogory.data.count-1;
     return cell;
 }
 

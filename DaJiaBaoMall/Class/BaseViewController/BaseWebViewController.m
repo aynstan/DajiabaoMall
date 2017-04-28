@@ -183,6 +183,41 @@
     
 }
 
+//拨打电话
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSURL *URL = navigationAction.request.URL;
+    NSString *scheme = [URL scheme];
+    if ([scheme isEqualToString:@"tel"]) {
+        NSString *resourceSpecifier = [URL resourceSpecifier];
+        NSString *callPhone = [NSString stringWithFormat:@"telprompt://%@", resourceSpecifier];
+        // 防止iOS 10及其之后，拨打电话系统弹出框延迟出现
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:callPhone]]) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:callPhone]];
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD ToastInformation:@"您的设备不支持电话拨打"];
+                });
+            }
+        });
+    }else if ([scheme isEqualToString:@"mailto"]){
+        NSString *resourceSpecifier = [URL resourceSpecifier];
+        NSString *url = [NSString stringWithFormat:@"mailto://%@",resourceSpecifier];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]]) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD ToastInformation:@"您的设备不支持邮件发送"];
+                });
+            }
+        });
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+
+
 #pragma mark WKUIDelegate
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
     UIAlertController *controller=[UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -465,16 +500,7 @@
     if ([WXApi isWXAppInstalled]) {
         WeakSelf;
         [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
-            if (type==0) {
-                NSLog(@"分享网页");
-               //分享网页
-               [weakSelf shareWebPageToPlatformType:platformType ImageUrl:shareImageUrl shareUrl:shareUrl title:shareTile subTitle:subTitle] ;
-            }else if(type==1){
-                NSLog(@"分享图片");
-                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl type:1];
-            }else if(type==3){
-                [weakSelf shareImageToPlatformType:platformType ImageUrl:shareImageUrl type:3];
-            }
+            [weakSelf shareWebPageToPlatformType:platformType ImageUrl:shareImageUrl shareUrl:shareUrl title:shareTile subTitle:subTitle shareType:type] ;
         }];
     }else{
         UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"提醒" message:@"您尚未安装微信客户端，暂无法使用微信分享功能" preferredStyle:UIAlertControllerStyleAlert];
@@ -485,46 +511,30 @@
 }
 
 //分享网页
-- (void)shareWebPageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl  shareUrl:(NSString *)shareUrl  title:(NSString *)shareTile subTitle:(NSString *)subTitle{
+- (void)shareWebPageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl  shareUrl:(NSString *)shareUrl  title:(NSString *)shareTile subTitle:(NSString *)subTitle shareType:(NSInteger )type{
     //创建分享消息对象
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-    //创建网页内容对象
-    NSString* thumbURL=(0==shareImageUrl.length?@"":shareImageUrl);
-    UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:(0==shareTile.length?@"":shareTile) descr:(0==subTitle.length?@"":subTitle) thumImage:[NSData dataWithContentsOfURL:[NSURL URLWithString:thumbURL]]];
-    //设置网页地址
-    shareObject.webpageUrl = (0==shareUrl.length?@"":shareUrl);
-    //分享消息对象设置分享内容对象
-    messageObject.shareObject = shareObject;
-    //调用分享接口
-    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
-        if (error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD ToastInformation:@"分享失败"];
-            });
-        }else{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD ToastInformation:@"分享成功"];
-            });
-        }
-    }];
-}
-
-//分享图片
-- (void)shareImageToPlatformType:(UMSocialPlatformType)platformType ImageUrl:(NSString *)shareImageUrl type:(NSInteger )type{
-    //创建分享消息对象
-    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-    //创建图片内容对象
-    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
-    //分享的图片
-    if (type==1) {
+    if (type==0) {
+        //分享网页
+        NSString* thumbURL=(0==shareImageUrl.length?@"":shareImageUrl);
+        UMShareWebpageObject *shareObject = [UMShareWebpageObject shareObjectWithTitle:(0==shareTile.length?@" ":shareTile) descr:(0==subTitle.length?@" ":subTitle) thumImage:[NSData dataWithContentsOfURL:[NSURL URLWithString:thumbURL]]];
+        shareObject.webpageUrl = (0==shareUrl.length?@"":shareUrl);
+        messageObject.shareObject = shareObject;
+    }else if (type==1){
+        //分享图片(url)
+        UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
         NSData  *imageData=[NSData dataWithContentsOfURL:[NSURL URLWithString:(0==shareImageUrl.length?@"":shareImageUrl)]];
         [shareObject setShareImage:imageData];
+        messageObject.shareObject = shareObject;
     }else if (type==3){
-        NSLog(@"---------------%@",shareImageUrl);
+        //分享图片(base64)
+        UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
         [shareObject setShareImage:[self imageFromString:shareImageUrl]];
+        messageObject.shareObject = shareObject;
+    }else if (type==2){
+        //分享文本
+        messageObject.text = shareTile;
     }
-    //分享消息对象设置分享内容对象
-    messageObject.shareObject = shareObject;
     //调用分享接口
     [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
         if (error) {

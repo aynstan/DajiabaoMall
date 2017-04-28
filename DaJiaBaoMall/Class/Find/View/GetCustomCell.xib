@@ -66,6 +66,7 @@
                 <outlet property="contentSubTitle" destination="PmE-qV-8Yk" id="sem-u0-IAP"/>
                 <outlet property="contentTitle" destination="HTl-Cd-h64" id="udJ-Rc-2ng"/>
                 <outlet property="headImage" destination="98c-Bi-3dS" id="aQk-be-LBo"/>
+                <outlet property="line" destination="Zf4-L1-vTd" id="0Eh-0x-Pay"/>
             </connections>
         </tableViewCell>
     </objects>

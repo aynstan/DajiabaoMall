@@ -17,5 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *subTitle;
 //红色图片
 @property (weak, nonatomic) IBOutlet UIImageView *redImageView;
+//分割线
+@property (weak, nonatomic) IBOutlet UILabel *line;
 
 @end

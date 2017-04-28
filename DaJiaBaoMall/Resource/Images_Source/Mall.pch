@@ -44,11 +44,11 @@
 #endif
 
 // 自定义NSLog,在debug模式下打印，在release模式下取消一切NSLog
-//#ifdef DEBUG
-//#define NSLog(FORMAT, ...) fprintf(stderr,"%s\n\n**************************************%s:%d********************************\n\n",[[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String],[[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],__LINE__);
-//#else
-//#define NSLog(FORMAT, ...) nil
-//#endif
+#ifdef DEBUG
+#define NSLog(FORMAT, ...) fprintf(stderr,"%s\n\n**************************************%s:%d********************************\n\n",[[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String],[[[NSString stringWithUTF8String:__FILE__] lastPathComponent] UTF8String],__LINE__);
+#else
+#define NSLog(FORMAT, ...) nil
+#endif
 
 
 #define SYSTEM_VERSION        [[[UIDevice currentDevice] systemVersion] floatValue]

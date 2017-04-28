@@ -22,4 +22,6 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *rightContents;
 
+@property (weak, nonatomic) IBOutlet UILabel *line;
+
 @end
